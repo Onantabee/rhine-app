@@ -1,0 +1,223 @@
+import React, { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { AppBar, Toolbar, IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button, Dialog } from "../ui";
+import { logout as logoutAction, setSearchTerm } from "../../store/slices/authSlice";
+
+// Sub-components
+import UserAvatar from "./UserAvatar";
+import SearchBar from "./SearchBar";
+import ProfileDropdown from "./ProfileDropdown";
+import MobileDrawer from "./MobileDrawer";
+import EditProfileDrawer from "./EditProfileDrawer";
+
+/**
+ * Header component - Main navigation header with authentication and search
+ * @param {function} setIsSignup - Handler to toggle between login/signup views
+ */
+const Header = ({ setIsSignup }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Redux state
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const userName = useSelector((state) => state.auth.userName);
+    const userRole = useSelector((state) => state.auth.userRole);
+    const searchTerm = useSelector((state) => state.auth.searchTerm);
+    const isAdmin = userRole === "ADMIN";
+
+    // Local UI state
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+    const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+    const [editProfileOpen, setEditProfileOpen] = useState(false);
+
+    const profileRef = useRef(null);
+
+    // Event handlers
+    const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+
+    const handleLoginClick = () => {
+        setIsSignup(false);
+        handleDrawerToggle();
+    };
+
+    const handleSignupClick = () => {
+        setIsSignup(true);
+        handleDrawerToggle();
+    };
+
+    const handleLogoutClick = () => {
+        setLogoutDialogOpen(true);
+        setProfileDropdownOpen(false);
+    };
+
+    const handleLogoutConfirm = () => {
+        dispatch(logoutAction());
+        setMobileOpen(false);
+        setLogoutDialogOpen(false);
+        navigate("/");
+        setIsSignup(false);
+    };
+
+    const handleLogoutCancel = () => {
+        setLogoutDialogOpen(false);
+    };
+
+    const toggleProfileDropdown = () => {
+        setProfileDropdownOpen(!profileDropdownOpen);
+    };
+
+    const handleSearchChange = (e) => {
+        dispatch(setSearchTerm(e.target.value));
+    };
+
+    const handleClearSearch = () => {
+        dispatch(setSearchTerm(""));
+    };
+
+    const handleEditProfileClick = () => {
+        setEditProfileOpen(true);
+        setProfileDropdownOpen(false);
+    };
+
+    const handleEditProfileClose = () => {
+        setEditProfileOpen(false);
+    };
+
+    // Close profile dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (profileRef.current && !profileRef.current.contains(event.target)) {
+                setProfileDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    return (
+        <>
+            <AppBar
+                position="sticky"
+                className="px-5 sm:px-8 md:px-12 lg:px-16 mb-5"
+                sx={{ backgroundColor: "#2A2A2A", boxShadow: "none", top: 0 }}
+            >
+                <Toolbar sx={{ padding: "0 !important" }}>
+                    {/* Desktop View */}
+                    <div className="w-full justify-center max-w-[1240px] mx-auto items-center hidden md:flex space-x-4 gap-4">
+                        <div>
+                            <h1 className="text-2xl text-[#808080] font-semibold">Rhine</h1>
+                        </div>
+
+                        {!isLoggedIn ? (
+                            // Unauthenticated state
+                            <div className="w-full flex justify-end gap-3">
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => {
+                                        navigate("/");
+                                        setIsSignup(false);
+                                    }}
+                                >
+                                    Login
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    onClick={() => {
+                                        navigate("/");
+                                        setIsSignup(true);
+                                    }}
+                                >
+                                    Signup
+                                </Button>
+                            </div>
+                        ) : (
+                            // Authenticated state
+                            <div className="flex w-full justify-between items-center gap-4">
+                                <div className="w-full flex justify-center items-center">
+                                    {location.pathname === "/home" && (
+                                        <SearchBar
+                                            value={searchTerm}
+                                            onChange={handleSearchChange}
+                                            onClear={handleClearSearch}
+                                        />
+                                    )}
+                                </div>
+
+                                <div className="relative" ref={profileRef}>
+                                    <UserAvatar
+                                        userName={userName}
+                                        size="sm"
+                                        onClick={toggleProfileDropdown}
+                                    />
+                                    <ProfileDropdown
+                                        open={profileDropdownOpen}
+                                        anchorEl={profileRef.current}
+                                        userName={userName}
+                                        isAdmin={isAdmin}
+                                        onEditProfile={handleEditProfileClick}
+                                        onLogout={handleLogoutClick}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Mobile View */}
+                    <div className="md:hidden w-full justify-between items-center flex gap-4">
+                        <h1 className="text-xl font-bold text-gray-500 w-fit">Rhine</h1>
+                        <IconButton edge="end" onClick={handleDrawerToggle}>
+                            <MenuIcon className="text-gray-300" />
+                        </IconButton>
+                    </div>
+                </Toolbar>
+            </AppBar>
+
+            {/* Mobile Navigation Drawer */}
+            <MobileDrawer
+                open={mobileOpen}
+                isLoggedIn={isLoggedIn}
+                userName={userName}
+                isAdmin={isAdmin}
+                onClose={handleDrawerToggle}
+                onLogin={handleLoginClick}
+                onSignup={handleSignupClick}
+                onEditProfile={handleEditProfileClick}
+                onLogout={handleLogoutClick}
+            />
+
+            {/* Edit Profile Drawer */}
+            <EditProfileDrawer
+                open={editProfileOpen}
+                userName={userName}
+                onClose={handleEditProfileClose}
+            />
+
+            {/* Logout Confirmation Dialog */}
+            <Dialog
+                open={logoutDialogOpen}
+                onClose={handleLogoutCancel}
+                title="Logout?"
+                size="sm"
+            >
+                <p className="text-gray-300 mb-6">Are you sure you want to logout?</p>
+                <div className="flex gap-3 justify-end">
+                    <Button variant="secondary" onClick={handleLogoutCancel}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={handleLogoutConfirm}>
+                        Logout
+                    </Button>
+                </div>
+            </Dialog>
+        </>
+    );
+};
+
+export default Header;

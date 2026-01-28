@@ -1,19 +1,11 @@
-import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Chip,
-  Stack,
-  Button,
-  Divider,
-  Avatar,
-} from "@mui/material";
+import React from "react";
+import { Chip } from "./ui";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as ViewIcon,
 } from "@mui/icons-material";
-import axios from "axios";
+import { useGetUserByEmailQuery } from "../store/api/usersApi";
 
 const TaskList = ({
   task,
@@ -26,246 +18,92 @@ const TaskList = ({
 }) => {
   const { title, priority, dueDate, taskStatus } = task;
 
-  const statusColors = {
-    PENDING: { backgroundColor: "rgba(234, 179, 8, 0.6)" },
-    ONGOING: { backgroundColor: "rgba(59, 130, 246, 0.6)" },
-    COMPLETED: { backgroundColor: "rgba(34, 197, 94, 0.6)" },
-    CANCELLED: { backgroundColor: "rgba(107, 114, 128, 0.6)" },
+  // RTK Query hooks for user data
+  const { data: adminUser } = useGetUserByEmailQuery(createdBy, {
+    skip: !createdBy,
+  });
+  const { data: employeeUser } = useGetUserByEmailQuery(assignee, {
+    skip: !assignee,
+  });
+
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date(date));
   };
-
-  const priorityColors = {
-    Low: { backgroundColor: "rgba(0, 230, 0, 0.6)" },
-    Medium: { backgroundColor: "rgba(255, 165, 0, 0.6)" },
-    High: { backgroundColor: "rgba(255, 0, 0, 0.6)" },
-  };
-
-  const [adminUser, setAdminUser] = useState("");
-  const [employeeUser, setEmployeeUser] = useState("");
-
-  useEffect(() => {
-    const fetchCreatorName = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/users/${createdBy}`);
-        setAdminUser(res.data);
-      } catch (error) {
-        console.error("Error fetching author:", error);
-      }
-    };
-
-    const fetchAssigneeName = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8080/users/${assignee}`);
-        setEmployeeUser(res.data);
-      } catch (error) {
-        console.error("Error fetching author:", error);
-      }
-    };
-    fetchCreatorName();
-    fetchAssigneeName();
-  }, [createdBy, assignee]);
 
   return (
-    <Box
-      sx={{
-        display: "grid",
-        padding: "14px",
-        gridTemplateRows: "1",
-        gridTemplateColumns: "35% 10% 10% 25% 10% 10%",
-        backgroundColor: "#1f1f1f",
-        borderRadius: "8px",
-        border: "1px solid #404040",
-        width: "100%",
-        transition: "all 0.3s ease",
-        "& .action-button": {
-          color: "#595959",
-        },
-        "&:hover": {
-          //   backgroundColor: "#2a2a2a",
-          "& .title": {
-            color: "#cccccc",
-          },
-        },
-      }}
-    >
-      <Box sx={{ flex: 2 }}>
-        <Typography
-          className="title"
-          sx={{
-            display: "flex",
-            // justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-            color: "#a6a6a6",
-            fontSize: "14px",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            width: "100%",
-            fontWeight: 500,
-            transition: "color 0.3s ease",
-          }}
-        >
+    <div className="grid grid-cols-[35%_10%_10%_25%_10%_10%] gap-4 p-3.5 bg-[#1f1f1f] rounded-lg border border-[#404040] transition-all duration-300 hover:bg-[#2a2a2a] group">
+      {/* Title */}
+      <div className="flex items-center">
+        <p className="text-gray-400 text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap group-hover:text-gray-300 transition-colors">
           {title}
-        </Typography>
-      </Box>
+        </p>
+      </div>
 
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          gap: 1,
-        }}
-      >
-        <Chip
-          sx={{
-            ...statusColors[taskStatus],
-            minWidth: "90px",
-            height: "24px",
-            fontSize: "12px",
-          }}
-          label={taskStatus}
-        />
-      </Box>
+      {/* Status */}
+      <div className="flex justify-center items-center">
+        <Chip variant={taskStatus} size="sm">
+          {taskStatus}
+        </Chip>
+      </div>
 
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          gap: 1,
-        }}
-      >
-        <Chip
-          sx={{
-            ...priorityColors[priority],
-            minWidth: "90px",
-            height: "24px",
-            fontSize: "12px",
-          }}
-          label={priority}
-        />
-      </Box>
+      {/* Priority */}
+      <div className="flex justify-center items-center">
+        <Chip variant={priority} size="sm">
+          {priority}
+        </Chip>
+      </div>
 
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "start",
-          // backgroundColor: "red",
-          padding: "0 10px",
-          alignItems: "center",
-          height: "100%",
-          gap: 2,
-        }}
-      >
+      {/* Assignee/Creator */}
+      <div className="flex items-center gap-2 px-2">
         {isAdmin ? (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Avatar
-              sx={{
-                bgcolor: "#C77BBF",
-                width: 28,
-                height: 28,
-                fontSize: "14px",
-              }}
-            >
-              {employeeUser.name?.charAt(0) || "U"}
-            </Avatar>
-            <Typography variant="body2" sx={{ color: "#999999" }}>
-              {employeeUser.name}
-            </Typography>
-          </Stack>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-[#C77BBF] flex items-center justify-center text-sm text-white">
+              {employeeUser?.name?.charAt(0) || "U"}
+            </div>
+            <span className="text-gray-400 text-sm">
+              {employeeUser?.name || "Loading..."}
+            </span>
+          </div>
         ) : (
-          <Typography variant="body2" sx={{ color: "#999999" }}>
-            {adminUser.name}
-          </Typography>
+          <span className="text-gray-400 text-sm">
+            {adminUser?.name || "Loading..."}
+          </span>
         )}
-      </Box>
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          gap: 2,
-        }}
-      >
-        <Typography variant="body2" sx={{ color: "#999999" }}>
-          {new Intl.DateTimeFormat("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }).format(new Date(dueDate))}
-        </Typography>
-      </Box>
+      </div>
 
+      {/* Due Date */}
+      <div className="flex justify-center items-center">
+        <span className="text-gray-400 text-sm">{formatDate(dueDate)}</span>
+      </div>
+
+      {/* Actions (Admin Only) */}
       {isAdmin && (
-        <Box
-          sx={{
-            flex: 0.5,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          <Stack direction="row" spacing={1}>
-            <Button
-              onClick={onView}
-              className="action-button"
-              sx={{
-                minWidth: 0,
-                padding: "4px !important",
-                color: "transparent",
-                transition: "color 0.3s ease",
-                "&:hover": {
-                  color: "primary.main",
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              <ViewIcon fontSize="small" />
-            </Button>
-            <Button
-              onClick={onEdit}
-              className="action-button"
-              sx={{
-                minWidth: 0,
-                padding: "4px !important",
-                color: "transparent",
-                transition: "color 0.3s ease",
-                "&:hover": {
-                  color: "info.main",
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              <EditIcon fontSize="small" />
-            </Button>
-            <Button
-              onClick={onDelete}
-              sx={{
-                minWidth: 0,
-                padding: "4px !important",
-                color: "#ff6666",
-                transition: "color 0.3s ease",
-                "&:hover": {
-                  color: "error.main",
-                  backgroundColor: "transparent",
-                },
-              }}
-            >
-              <DeleteIcon fontSize="small" />
-            </Button>
-          </Stack>
-        </Box>
+        <div className="flex justify-center items-center gap-1">
+          <button
+            onClick={onView}
+            className="p-1 text-transparent hover:text-blue-400 transition-colors"
+          >
+            <ViewIcon fontSize="small" />
+          </button>
+          <button
+            onClick={onEdit}
+            className="p-1 text-transparent hover:text-cyan-400 transition-colors"
+          >
+            <EditIcon fontSize="small" />
+          </button>
+          <button
+            onClick={onDelete}
+            className="p-1 text-[#ff6666] hover:text-red-400 transition-colors"
+          >
+            <DeleteIcon fontSize="small" />
+          </button>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 

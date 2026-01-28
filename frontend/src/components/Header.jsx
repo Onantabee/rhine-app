@@ -1,18 +1,13 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   AppBar,
   Toolbar,
-  Button,
   IconButton,
   Drawer,
   List,
   ListItem,
   ListItemButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
   Paper,
   MenuList,
   MenuItem,
@@ -23,28 +18,32 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAuth } from "../AuthProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LogOut, PenSquare, Search, X } from "lucide-react";
 import Profile from "./Profile";
+import { Button, Dialog } from "./ui";
+import { logout as logoutAction, setSearchTerm } from "../store/slices/authSlice";
 
 const Header = ({ setIsSignup }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Redux state
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const userName = useSelector((state) => state.auth.userName);
+  const userRole = useSelector((state) => state.auth.userRole);
+  const searchTerm = useSelector((state) => state.auth.searchTerm);
+
+  const isAdmin = userRole === "ADMIN";
+
+  // Local state
   const [mobileOpen, setMobileOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const {
-    isLoggedIn,
-    logout,
-    userName,
-    searchTerm,
-    setSearchTerm,
-    userData,
-    isAdmin,
-  } = useAuth();
-  const navigate = useNavigate();
-  const profileRef = useRef(null);
-  const location = useLocation();
   const [editProfileOpen, setEditProfileOpen] = useState(false);
+
+  const profileRef = useRef(null);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -66,7 +65,7 @@ const Header = ({ setIsSignup }) => {
   };
 
   const handleLogoutConfirm = () => {
-    logout();
+    dispatch(logoutAction());
     setMobileOpen(false);
     setLogoutDialogOpen(false);
     navigate("/");
@@ -81,6 +80,14 @@ const Header = ({ setIsSignup }) => {
     setProfileDropdownOpen(!profileDropdownOpen);
   };
 
+  const handleSearchChange = (e) => {
+    dispatch(setSearchTerm(e.target.value));
+  };
+
+  const handleClearSearch = () => {
+    dispatch(setSearchTerm(""));
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -93,13 +100,12 @@ const Header = ({ setIsSignup }) => {
     };
   }, []);
 
-  const fullName = String(userName);
+  const fullName = String(userName || "");
   const names = fullName.split(/\s+/);
-  const firstName = names[0];
-  const lastName = names[1];
+  const firstName = names[0] || "";
+  const lastName = names[1] || "";
 
   const handleEditProfileClick = () => {
-    console.log("opened");
     setEditProfileOpen(!editProfileOpen);
     setProfileDropdownOpen(false);
   };
@@ -129,10 +135,9 @@ const Header = ({ setIsSignup }) => {
         </IconButton>
       </div>
 
-      {/* Add your edit profile form here */}
       <div className="">
         <div className="relative rounded-full bg-[#1E1E1E] p-5 z-40">
-          <div className="absolute -top-5 left-0 flex w-full justify-center items-center ">
+          <div className="absolute -top-5 left-0 flex w-full justify-center items-center">
             <div className="rounded-full bg-[#1e1e1e] p-4">
               <div className="w-16 h-16 bg-[#C77BBF] rounded-full flex justify-center items-center text-2xl">
                 <span>
@@ -164,7 +169,7 @@ const Header = ({ setIsSignup }) => {
         },
       }}
     >
-      <div className="flex justify-end  pr-2">
+      <div className="flex justify-end pr-2">
         <IconButton onClick={handleDrawerToggle}>
           <CloseIcon className="text-gray-300" />
         </IconButton>
@@ -298,19 +303,7 @@ const Header = ({ setIsSignup }) => {
             {!isLoggedIn ? (
               <div className="w-full flex justify-end gap-3">
                 <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "hsla(0, 0%, 45%, 0.8)",
-                    color: "#E0E0E0",
-                    borderRadius: "8px",
-                    // border: "2px solid #4db8ff",
-                    // outline: "4px solid rgba(102, 194, 255, 0.4)",
-                    boxShadow: "none",
-                    "&:hover": {
-                      backgroundColor: "hsla(0, 0%, 45%, 0.5)",
-                      boxShadow: "none",
-                    },
-                  }}
+                  variant="outlined"
                   onClick={() => {
                     navigate("/");
                     setIsSignup(false);
@@ -319,19 +312,7 @@ const Header = ({ setIsSignup }) => {
                   Login
                 </Button>
                 <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "hsla(260, 100%, 70%, 0.8)",
-                    color: "#E0E0E0",
-                    borderRadius: "8px",
-                    // border: "2px solid #4db8ff",
-                    // outline: "4px solid rgba(102, 194, 255, 0.4)",
-                    boxShadow: "none",
-                    "&:hover": {
-                      backgroundColor: "hsla(260, 100%, 70%, 0.5)",
-                      boxShadow: "none",
-                    },
-                  }}
+                  variant="primary"
                   onClick={() => {
                     navigate("/");
                     setIsSignup(true);
@@ -350,16 +331,13 @@ const Header = ({ setIsSignup }) => {
                         placeholder="Search tasks…"
                         className="text-[16px] w-full text-gray-300 py-1 focus:outline-0"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={handleSearchChange}
                       />
                       <div
-                        className={`rounded-full p-1 cursor-pointer flex items-center justify-center ${
-                          searchTerm &&
+                        className={`rounded-full p-1 cursor-pointer flex items-center justify-center ${searchTerm &&
                           "bg-[#4d4d4d] hover:bg-[#ff3333] transition-colors duration-300 group"
-                        }`}
-                        onClick={
-                          searchTerm ? () => setSearchTerm("") : undefined
-                        }
+                          }`}
+                        onClick={searchTerm ? handleClearSearch : undefined}
                       >
                         {searchTerm ? (
                           <X
@@ -504,71 +482,24 @@ const Header = ({ setIsSignup }) => {
       {drawer}
       {editProfileDrawer}
 
+      {/* Logout Confirmation Dialog */}
       <Dialog
         open={logoutDialogOpen}
         onClose={handleLogoutCancel}
-        aria-labelledby="logout-dialog-title"
-        aria-describedby="logout-dialog-description"
-        sx={{
-          "& .MuiDialog-paper": {
-            backgroundColor: "#2A2A2A",
-            borderRadius: "15px",
-            minWidth: "250px",
-            width: "400px",
-            color: "#E0E0E0",
-          },
-        }}
+        title="Logout?"
+        size="sm"
       >
-        <DialogTitle
-          id="logout-dialog-title"
-          sx={{ color: "#b3b3b3", fontWeight: "bold" }}
-        >
-          Logout?
-        </DialogTitle>
-        <DialogContent sx={{ padding: "0 24px" }}>
-          <DialogContentText
-            id="logout-dialog-description"
-            sx={{ color: "#E0E0E0" }}
-          >
-            Are you sure you want to logout?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ padding: "24px" }}>
-          <Button
-            variant="contained"
-            onClick={handleLogoutCancel}
-            sx={{
-              backgroundColor: "#404040",
-              color: "#E0E0E0",
-              borderRadius: "8px",
-              boxShadow: "none",
-              "&:hover": {
-                backgroundColor: "#4d4d4d",
-                boxShadow: "none",
-              },
-            }}
-          >
+        <p className="text-gray-300 mb-6">
+          Are you sure you want to logout?
+        </p>
+        <div className="flex gap-3 justify-end">
+          <Button variant="secondary" onClick={handleLogoutCancel}>
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            onClick={handleLogoutConfirm}
-            color="error"
-            autoFocus
-            sx={{
-              backgroundColor: "#ff3333",
-              color: "#E0E0E0",
-              borderRadius: "8px",
-              boxShadow: "none",
-              "&:hover": {
-                backgroundColor: "#ff0000",
-                boxShadow: "none",
-              },
-            }}
-          >
+          <Button variant="danger" onClick={handleLogoutConfirm}>
             Logout
           </Button>
-        </DialogActions>
+        </div>
       </Dialog>
     </>
   );
