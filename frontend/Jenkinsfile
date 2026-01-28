@@ -24,7 +24,6 @@ pipeline {
             steps {
                 dir('frontend') {
                     sh 'npm run lint'
-                    // sh 'npm test' // Uncomment if tests are available
                 }
             }
         }
