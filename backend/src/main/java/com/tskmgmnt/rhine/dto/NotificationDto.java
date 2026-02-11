@@ -1,11 +1,19 @@
 package com.tskmgmnt.rhine.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
+
 public class NotificationDto<T> {
+    @Schema(description = "Type of the event", example = "TASK_ASSIGNED")
     private String eventType;
+
+    @Schema(description = "Payload of the notification")
     private T payload;
+
+    @Schema(description = "Timestamp of the notification", example = "2023-11-21T10:00:00")
     private LocalDateTime timestamp;
+
 
     public NotificationDto(String eventType, T payload) {
         this.eventType = eventType;

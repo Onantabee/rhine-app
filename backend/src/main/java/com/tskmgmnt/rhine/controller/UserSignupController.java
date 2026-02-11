@@ -29,7 +29,9 @@ public class UserSignupController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully registered user"),
                     @ApiResponse(responseCode = "400", description = "Invalid input data"),
-                    @ApiResponse(responseCode = "409", description = "User already exists")
+                    @ApiResponse(responseCode = "409", description = "User already exists"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @PostMapping(path = "/register")
@@ -43,7 +45,9 @@ public class UserSignupController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully updated user role"),
                     @ApiResponse(responseCode = "400", description = "Invalid input data"),
-                    @ApiResponse(responseCode = "404", description = "User not found")
+                    @ApiResponse(responseCode = "404", description = "User not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @PostMapping(path = "/update-role")

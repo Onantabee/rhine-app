@@ -39,7 +39,9 @@ public class CommentController {
             description = "Retrieves all comments associated with a specific task",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved comments"),
-                    @ApiResponse(responseCode = "404", description = "Task not found")
+                    @ApiResponse(responseCode = "404", description = "Task not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @GetMapping("/task/{taskId}")
@@ -52,7 +54,9 @@ public class CommentController {
             description = "Retrieves all comments where the specified user is the recipient",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved comments"),
-                    @ApiResponse(responseCode = "404", description = "Recipient not found")
+                    @ApiResponse(responseCode = "404", description = "Recipient not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @GetMapping("/recipient/{recipientEmail}")
@@ -66,7 +70,9 @@ public class CommentController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully created comment"),
                     @ApiResponse(responseCode = "400", description = "Invalid input"),
-                    @ApiResponse(responseCode = "404", description = "Task or user not found")
+                    @ApiResponse(responseCode = "404", description = "Task or user not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @PostMapping("/task/{taskId}")
@@ -85,7 +91,9 @@ public class CommentController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully marked comments as read"),
                     @ApiResponse(responseCode = "400", description = "Invalid input"),
-                    @ApiResponse(responseCode = "404", description = "Task or recipient not found")
+                    @ApiResponse(responseCode = "404", description = "Task or recipient not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @PostMapping("/mark-as-read-by-recipient/{taskId}")
@@ -108,7 +116,9 @@ public class CommentController {
             description = "Returns the count of unread comments for a specific recipient in a task",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved unread count"),
-                    @ApiResponse(responseCode = "404", description = "Task or recipient not found")
+                    @ApiResponse(responseCode = "404", description = "Task or recipient not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @GetMapping("/count-unread-by-recipient/{taskId}/{recipientEmail}")
@@ -125,7 +135,9 @@ public class CommentController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully marked comment as read"),
                     @ApiResponse(responseCode = "400", description = "Invalid input"),
-                    @ApiResponse(responseCode = "404", description = "Comment or user not found")
+                    @ApiResponse(responseCode = "404", description = "Comment or user not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @PostMapping("/mark-as-read/{commentId}")
@@ -141,7 +153,9 @@ public class CommentController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully updated comment"),
                     @ApiResponse(responseCode = "400", description = "Invalid input"),
-                    @ApiResponse(responseCode = "404", description = "Comment not found")
+                    @ApiResponse(responseCode = "404", description = "Comment not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @PutMapping("/{commentId}")
@@ -154,7 +168,9 @@ public class CommentController {
             description = "Deletes a specific comment from the system",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully deleted comment"),
-                    @ApiResponse(responseCode = "404", description = "Comment not found")
+                    @ApiResponse(responseCode = "404", description = "Comment not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @DeleteMapping("/{commentId}")

@@ -1,14 +1,24 @@
 package com.tskmgmnt.rhine.dto;
 
 import com.tskmgmnt.rhine.enums.UserRole;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 import java.util.Objects;
 
 public class UserRegReq {
+    @Schema(description = "User's full name", example = "John Doe")
     private final String name;
+
+    @Schema(description = "User's email address", example = "john.doe@example.com")
     private final String email;
+
+    @Schema(description = "User's password", example = "securePassword123!")
     private final String pwd;
+
+    @Schema(description = "User's role", example = "USER", allowableValues = {"USER", "ADMIN"})
     private final UserRole userRole;
+
 
     @Override
     public boolean equals(Object o) {

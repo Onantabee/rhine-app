@@ -1,15 +1,31 @@
 package com.tskmgmnt.rhine.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
+
 public class CommentDto {
+    @Schema(description = "Unique identifier of the comment", example = "10")
     private Long id;
+
+    @Schema(description = "Content of the comment", example = "Please review the attached document.")
     private String content;
+
+    @Schema(description = "Email of the author", example = "author@example.com")
     private String authorEmail;
+
+    @Schema(description = "Email of the recipient", example = "recipient@example.com")
     private String recipientEmail;
+
+    @Schema(description = "ID of the associated task", example = "1")
     private Long taskId;
+
+    @Schema(description = "Flag indicating if the comment has been read by the recipient", example = "false")
     private boolean isReadByRecipient;
+
+    @Schema(description = "Timestamp when the comment was created", example = "2023-11-21T10:00:00")
     private LocalDateTime createdAt;
+
 
     public CommentDto(Long taskId, boolean isReadByRecipient) {
         this.taskId = taskId;

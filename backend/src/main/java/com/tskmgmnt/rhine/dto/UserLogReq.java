@@ -1,10 +1,18 @@
 package com.tskmgmnt.rhine.dto;
 
+
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 
+
 public class UserLogReq {
+    @Schema(description = "User's email address", example = "user@example.com")
     private final String email;
+
+    @Schema(description = "User's password", example = "password123!")
     private final String password;
+
 
     public UserLogReq(String email, String password) {
         this.email = email;

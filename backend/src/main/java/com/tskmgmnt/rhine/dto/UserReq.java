@@ -2,12 +2,22 @@ package com.tskmgmnt.rhine.dto;
 
 import com.tskmgmnt.rhine.entity.User;
 import com.tskmgmnt.rhine.enums.UserRole;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 public class UserReq {
+    @Schema(description = "User's email address", example = "user@example.com")
     private String email;
+
+    @Schema(description = "User's full name", example = "Jane Doe")
     private String name;
+
+    @Schema(description = "User's role", example = "ADMIN")
     private UserRole userRole;
+
+    @Schema(description = "Flag indicating if this is a list request", example = "false")
     private boolean isList;
+
 
     public UserReq(String email, String name, UserRole userRole) {
         this.email = email;

@@ -1,17 +1,36 @@
 package com.tskmgmnt.rhine.dto;
 
 import com.tskmgmnt.rhine.enums.TaskStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
 
 public class TaskDto {
+
+    @Schema(description = "Unique identifier of the task", example = "1")
     private Long id;
+
+    @Schema(description = "Title of the task", example = "Complete Project Report")
     private String title;
+
+    @Schema(description = "Detailed description of the task", example = "Analyze Q1 financial data and draft the summary section.")
     private String description;
+
+    @Schema(description = "Due date of the task", example = "2023-12-31T23:59:59Z")
     private Date dueDate;
+
+    @Schema(description = "Priority level of the task", example = "HIGH", allowableValues = {"HIGH", "MEDIUM", "LOW"})
     private String priority;
+
+    @Schema(description = "Current status of the task", example = "IN_PROGRESS")
     private TaskStatus taskStatus;
+
+    @Schema(description = "Flag indicating if the task is new or unseen", example = "true")
     private boolean isNew;
+
+    @Schema(description = "ID of the user who created the task", example = "user-123")
     private String createdById;
+
+    @Schema(description = "ID of the user assigned to the task", example = "user-456")
     private String assigneeId;
 
     public TaskDto(Long id, String title, String description, Date dueDate, String priority, TaskStatus taskStatus, String createdById, String assigneeId) {
@@ -33,7 +52,6 @@ public class TaskDto {
 
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

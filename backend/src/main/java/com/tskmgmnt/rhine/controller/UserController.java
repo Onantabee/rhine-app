@@ -35,6 +35,7 @@ public class UserController {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved all users"),
                     @ApiResponse(responseCode = "403", description = "Unauthorized access"),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @GetMapping()
@@ -49,7 +50,9 @@ public class UserController {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved user"),
                     @ApiResponse(responseCode = "400", description = "Invalid email format"),
                     @ApiResponse(responseCode = "404", description = "User not found"),
-                    @ApiResponse(responseCode = "403", description = "Unauthorized access")
+                    @ApiResponse(responseCode = "403", description = "Unauthorized access"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @GetMapping("/{email}")
@@ -78,7 +81,9 @@ public class UserController {
                     @ApiResponse(responseCode = "200", description = "User details updated successfully"),
                     @ApiResponse(responseCode = "400", description = "Invalid input data"),
                     @ApiResponse(responseCode = "404", description = "User not found"),
-                    @ApiResponse(responseCode = "403", description = "Unauthorized access")
+                    @ApiResponse(responseCode = "403", description = "Unauthorized access"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @PutMapping("/update/{userEmail}")
@@ -92,7 +97,9 @@ public class UserController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Password successfully changed"),
                     @ApiResponse(responseCode = "400", description = "Wrong current password"),
-                    @ApiResponse(responseCode = "404", description = "User not found")
+                    @ApiResponse(responseCode = "404", description = "User not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+
             }
     )
     @PutMapping("/change-password/{email}")
