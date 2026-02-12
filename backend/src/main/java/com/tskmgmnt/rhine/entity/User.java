@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @Entity
+@Table(name = "app_user")
 public class User implements UserDetails {
 
     @Id
