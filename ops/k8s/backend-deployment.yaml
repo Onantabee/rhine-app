@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rhine-backend
+  labels:
+    app: rhine-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rhine-backend
+  template:
+    metadata:
+      labels:
+        app: rhine-backend
+    spec:
+      containers:
+        - name: rhine-backend
+          image: ${DOCKER_REGISTRY}/rhine-backend:${BUILD_ID}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/rhine_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rhine-backend-service
+spec:
+  selector:
+    app: rhine-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer

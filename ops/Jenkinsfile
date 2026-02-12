@@ -1,0 +1,161 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY_CREDENTIALS = 'docker-hub-credentials' 
+        DOCKER_REGISTRY = 'your-dockerhub-username' 
+        KUBECONFIG_CREDENTIALS = 'kubeconfig'
+    }
+
+    tools {
+        maven 'Maven 3.9.6'
+        jdk 'JDK 21'
+        nodejs 'NodeJS 20'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Parallel Build & Push') {
+            parallel {
+                stage('Frontend') {
+                    stages {
+                        stage('Install Dependencies') {
+                            steps {
+                                dir('frontend') {
+                                    sh 'npm ci'
+                                }
+                            }
+                        }
+                        stage('Lint & Test (Frontend)') {
+                            steps {
+                                dir('frontend') {
+                                    sh 'npm run lint'
+                                }
+                            }
+                        }
+                        stage('Build (Frontend)') {
+                            steps {
+                                dir('frontend') {
+                                    sh 'npm run build'
+                                }
+                            }
+                        }
+                        stage('Docker Build & Push (Frontend)') {
+                            steps {
+                                dir('frontend') {
+                                    script {
+                                        withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                                            sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
+                                            def image = docker.build("${DOCKER_REGISTRY}/rhine-frontend:${env.BUILD_ID}")
+                                            image.push()
+                                            image.push("latest")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                stage('Backend') {
+                    stages {
+                        stage('Build (Backend)') {
+                            steps {
+                                dir('backend') {
+                                    sh 'chmod +x mvnw'
+                                    sh './mvnw clean package -DskipTests'
+                                }
+                            }
+                        }
+                        stage('Test (Backend)') {
+                            steps {
+                                dir('backend') {
+                                    sh './mvnw test'
+                                }
+                            }
+                        }
+                        stage('Docker Build & Push (Backend)') {
+                            steps {
+                                dir('backend') {
+                                    script {
+                                        withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                                            sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
+                                            def image = docker.build("${DOCKER_REGISTRY}/rhine-backend:${env.BUILD_ID}")
+                                            image.push()
+                                            image.push("latest")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Backend & DB') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                        // Replace placeholders in backend/mysql manifests
+                        sh "sed -i 's|\${DOCKER_REGISTRY}|${env.DOCKER_REGISTRY}|g' ops/k8s/backend-deployment.yaml"
+                        sh "sed -i 's|\${BUILD_ID}|${env.BUILD_ID}|g' ops/k8s/backend-deployment.yaml"
+                        
+                        // Apply Secrets & MySQL (ignores error if secret exists)
+                        sh 'kubectl apply -f ops/k8s/db-secrets.yaml || true' 
+                        sh 'kubectl apply -f ops/k8s/mysql-pvc.yaml'
+                        sh 'kubectl apply -f ops/k8s/mysql-deployment.yaml'
+                        
+                        // Apply Backend
+                        sh 'kubectl apply -f ops/k8s/backend-deployment.yaml'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Frontend') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                         // Wait for Backend LoadBalancer IP
+                        def backendIp = ""
+                        timeout(time: 5, unit: 'MINUTES') {
+                            waitUntil {
+                                script {
+                                    def ip = sh(script: "kubectl get svc rhine-backend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'", returnStdout: true).trim()
+                                    if (ip != "") {
+                                        backendIp = ip
+                                        return true
+                                    }
+                                    return false
+                                }
+                            }
+                        }
+                        
+                        echo "Backend IP detected: ${backendIp}"
+                        
+                        // Prepare Frontend Manifest
+                        sh "sed -i 's|\${DOCKER_REGISTRY}|${env.DOCKER_REGISTRY}|g' ops/k8s/frontend-deployment.yaml"
+                        sh "sed -i 's|\${BUILD_ID}|${env.BUILD_ID}|g' ops/k8s/frontend-deployment.yaml"
+                        // Inject Backend IP
+                        sh "sed -i 's|REPLACE_WITH_REAL_IP|http://${backendIp}:8080|g' ops/k8s/frontend-deployment.yaml"
+                        
+                        // Apply Frontend
+                        sh 'kubectl apply -f ops/k8s/frontend-deployment.yaml'
+                        
+                        // Verify
+                        sh 'kubectl get pods'
+                        sh 'kubectl get services'
+                    }
+                }
+            }
+        }
+
+    }
+}
+

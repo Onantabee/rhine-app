@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rhine-frontend
+  labels:
+    app: rhine-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rhine-frontend
+  template:
+    metadata:
+      labels:
+        app: rhine-frontend
+    spec:
+      containers:
+        - name: rhine-frontend
+          image: ${DOCKER_REGISTRY}/rhine-frontend:${BUILD_ID}
+          ports:
+            - containerPort: 80
+          env:
+            - name: VITE_API_BASE_URL
+              value: "REPLACE_WITH_REAL_IP" # Replaced by Jenkins
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rhine-frontend-service
+spec:
+  selector:
+    app: rhine-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
