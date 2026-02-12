@@ -12,10 +12,8 @@ import {
     useDeleteCommentMutation,
     useMarkCommentsAsReadMutation,
 } from "../../store/api/commentsApi";
-import {
-    useGetUserByEmailQuery,
-    useUpdateTaskNewStateMutation,
-} from "../../store/api/usersApi";
+import { useGetUserByEmailQuery } from "../../store/api/usersApi";
+import { useUpdateTaskNewStateMutation } from "../../store/api/tasksApi";
 
 // Sub-components
 import TaskDetails from "./TaskDetails";

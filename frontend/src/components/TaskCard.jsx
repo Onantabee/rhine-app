@@ -6,10 +6,8 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon,
 } from "@mui/icons-material";
-import {
-  useGetUserByEmailQuery,
-  useGetTaskNewStateQuery,
-} from "../store/api/usersApi";
+import { useGetUserByEmailQuery } from "../store/api/usersApi";
+import { useGetTaskNewStateQuery } from "../store/api/tasksApi";
 import { useCountUnreadCommentsQuery } from "../store/api/commentsApi";
 
 const TaskCard = ({
@@ -209,8 +207,8 @@ const TaskCard = ({
         {/* Title */}
         <h3
           className={`text-base font-bold mb-3 ${taskStatus === "CANCELLED"
-              ? "text-gray-500 line-through italic"
-              : "text-gray-400"
+            ? "text-gray-500 line-through italic"
+            : "text-gray-400"
             }`}
         >
           {highlightSearchMatch(title)}
@@ -243,8 +241,8 @@ const TaskCard = ({
               {taskStatus === "COMPLETED" || taskStatus === "CANCELLED" ? (
                 <div
                   className={`px-3 py-1.5 font-semibold border text-sm rounded-full ${taskStatus === "CANCELLED"
-                      ? "bg-[#666666]/30 border-[#666666] text-[#8c8c8c]"
-                      : "bg-[#C77BBF]/30 border-[#C77BBF] text-[#e8c9e5]"
+                    ? "bg-[#666666]/30 border-[#666666] text-[#8c8c8c]"
+                    : "bg-[#C77BBF]/30 border-[#C77BBF] text-[#e8c9e5]"
                     }`}
                 >
                   {firstName || "User"} {lastName || ""}
@@ -261,8 +259,8 @@ const TaskCard = ({
               <span className="text-[#666666] text-xs mb-1">Creator</span>
               <span
                 className={`px-3 py-1 border text-sm rounded-full font-medium ${taskStatus === "CANCELLED"
-                    ? "bg-[#666666]/30 border-[#666666] text-[#8c8c8c]"
-                    : "bg-[#5d8bf4]/20 border-[#5d8bf4] text-[#b7cbfa]"
+                  ? "bg-[#666666]/30 border-[#666666] text-[#8c8c8c]"
+                  : "bg-[#5d8bf4]/20 border-[#5d8bf4] text-[#b7cbfa]"
                   }`}
               >
                 {adminUser?.name || "Loading..."}
@@ -277,8 +275,8 @@ const TaskCard = ({
                 {!isAdmin && <span className="text-[#666666] text-xs mb-1">Due</span>}
                 <span
                   className={`px-3 py-1 border text-sm rounded-full font-medium italic ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
-                      ? dueDateStatusConfig[dueDateStatus].className
-                      : "bg-[#333333]/30 border-[#4d4d4d] text-[#a6a6a6]"
+                    ? dueDateStatusConfig[dueDateStatus].className
+                    : "bg-[#333333]/30 border-[#4d4d4d] text-[#a6a6a6]"
                     }`}
                 >
                   {getDueDateText()}
