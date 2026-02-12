@@ -49,9 +49,9 @@ pipeline {
                             steps {
                                 dir('frontend') {
                                     script {
-                                        withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                                            sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
-                                            def image = docker.build("${DOCKER_REGISTRY}/rhine-frontend:${env.BUILD_ID}")
+                                        withCredentials([string(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+                                            sh "docker login -u ${env.DOCKER_REGISTRY} -p ${DOCKER_TOKEN}"
+                                            def image = docker.build("${env.DOCKER_REGISTRY}/rhine-frontend:${env.BUILD_ID}")
                                             image.push()
                                             image.push("latest")
                                         }
@@ -83,9 +83,9 @@ pipeline {
                             steps {
                                 dir('backend') {
                                     script {
-                                        withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                                            sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
-                                            def image = docker.build("${DOCKER_REGISTRY}/rhine-backend:${env.BUILD_ID}")
+                                        withCredentials([string(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, variable: 'DOCKER_TOKEN')]) {
+                                            sh "docker login -u ${env.DOCKER_REGISTRY} -p ${DOCKER_TOKEN}"
+                                            def image = docker.build("${env.DOCKER_REGISTRY}/rhine-backend:${env.BUILD_ID}")
                                             image.push()
                                             image.push("latest")
                                         }
