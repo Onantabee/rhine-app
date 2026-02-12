@@ -1,9 +1,9 @@
 pipeline {
-    agent any
+    agent { label 'pipeline' }
 
     environment {
-        DOCKER_REGISTRY_CREDENTIALS = 'docker-hub-credentials' 
-        DOCKER_REGISTRY = 'your-dockerhub-username' 
+        DOCKER_REGISTRY_CREDENTIALS = 'docker-token' 
+        DOCKER_REGISTRY = 'onantabee' 
         KUBECONFIG_CREDENTIALS = 'kubeconfig'
     }
 
