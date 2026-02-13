@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'pipeline' }
+    agent any
 
     environment {
         DOCKER_REGISTRY_CREDENTIALS = 'docker-token' 
