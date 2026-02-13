@@ -1,5 +1,3 @@
-ops/k8s/db-secrets.yaml
-
 # --- Frontend ---
 # Logs
 logs
