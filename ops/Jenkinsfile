@@ -5,7 +5,7 @@ pipeline {
         DOCKER_REGISTRY_CREDENTIALS = 'docker-token' 
         DOCKER_REGISTRY = 'onantabee' 
         KUBECONFIG_CREDENTIALS = 'kubeconfig'
-        DOCKER_HOST='unix:///var/run/docker.sock'
+        DOCKER_HOST='tcp://host.docker.internal:2375'
     }
 
     tools {
