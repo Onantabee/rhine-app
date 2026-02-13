@@ -135,10 +135,9 @@ pipeline {
                         sh "sed -i 's|\${DOCKER_REGISTRY}|${env.DOCKER_REGISTRY}|g' ops/k8s/backend-deployment.yaml"
                         sh "sed -i 's|\${BUILD_ID}|${env.BUILD_ID}|g' ops/k8s/backend-deployment.yaml"
                         
-                        // Verify secret exists - fail if missing
                         sh '''
                             if ! kubectl get secret mysql-secret &> /dev/null; then
-                                echo "❌ ERROR: mysql-secret not found in cluster!"
+                                echo "ERROR: mysql-secret not found in cluster!"
                                 echo "Create it with:"
                                 echo "kubectl create secret generic mysql-secret \\"
                                 echo "  --from-literal=mysql-root-password=YOUR_PASSWORD \\"
