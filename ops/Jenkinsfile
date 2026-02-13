@@ -49,10 +49,22 @@ pipeline {
                             steps {
                                 dir('frontend') {
                                     script {
-                                        docker.withRegistry('', env.DOCKER_REGISTRY_CREDENTIALS) {
-                                            def image = docker.build("${env.DOCKER_REGISTRY}/rhine-frontend:${env.BUILD_ID}")
-                                            image.push()
-                                            image.push("latest")
+                                        withCredentials([string(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, variable: 'DOCKER_PASSWORD')]) {
+                                            sh '''
+                                                # Isolate Docker config to avoid macOS keychain popup
+                                                export DOCKER_CONFIG=$(pwd)/.docker_tmp
+                                                mkdir -p $DOCKER_CONFIG
+                                                # Explicitly disable credsStore
+                                                echo '{"credsStore": ""}' > $DOCKER_CONFIG/config.json
+                                                
+                                                docker login -u $DOCKER_REGISTRY -p $DOCKER_PASSWORD
+                                                docker build -t $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID .
+                                                docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID
+                                                docker push $DOCKER_REGISTRY/rhine-frontend:latest
+                                                
+                                                # Cleanup
+                                                rm -rf $DOCKER_CONFIG
+                                            '''
                                         }
                                     }
                                 }
@@ -82,10 +94,22 @@ pipeline {
                             steps {
                                 dir('backend') {
                                     script {
-                                        docker.withRegistry('', env.DOCKER_REGISTRY_CREDENTIALS) {
-                                            def image = docker.build("${env.DOCKER_REGISTRY}/rhine-backend:${env.BUILD_ID}")
-                                            image.push()
-                                            image.push("latest")
+                                        withCredentials([string(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, variable: 'DOCKER_PASSWORD')]) {
+                                            sh '''
+                                                # Isolate Docker config to avoid macOS keychain popup
+                                                export DOCKER_CONFIG=$(pwd)/.docker_tmp
+                                                mkdir -p $DOCKER_CONFIG
+                                                # Explicitly disable credsStore
+                                                echo '{"credsStore": ""}' > $DOCKER_CONFIG/config.json
+                                                
+                                                docker login -u $DOCKER_REGISTRY -p $DOCKER_PASSWORD
+                                                docker build -t $DOCKER_REGISTRY/rhine-backend:$BUILD_ID .
+                                                docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID
+                                                docker push $DOCKER_REGISTRY/rhine-backend:latest
+                                                
+                                                # Cleanup
+                                                rm -rf $DOCKER_CONFIG
+                                            '''
                                         }
                                     }
                                 }
