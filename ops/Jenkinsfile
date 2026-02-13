@@ -5,6 +5,7 @@ pipeline {
         DOCKER_REGISTRY_CREDENTIALS = 'docker-token' 
         DOCKER_REGISTRY = 'onantabee' 
         KUBECONFIG_CREDENTIALS = 'kubeconfig'
+        DOCKER_HOST='unix:///var/run/docker.sock'
     }
 
     tools {
@@ -50,8 +51,6 @@ pipeline {
                                     script {
                                         withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                                             sh '''
-                                                export DOCKER_HOST=unix:///var/run/docker.sock
-
                                                 export DOCKER_CONFIG=$(pwd)/.docker_jenkins
                                                 mkdir -p $DOCKER_CONFIG
 
@@ -96,8 +95,6 @@ pipeline {
                                     script {
                                         withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                                             sh '''
-                                                export DOCKER_HOST=unix:///var/run/docker.sock
-
                                                 export DOCKER_CONFIG=$(pwd)/.docker_jenkins
                                                 mkdir -p $DOCKER_CONFIG
 
