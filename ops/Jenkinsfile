@@ -32,7 +32,6 @@ pipeline {
                         stage('Lint & Test (Frontend)') {
                             steps {
                                 dir('frontend') {
-                                    // Linting currently has too many errors (161+), skipping for deployment.
                                     // sh 'npm run lint' 
                                     echo "Skipping Linting for now to proceed with deployment"
                                 }
@@ -51,18 +50,17 @@ pipeline {
                                     script {
                                         withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                                             sh '''
-                                                # Isolate Docker config to avoid macOS keychain popup
-                                                export DOCKER_CONFIG=$(pwd)/.docker_tmp
+                                                export DOCKER_CONFIG=$(pwd)/.docker_jenkins
                                                 mkdir -p $DOCKER_CONFIG
-                                                # Explicitly disable credsStore
-                                                echo '{"credsStore": ""}' > $DOCKER_CONFIG/config.json
+
+                                                AUTH=$(echo -n "${DOCKER_USER}:${DOCKER_PASSWORD}" | base64)
+
+                                                echo "{\\"auths\\": {\\"https://index.docker.io/v1/\\": {\\"auth\\": \\"${AUTH}\\"}}}" > $DOCKER_CONFIG/config.json
                                                 
-                                                docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
                                                 docker build -t $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID .
                                                 docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID
                                                 docker push $DOCKER_REGISTRY/rhine-frontend:latest
                                                 
-                                                # Cleanup
                                                 rm -rf $DOCKER_CONFIG
                                             '''
                                         }
@@ -96,18 +94,16 @@ pipeline {
                                     script {
                                         withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                                             sh '''
-                                                # Isolate Docker config to avoid macOS keychain popup
-                                                export DOCKER_CONFIG=$(pwd)/.docker_tmp
+                                                export DOCKER_CONFIG=$(pwd)/.docker_jenkins
                                                 mkdir -p $DOCKER_CONFIG
-                                                # Explicitly disable credsStore
-                                                echo '{"credsStore": ""}' > $DOCKER_CONFIG/config.json
+
+                                                AUTH=$(echo -n "${DOCKER_USER}:${DOCKER_PASSWORD}" | base64)
+                                                echo "{\\"auths\\": {\\"https://index.docker.io/v1/\\": {\\"auth\\": \\"${AUTH}\\"}}}" > $DOCKER_CONFIG/config.json
                                                 
-                                                docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
                                                 docker build -t $DOCKER_REGISTRY/rhine-backend:$BUILD_ID .
                                                 docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID
                                                 docker push $DOCKER_REGISTRY/rhine-backend:latest
                                                 
-                                                # Cleanup
                                                 rm -rf $DOCKER_CONFIG
                                             '''
                                         }
@@ -124,16 +120,13 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
-                        // Replace placeholders in backend/mysql manifests
                         sh "sed -i 's|\${DOCKER_REGISTRY}|${env.DOCKER_REGISTRY}|g' ops/k8s/backend-deployment.yaml"
                         sh "sed -i 's|\${BUILD_ID}|${env.BUILD_ID}|g' ops/k8s/backend-deployment.yaml"
                         
-                        // Apply Secrets & MySQL (ignores error if secret exists)
                         sh 'kubectl apply -f ops/k8s/db-secrets.yaml || true' 
                         sh 'kubectl apply -f ops/k8s/mysql-pvc.yaml'
                         sh 'kubectl apply -f ops/k8s/mysql-deployment.yaml'
                         
-                        // Apply Backend
                         sh 'kubectl apply -f ops/k8s/backend-deployment.yaml'
                     }
                 }
@@ -144,7 +137,6 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
-                         // Wait for Backend LoadBalancer IP
                         def backendIp = ""
                         timeout(time: 5, unit: 'MINUTES') {
                             waitUntil {
@@ -161,16 +153,12 @@ pipeline {
                         
                         echo "Backend IP detected: ${backendIp}"
                         
-                        // Prepare Frontend Manifest
                         sh "sed -i 's|\${DOCKER_REGISTRY}|${env.DOCKER_REGISTRY}|g' ops/k8s/frontend-deployment.yaml"
                         sh "sed -i 's|\${BUILD_ID}|${env.BUILD_ID}|g' ops/k8s/frontend-deployment.yaml"
-                        // Inject Backend IP
                         sh "sed -i 's|REPLACE_WITH_REAL_IP|http://${backendIp}:8080|g' ops/k8s/frontend-deployment.yaml"
                         
-                        // Apply Frontend
                         sh 'kubectl apply -f ops/k8s/frontend-deployment.yaml'
                         
-                        // Verify
                         sh 'kubectl get pods'
                         sh 'kubectl get services'
                     }
