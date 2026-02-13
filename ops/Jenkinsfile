@@ -153,9 +153,14 @@ pipeline {
                         timeout(time: 5, unit: 'MINUTES') {
                             waitUntil {
                                 script {
-                                    def ip = sh(script: "kubectl get svc rhine-backend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'", returnStdout: true).trim()
-                                    if (ip != "") {
-                                        backendIp = ip
+                                    def host = sh(script: "kubectl get svc rhine-backend-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
+                                    
+                                    if (host == "") {
+                                        host = sh(script: "kubectl get svc rhine-backend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}'", returnStdout: true).trim()
+                                    }
+
+                                    if (host != "") {
+                                        backendIp = (host == "localhost") ? "host.docker.internal" : host
                                         return true
                                     }
                                     return false
