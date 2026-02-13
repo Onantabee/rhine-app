@@ -1,19 +1,28 @@
-FROM node:20-alpine
+# Stage 1: Build the application
+FROM node:20-alpine AS builder
 WORKDIR /app
+ENV NODE_ENV=production
 
-# Ensure the dev server binds to 0.0.0.0 and use reproducible installs when lockfile present
-ENV NODE_ENV=development
-ENV HOST=0.0.0.0
-
-# Copy package manifests first to leverage Docker layer caching
+# Copy package manifests and install dependencies (including devDependencies for build)
 COPY package.json package-lock.json* ./
-# Prefer npm ci when a lockfile exists for reproducible installs.
-# Use --legacy-peer-deps to avoid peer dependency resolution failures in CI/build envs.
-RUN if [ -f package-lock.json ]; then npm ci --silent --legacy-peer-deps; else npm install --silent --legacy-peer-deps; fi
+RUN if [ -f package-lock.json ]; then npm ci --legacy-peer-deps; else npm install --legacy-peer-deps; fi
 
-# Copy source and expose dev port
+# Copy source and build
 COPY . .
-EXPOSE 5173
+RUN npm run build
 
-# Start Vite dev server, explicitly binding to host and port
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+RUN echo 'server { \
+    listen 80; \
+    location / { \
+        root /usr/share/nginx/html; \
+        index index.html index.htm; \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
