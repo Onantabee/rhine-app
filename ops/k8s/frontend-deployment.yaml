@@ -21,7 +21,7 @@ spec:
             - containerPort: 80
           env:
             - name: VITE_API_BASE_URL
-              value: "REPLACE_WITH_REAL_IP" # Replaced by Jenkins
+              value: "REPLACE_WITH_REAL_IP"
 
 
 ---
