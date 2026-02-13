@@ -23,10 +23,20 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-credentials
+                  name: mysql-secret
                   key: mysql-root-password
             - name: MYSQL_DATABASE
-              value: rhine_db
+              value: taskdb
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-password
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
