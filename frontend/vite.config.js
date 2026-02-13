@@ -15,6 +15,6 @@ export default defineConfig({
     }
   },
   define: {
-    global: 'window', // Polyfill for SockJS
+    global: 'window',
   }
 });

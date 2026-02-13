@@ -54,4 +54,4 @@ spec:
     - port: 3306
   selector:
     app: rhine-mysql
-  clusterIP: None # Headless service for stable DNS if needed, or standard ClusterIP
+  clusterIP: None
