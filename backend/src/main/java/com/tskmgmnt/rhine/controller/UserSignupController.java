@@ -1,5 +1,6 @@
 package com.tskmgmnt.rhine.controller;
 
+import com.tskmgmnt.rhine.dto.LoginResponse;
 import com.tskmgmnt.rhine.dto.UserRegReq;
 import com.tskmgmnt.rhine.entity.User;
 import com.tskmgmnt.rhine.service.UserRegistrationService;
@@ -35,8 +36,9 @@ public class UserSignupController {
             }
     )
     @PostMapping(path = "/register")
-    public String register (@RequestBody UserRegReq request) {
-        return userRegistrationService.createUser(request).getEmail();
+    public LoginResponse register (@RequestBody UserRegReq request) {
+        User user = userRegistrationService.createUser(request);
+        return new com.tskmgmnt.rhine.dto.LoginResponse("Registration successful", user.getEmail(), user.getName(), user.getUserRole());
     }
 
     @Operation(
