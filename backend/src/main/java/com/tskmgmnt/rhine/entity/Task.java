@@ -1,6 +1,7 @@
 package com.tskmgmnt.rhine.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tskmgmnt.rhine.enums.TaskStatus;
 import jakarta.persistence.*;
@@ -19,6 +20,7 @@ public class Task {
 
     private String description;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dueDate;
 
     private String priority;

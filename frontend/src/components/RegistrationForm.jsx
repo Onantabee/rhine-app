@@ -81,14 +81,14 @@ const Form = ({ isSignup }) => {
     const trimmedEmail = email.trim();
 
     try {
-      await registerUser({
+      const userData = await registerUser({
         name: capitalizeWords(trimmedName),
         email: trimmedEmail,
         pwd: password,
       }).unwrap();
 
-      console.log("Signup successful!");
-      dispatch(loginAction({ email: trimmedEmail }));
+      console.log("Signup successful!", userData);
+      dispatch(loginAction(userData));
       setName("");
       setEmail("");
       setPassword("");
@@ -116,13 +116,13 @@ const Form = ({ isSignup }) => {
     const trimmedPassword = password.trim();
 
     try {
-      await loginUser({
+      const userData = await loginUser({
         email: trimmedEmail,
         password: trimmedPassword,
       }).unwrap();
 
-      console.log("Login successful!");
-      dispatch(loginAction({ email: trimmedEmail }));
+      console.log("Login successful!", userData);
+      dispatch(loginAction(userData));
       setEmail("");
       setPassword("");
       navigate("/home");

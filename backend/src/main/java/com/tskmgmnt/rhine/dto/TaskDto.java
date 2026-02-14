@@ -1,5 +1,6 @@
 package com.tskmgmnt.rhine.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tskmgmnt.rhine.enums.TaskStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
@@ -15,7 +16,8 @@ public class TaskDto {
     @Schema(description = "Detailed description of the task", example = "Analyze Q1 financial data and draft the summary section.")
     private String description;
 
-    @Schema(description = "Due date of the task", example = "2023-12-31T23:59:59Z")
+    @Schema(description = "Due date of the task", example = "2023-12-31")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dueDate;
 
     @Schema(description = "Priority level of the task", example = "HIGH", allowableValues = {"HIGH", "MEDIUM", "LOW"})

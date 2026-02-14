@@ -17,6 +17,7 @@ const Input = forwardRef(
             value,
             onChange,
             placeholder,
+            backgroundColor = '#1a1a1a', // Default background
             ...props
         },
         ref
@@ -27,10 +28,10 @@ const Input = forwardRef(
         const inputType = type === 'password' && showPassword ? 'text' : type;
 
         const baseInputStyles =
-            'w-full px-4 py-3 bg-[#4d4d4d]/10 text-gray-200 rounded-2xl border-2 transition-all duration-300 outline-none';
+            'w-full px-4 py-3 text-gray-200 rounded-2xl border-2 transition-all duration-300 outline-none';
         const focusStyles = isFocused
             ? 'border-[#C77BBF] bg-[#C77BBF]/10'
-            : 'border-[#666666]';
+            : 'border-[#333333] hover:border-[#666666]';
         const errorStyles = error ? 'border-red-500' : '';
         const disabledStyles = disabled
             ? 'opacity-50 cursor-not-allowed'
@@ -58,8 +59,9 @@ const Input = forwardRef(
                         placeholder={placeholder}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
+                        style={{ backgroundColor: disabled ? undefined : backgroundColor }}
                         className={`${baseInputStyles} ${focusStyles} ${errorStyles} ${disabledStyles} ${prefix ? 'pl-10' : ''
-                            } ${type === 'password' || suffix ? 'pr-12' : ''}`}
+                            } ${type === 'password' || suffix ? 'pr-12' : ''} ${className}`}
                         {...props}
                     />
                     {type === 'password' && (
@@ -106,6 +108,7 @@ Input.propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
+    backgroundColor: PropTypes.string,
 };
 
 export default Input;

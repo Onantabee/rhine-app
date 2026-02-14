@@ -2,8 +2,13 @@ services:
   backend:
     build:
       context: ../backend
+      dockerfile: Dockerfile.dev
     ports:
       - "8080:8080"
+      - "5005:5005" # Debug port
+    volumes:
+      - ../backend:/workspace
+      - /workspace/target # Avoid sync conflicts with local machine
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/rhine_db
       - SPRING_DATASOURCE_USERNAME=rhine_user
@@ -25,8 +30,12 @@ services:
   frontend:
     build:
       context: ../frontend
+      dockerfile: Dockerfile.dev
     ports:
-      - "5173:80"
+      - "5173:5173"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
     networks:

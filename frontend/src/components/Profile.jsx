@@ -128,7 +128,7 @@ export default function Profile({ setEditProfileOpen }) {
   }
 
   return (
-    <div className="min-w-[320px] w-[500px] max-w-[500px] mx-auto p-6 bg-[#2A2A2A] rounded-2xl border border-[#333] overflow-hidden relative min-h-[500px]">
+    <div className={`min-w-[320px] w-[500px] max-w-[500px] mx-auto p-6 bg-[#2A2A2A] rounded-2xl border border-[#333] overflow-hidden relative min-h-[500px] ${activeSection === "password" ? "h-[540px]" : "h-[400px]"}`}>
       <h2 className="text-2xl font-bold text-gray-200 mb-4">Edit Profile</h2>
 
       {/* Profile Section */}

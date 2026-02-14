@@ -18,6 +18,7 @@ const TextField = forwardRef(
             onChange,
             placeholder,
             autoResize = false,
+            backgroundColor = '#1a1a1a', // Default background
             ...props
         },
         ref
@@ -37,14 +38,14 @@ const TextField = forwardRef(
         }, [value, autoResize, maxRows]);
 
         const baseStyles =
-            'w-full px-4 py-3 bg-[#4d4d4d]/10 text-gray-200 rounded-2xl border-2 transition-all duration-300 outline-none resize-none';
+            `w-full px-4 py-3 text-gray-200 rounded-2xl border-2 transition-all duration-300 outline-none resize-none`;
         const focusStyles = isFocused
-            ? 'border-[#C77BBF] bg-[#C77BBF]/10'
-            : 'border-[#666666]';
+            ? 'border-[#C77BBF] ring-1 ring-[#C77BBF]/50'
+            : 'border-[#333333] hover:border-[#666666]';
         const errorStyles = error ? 'border-red-500' : '';
         const disabledStyles = disabled
-            ? 'opacity-50 cursor-not-allowed'
-            : 'hover:border-[#C77BBF]';
+            ? 'opacity-50 cursor-not-allowed bg-[#1a1a1a]/50'
+            : '';
 
         const handleChange = (e) => {
             if (maxLength && e.target.value.length > maxLength) {
@@ -67,9 +68,10 @@ const TextField = forwardRef(
                     disabled={disabled}
                     placeholder={placeholder}
                     rows={rows}
+                    style={{ backgroundColor: disabled ? undefined : backgroundColor }}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    className={`${baseStyles} ${focusStyles} ${errorStyles} ${disabledStyles}`}
+                    className={`${baseStyles} ${focusStyles} ${errorStyles} ${disabledStyles} ${className}`}
                     {...props}
                 />
                 <div className="flex justify-between items-center px-2">
@@ -106,6 +108,7 @@ TextField.propTypes = {
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
     autoResize: PropTypes.bool,
+    backgroundColor: PropTypes.string,
 };
 
 export default TextField;

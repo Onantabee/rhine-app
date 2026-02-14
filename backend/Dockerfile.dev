@@ -1,0 +1,13 @@
+FROM maven:3.9.4-eclipse-temurin-21
+
+WORKDIR /workspace
+
+# Copy pom.xml and install dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy source (will be overridden by volume mount in dev)
+COPY src ./src
+
+# Enable devtools and remote debugging if needed
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'"]
