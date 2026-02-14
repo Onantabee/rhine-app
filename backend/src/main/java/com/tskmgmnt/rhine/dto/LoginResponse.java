@@ -15,7 +15,6 @@ public class LoginResponse {
         this.userRole = userRole;
     }
 
-    // Getters and Setters
     public String getMessage() {
         return message;
     }

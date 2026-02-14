@@ -1,6 +1,7 @@
 package com.tskmgmnt.rhine.controller;
 
 import com.tskmgmnt.rhine.dto.UserLogReq;
+import com.tskmgmnt.rhine.dto.LoginResponse;
 import com.tskmgmnt.rhine.service.UserLoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,7 +53,7 @@ public class UserLoginController {
             }
     )
     @PostMapping(path = "/login")
-    public com.tskmgmnt.rhine.dto.LoginResponse login(@RequestBody UserLogReq loginRequest) {
+    public LoginResponse login(@RequestBody UserLogReq loginRequest) {
         String username = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         return userLoginService.loginUser(username, password);
