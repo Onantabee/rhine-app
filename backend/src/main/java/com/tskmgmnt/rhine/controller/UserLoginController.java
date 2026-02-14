@@ -52,7 +52,7 @@ public class UserLoginController {
             }
     )
     @PostMapping(path = "/login")
-    public String login(@RequestBody UserLogReq loginRequest) {
+    public com.tskmgmnt.rhine.dto.LoginResponse login(@RequestBody UserLogReq loginRequest) {
         String username = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         return userLoginService.loginUser(username, password);

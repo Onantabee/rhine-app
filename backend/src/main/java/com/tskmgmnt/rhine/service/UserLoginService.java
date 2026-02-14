@@ -16,12 +16,12 @@ public class UserLoginService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String loginUser (String email, String rawPassword) {
+    public com.tskmgmnt.rhine.dto.LoginResponse loginUser (String email, String rawPassword) {
         User user = userRepository.findByEmail(String.valueOf(email))
                 .orElseThrow(() -> new IllegalStateException("Invalid email"));
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
             throw new IllegalStateException("Invalid Password");
         }
-        return "Login successful for user: " + email;
+        return new com.tskmgmnt.rhine.dto.LoginResponse("Login successful", user.getEmail(), user.getName(), user.getUserRole());
     }
 }
