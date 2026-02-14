@@ -106,12 +106,9 @@ export default function Home() {
             <Button
               size="md"
               onClick={() => handleOpenDialog()}
-              className="bg-[#7733ff] hover:bg-[#661aff] text-white relative"
-              style={{
-                border: "1px solid #7733ff",
-              }}
+              className="bg-red-500 hover:bg-red-600 text-white relative"
             >
-              <Plus className="mr-1" size={18} />
+              <Plus size={18} />
               Add Task
             </Button>
           )}

@@ -17,7 +17,7 @@ const UserAvatar = ({ userName = "", size = "md", onClick }) => {
 
     return (
         <div
-            className={`bg-[#7733ff] text-white flex justify-center items-center ${sizeClasses[size]} ${onClick ? "cursor-pointer" : ""
+            className={`bg-[#7733ff] text-white flex justify-center items-center rounded-full ${sizeClasses[size]} ${onClick ? "cursor-pointer" : ""
                 }`}
             onClick={onClick}
         >

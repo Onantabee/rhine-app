@@ -5,7 +5,7 @@ import { Button, Select, Snackbar } from "./ui";
 import { useUpdateRoleMutation } from "../store/api/authApi";
 
 const ChooseRole = () => {
-  const [option, setOption] = useState("");
+  const [option, setOption] = useState("admin");
   const [fieldErrors, setFieldErrors] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");

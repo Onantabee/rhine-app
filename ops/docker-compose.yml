@@ -14,8 +14,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=rhine_user
       - SPRING_DATASOURCE_PASSWORD=rhine_password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    restart: on-failure
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - rhine-network
     develop:
@@ -64,6 +66,12 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - rhine-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "rhine_user", "-prhine_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
 volumes:
   db_data:
