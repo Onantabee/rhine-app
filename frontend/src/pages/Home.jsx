@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Snackbar } from "../components/ui";
-import AddIcon from "@mui/icons-material/Add";
+import { Plus } from "lucide-react";
 import TaskCard from "../components/TaskCard.jsx";
 import TaskDialog from "../components/TaskDialog.jsx";
 import { Link, useNavigate } from "react-router-dom";
@@ -99,26 +99,26 @@ export default function Home() {
       <div className="flex flex-col">
         <div
           className={`${isAdmin ? "flex justify-between" : "inline"
-            } border-b-2 border-[#262626] py-3 gap-2`}
+            } border-b border-gray-200 py-3 gap-2`}
         >
-          <h1 className="text-3xl text-[#8c8c8c]">Tasks</h1>
+          <h1 className="text-3xl text-gray-600">Tasks</h1>
           {isAdmin && (
             <Button
               size="md"
               onClick={() => handleOpenDialog()}
-              className="bg-[#ff4d4d] hover:bg-[#ff0000] text-white rounded-2xl relative"
+              className="bg-[#7733ff] hover:bg-[#661aff] text-white relative"
               style={{
-                border: "2px solid transparent",
+                border: "1px solid #7733ff",
               }}
             >
-              <AddIcon className="mr-1" />
+              <Plus className="mr-1" size={18} />
               Add Task
             </Button>
           )}
         </div>
 
         {/* View Toggle */}
-        <div className="flex flex-row gap-2 border-b-2 border-[#262626] py-3">
+        <div className="flex flex-row gap-2 border-b border-gray-200 py-3">
           <Button
             onClick={() => setIsCardView(true)}
             variant={isCardView ? "primary" : "outlined"}
@@ -192,11 +192,11 @@ export default function Home() {
           />
 
           {userTasks.length === 0 && (
-            <p className="text-gray-500">No tasks available</p>
+            <p className="text-gray-400">No tasks available</p>
           )}
         </div>
       ) : (
-        <div className="text-[#404040]/50 w-full mt-20 flex justify-center items-center">
+        <div className="text-gray-300 w-full mt-20 flex justify-center items-center">
           <h1 className="text-[10vw] sm:text-[8vw] md:text-[6vw]">
             {"<>Coming Soon!</>"}
           </h1>

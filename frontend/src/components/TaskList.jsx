@@ -1,10 +1,6 @@
 import React from "react";
 import { Chip } from "./ui";
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Visibility as ViewIcon,
-} from "@mui/icons-material";
+import { Pencil, Trash2, Eye } from "lucide-react";
 import { useGetUserByEmailQuery } from "../store/api/usersApi";
 
 const TaskList = ({
@@ -35,10 +31,10 @@ const TaskList = ({
   };
 
   return (
-    <div className="grid grid-cols-[35%_10%_10%_25%_10%_10%] gap-4 p-3.5 bg-[#1f1f1f] rounded-lg border border-[#404040] transition-all duration-300 hover:bg-[#2a2a2a] group">
+    <div className="grid grid-cols-[35%_10%_10%_25%_10%_10%] gap-4 p-3.5 bg-white border border-gray-200 hover:bg-gray-50 group">
       {/* Title */}
       <div className="flex items-center">
-        <p className="text-gray-400 text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap group-hover:text-gray-300 transition-colors">
+        <p className="text-gray-600 text-sm font-medium overflow-hidden text-ellipsis whitespace-nowrap group-hover:text-gray-800">
           {title}
         </p>
       </div>
@@ -61,15 +57,15 @@ const TaskList = ({
       <div className="flex items-center gap-2 px-2">
         {isAdmin ? (
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-[#C77BBF] flex items-center justify-center text-sm text-white">
+            <div className="w-7 h-7 bg-[#7733ff] flex items-center justify-center text-sm text-white">
               {employeeUser?.name?.charAt(0) || "U"}
             </div>
-            <span className="text-gray-400 text-sm">
+            <span className="text-gray-600 text-sm">
               {employeeUser?.name || "Loading..."}
             </span>
           </div>
         ) : (
-          <span className="text-gray-400 text-sm">
+          <span className="text-gray-600 text-sm">
             {adminUser?.name || "Loading..."}
           </span>
         )}
@@ -77,7 +73,7 @@ const TaskList = ({
 
       {/* Due Date */}
       <div className="flex justify-center items-center">
-        <span className="text-gray-400 text-sm">{formatDate(dueDate)}</span>
+        <span className="text-gray-500 text-sm">{formatDate(dueDate)}</span>
       </div>
 
       {/* Actions (Admin Only) */}
@@ -85,21 +81,21 @@ const TaskList = ({
         <div className="flex justify-center items-center gap-1">
           <button
             onClick={onView}
-            className="p-1 text-transparent hover:text-blue-400 transition-colors"
+            className="p-1 text-transparent group-hover:text-blue-500 cursor-pointer"
           >
-            <ViewIcon fontSize="small" />
+            <Eye size={18} />
           </button>
           <button
             onClick={onEdit}
-            className="p-1 text-transparent hover:text-cyan-400 transition-colors"
+            className="p-1 text-transparent group-hover:text-[#7733ff] cursor-pointer"
           >
-            <EditIcon fontSize="small" />
+            <Pencil size={18} />
           </button>
           <button
             onClick={onDelete}
-            className="p-1 text-[#ff6666] hover:text-red-400 transition-colors"
+            className="p-1 text-red-400 group-hover:text-red-600 cursor-pointer"
           >
-            <DeleteIcon fontSize="small" />
+            <Trash2 size={18} />
           </button>
         </div>
       )}

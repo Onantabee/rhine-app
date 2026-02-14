@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
     CheckCircle,
     XCircle,
@@ -23,19 +22,19 @@ const Snackbar = ({
     const variantConfig = {
         success: {
             icon: <CheckCircle size={20} />,
-            styles: 'bg-green-500/20 border-green-500/50 text-green-200',
+            styles: 'bg-green-50 border-green-300 text-green-800',
         },
         error: {
             icon: <XCircle size={20} />,
-            styles: 'bg-red-500/20 border-red-500/50 text-red-200',
+            styles: 'bg-red-50 border-red-300 text-red-800',
         },
         warning: {
             icon: <AlertTriangle size={20} />,
-            styles: 'bg-orange-500/20 border-orange-500/50 text-orange-200',
+            styles: 'bg-orange-50 border-orange-300 text-orange-800',
         },
         info: {
             icon: <Info size={20} />,
-            styles: 'bg-blue-500/20 border-blue-500/50 text-blue-200',
+            styles: 'bg-blue-50 border-blue-300 text-blue-800',
         },
     };
 
@@ -58,31 +57,25 @@ const Snackbar = ({
         }
     }, [open, duration, onClose]);
 
+    if (!open) return null;
+
     const { icon, styles } = variantConfig[variant];
 
     return (
-        <AnimatePresence>
-            {open && (
-                <motion.div
-                    initial={{ opacity: 0, y: position.includes('bottom') ? 50 : -50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: position.includes('bottom') ? 50 : -50 }}
-                    transition={{ duration: 0.3 }}
-                    className={`fixed ${positionStyles[position]} z-50 flex items-center gap-3 px-4 py-3 rounded-2xl border-2 backdrop-blur-lg shadow-lg min-w-[300px] max-w-md ${styles} ${className}`}
-                    {...props}
-                >
-                    {icon}
-                    <span className="flex-1 font-medium">{message}</span>
-                    {action && <div>{action}</div>}
-                    <button
-                        onClick={onClose}
-                        className="text-current hover:opacity-70 transition-opacity"
-                    >
-                        <X size={18} />
-                    </button>
-                </motion.div>
-            )}
-        </AnimatePresence>
+        <div
+            className={`fixed ${positionStyles[position]} z-50 flex items-center gap-3 px-4 py-3 border min-w-[300px] max-w-md ${styles} ${className}`}
+            {...props}
+        >
+            {icon}
+            <span className="flex-1 font-medium">{message}</span>
+            {action && <div>{action}</div>}
+            <button
+                onClick={onClose}
+                className="text-current hover:opacity-70 cursor-pointer"
+            >
+                <X size={18} />
+            </button>
+        </div>
     );
 };
 

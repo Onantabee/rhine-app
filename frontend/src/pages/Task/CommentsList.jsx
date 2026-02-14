@@ -23,7 +23,7 @@ const CommentsList = ({
 
     return (
         <div className="mt-2">
-            <h2 className="text-lg font-semibold text-gray-300">Comments</h2>
+            <h2 className="text-lg font-semibold text-gray-700">Comments</h2>
             <div
                 ref={containerRef}
                 className="space-y-2 max-h-[300px] mt-3 px-5 overflow-y-auto"

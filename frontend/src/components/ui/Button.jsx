@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { motion } from 'framer-motion';
 
 const Button = React.forwardRef(
     (
@@ -20,7 +19,7 @@ const Button = React.forwardRef(
         ref
     ) => {
         const baseStyles =
-            'font-medium rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 outline-none focus:outline-none';
+            'font-medium flex items-center justify-center gap-2 outline-none focus:outline-none cursor-pointer';
 
         const sizeStyles = {
             sm: 'px-3 py-1.5 text-sm',
@@ -30,28 +29,26 @@ const Button = React.forwardRef(
 
         const variantStyles = {
             primary:
-                'bg-[#9966ff]/50 text-white border-2 border-[#9966ff] hover:bg-[#9966ff] hover:shadow-lg disabled:bg-gray-500 disabled:border-gray-500 disabled:cursor-not-allowed',
+                'bg-[#7733ff] text-white hover:bg-[#661aff] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed',
             secondary:
-                'bg-[#737373]/20 text-gray-300 border-2 border-[#737373] hover:bg-[#737373]/40 hover:border-[#a6a6a6] disabled:opacity-50 disabled:cursor-not-allowed',
+                'bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed',
             outlined:
-                'bg-transparent text-[#C77BBF] border-2 border-[#666666] hover:border-[#C77BBF] hover:bg-[#C77BBF]/10 disabled:opacity-50 disabled:cursor-not-allowed',
+                'bg-transparent text-[#7733ff] border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed',
             ghost:
-                'bg-transparent text-gray-300 border-0 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed',
+                'bg-transparent text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed',
             danger:
-                'bg-[#ff3333]/50 text-white border-2 border-[#ff3333] hover:bg-[#ff0000] hover:shadow-lg disabled:bg-gray-500 disabled:border-gray-500 disabled:cursor-not-allowed',
+                'bg-red-500 text-white hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed',
         };
 
         const widthStyle = fullWidth ? 'w-full' : '';
 
         return (
-            <motion.button
+            <button
                 ref={ref}
                 type={type}
                 className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${widthStyle} ${className}`}
                 onClick={onClick}
                 disabled={disabled || loading}
-                whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
-                whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
                 {...props}
             >
                 {loading && (
@@ -78,7 +75,7 @@ const Button = React.forwardRef(
                 )}
                 {icon && !loading && icon}
                 {children}
-            </motion.button>
+            </button>
         );
     }
 );

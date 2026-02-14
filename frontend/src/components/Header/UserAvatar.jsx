@@ -1,10 +1,7 @@
 import React from "react";
 
 /**
- * UserAvatar component - Displays user initials in a circular avatar
- * @param {string} userName - Full name of the user
- * @param {string} size - Size variant: 'sm', 'md', 'lg'
- * @param {function} onClick - Click handler (optional)
+ * UserAvatar component - Displays user initials in a square avatar
  */
 const UserAvatar = ({ userName = "", size = "md", onClick }) => {
     const fullName = String(userName || "");
@@ -13,14 +10,14 @@ const UserAvatar = ({ userName = "", size = "md", onClick }) => {
     const lastName = names[1] || "";
 
     const sizeClasses = {
-        sm: "w-10 h-10 text-lg p-[23px]",
+        sm: "w-10 h-10 text-lg",
         md: "w-15 h-15 text-3xl",
         lg: "w-16 h-16 text-2xl",
     };
 
     return (
         <div
-            className={`bg-[#C77BBF] rounded-full flex justify-center items-center ${sizeClasses[size]} ${onClick ? "cursor-pointer" : ""
+            className={`bg-[#7733ff] text-white flex justify-center items-center ${sizeClasses[size]} ${onClick ? "cursor-pointer" : ""
                 }`}
             onClick={onClick}
         >

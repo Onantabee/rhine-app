@@ -1,39 +1,12 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Button, Select, Snackbar } from "./ui";
 import { useUpdateRoleMutation } from "../store/api/authApi";
-import CircleContainer from "./CirlcleContainer";
-
-const containerVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.3,
-      duration: 0.8,
-      ease: "easeOut",
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.5 + i * 0.1,
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  }),
-};
 
 const ChooseRole = () => {
-  const [option, setOption] = useState("admin");
+  const [option, setOption] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const navigate = useNavigate();
@@ -44,9 +17,15 @@ const ChooseRole = () => {
 
   const handleChange = (event) => {
     setOption(event.target.value);
+    setFieldErrors({});
   };
 
   const handleSubmit = async () => {
+    if (!option) {
+      setFieldErrors({ role: "Please select a role" });
+      return;
+    }
+
     if (!userEmail) {
       console.warn("No email found, redirecting...");
       navigate("/");
@@ -75,33 +54,23 @@ const ChooseRole = () => {
     <>
       <div className="h-[70vh] flex justify-center items-center">
         <div className="relative flex flex-col justify-center items-center lg:flex-row w-full p-2">
-          <CircleContainer />
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
+          <div
             style={{
-              borderRadius: "16px",
               padding: "20px",
               width: "100%",
               maxWidth: "500px",
             }}
-            className="z-30 h-[500px] lg:h-auto bg-[#1a1a1a]/95 border-2 border-[#4d4d4d] outline-8 lg:outline-0 outline-[#4d4d4d]/30 lg:border-0 xl:bg-transparent xl:backdrop-blur-none backdrop-blur-lg"
+            className="z-30 h-[500px] lg:h-auto bg-white border border-gray-200 lg:border-0"
           >
-            <motion.div
-              className="flex lg:hidden justify-center items-center mb-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-            >
-              <div className="flex flex-col justify-center items-center py-5 px-12 rounded-2xl">
-                <h1 className="text-4xl text-[#9966ff] font-semibold">
+            <div className="flex lg:hidden justify-center items-center mb-10">
+              <div className="flex flex-col justify-center items-center py-5 px-12">
+                <h1 className="text-4xl text-[#7733ff] font-semibold">
                   Rhine
                 </h1>
               </div>
-            </motion.div>
+            </div>
 
-            <h2 className="text-3xl font-bold text-center mb-5 text-[#4d4d4d]">
+            <h2 className="text-3xl font-semibold text-center mb-5 text-gray-700">
               Choose Your Role
             </h2>
 
@@ -110,25 +79,25 @@ const ChooseRole = () => {
                 value={option}
                 onChange={handleChange}
                 options={roleOptions}
+                placeholder="Select a role"
                 fullWidth
+                error={!!fieldErrors.role}
+                helperText={fieldErrors.role}
               />
 
-              <motion.div
-                variants={itemVariants}
-                className="flex justify-center"
-              >
+              <div className="flex justify-center">
                 <Button
                   variant="primary"
                   size="lg"
                   onClick={handleSubmit}
                   loading={isLoading}
-                  className="w-[70%]"
+                  className="w-full"
                 >
                   Submit
                 </Button>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
@@ -142,7 +111,7 @@ const ChooseRole = () => {
 
       <div className="absolute bottom-0 left-0 w-full flex justify-center">
         <div className="py-2 px-5">
-          <h1 className="text-[#4d4d4d]">Made by Onanta Bassey</h1>
+          <h1 className="text-gray-400">Made by Onanta Bassey</h1>
         </div>
       </div>
     </>

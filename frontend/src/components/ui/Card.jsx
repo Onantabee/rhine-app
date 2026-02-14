@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { motion } from 'framer-motion';
 
 const Card = ({
     variant = 'default',
@@ -11,17 +10,13 @@ const Card = ({
     className = '',
     ...props
 }) => {
-    const baseStyles = 'rounded-2xl transition-all duration-300';
-
     const variantStyles = {
-        default: 'bg-[#1f1f1f] border-2 border-[#404040]',
-        elevated: 'bg-[#2a2a2a] shadow-lg border-2 border-[#4d4d4d]',
-        outlined: 'bg-transparent border-2 border-[#666666]',
+        default: 'bg-white border border-gray-200',
+        elevated: 'bg-white border border-gray-200',
+        outlined: 'bg-transparent border border-gray-300',
     };
 
-    const hoverStyles = hoverable
-        ? 'cursor-pointer hover:border-[#C77BBF] hover:shadow-xl'
-        : '';
+    const hoverStyles = hoverable ? 'cursor-pointer hover:bg-gray-50' : '';
 
     const paddingStyles = {
         none: 'p-0',
@@ -30,23 +25,14 @@ const Card = ({
         lg: 'p-7',
     };
 
-    const CardComponent = hoverable || onClick ? motion.div : 'div';
-    const motionProps = hoverable || onClick
-        ? {
-            whileHover: { scale: 1.02 },
-            whileTap: { scale: 0.98 },
-        }
-        : {};
-
     return (
-        <CardComponent
-            className={`${baseStyles} ${variantStyles[variant]} ${hoverStyles} ${paddingStyles[padding]} ${className}`}
+        <div
+            className={`${variantStyles[variant]} ${hoverStyles} ${paddingStyles[padding]} ${className}`}
             onClick={onClick}
-            {...motionProps}
             {...props}
         >
             {children}
-        </CardComponent>
+        </div>
     );
 };
 

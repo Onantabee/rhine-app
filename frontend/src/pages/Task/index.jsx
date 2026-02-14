@@ -257,8 +257,8 @@ export default function Task() {
     }
 
     return (
-        <div className="flex flex-col justify-between min-h-full h-[calc(100dvh-84px)] text-gray-200 md:px-5">
-            <div className="rounded-lg md:p-2 w-full max-w-3xl mx-auto">
+        <div className="flex flex-col justify-between min-h-full h-[calc(100dvh-84px)] text-gray-800 md:px-5">
+            <div className="md:p-2 w-full max-w-3xl mx-auto">
                 <TaskDetails
                     task={task}
                     taskStatus={taskStatus}

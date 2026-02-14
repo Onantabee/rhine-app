@@ -1,42 +1,15 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Button, Input, Snackbar } from "./ui";
 import { useRegisterMutation, useLoginMutation } from "../store/api/authApi";
 import { login as loginAction } from "../store/slices/authSlice";
-import CircleContainer from "./CirlcleContainer";
-
-const containerVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.3,
-      duration: 0.8,
-      ease: "easeOut",
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.5 + i * 0.1,
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  }),
-};
 
 const Form = ({ isSignup }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("error");
@@ -49,17 +22,34 @@ const Form = ({ isSignup }) => {
   const [loginUser, { isLoading: isLoggingIn }] = useLoginMutation();
 
   const validateFields = () => {
-    if (email === "" && password === "") {
-      setSnackbarMessage("Email and password cannot be empty!");
-      return false;
-    } else if (email === "") {
-      setSnackbarMessage("Email cannot be empty!");
-      return false;
-    } else if (password === "") {
-      setSnackbarMessage("Password cannot be empty!");
-      return false;
+    const errors = {};
+
+    if (isSignup && name.trim() === "") {
+      errors.name = "Name is required";
     }
-    return true;
+
+    if (email.trim() === "") {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      errors.email = "Enter a valid email address";
+    }
+
+    if (password === "") {
+      errors.password = "Password is required";
+    } else if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const clearFieldError = (field) => {
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
   };
 
   const capitalizeWords = (str) => {
@@ -71,11 +61,7 @@ const Form = ({ isSignup }) => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (!validateFields()) {
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-      return;
-    }
+    if (!validateFields()) return;
 
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
@@ -104,13 +90,7 @@ const Form = ({ isSignup }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (!validateFields()) {
-      setSnackbarMessage("Email and password cannot be empty!");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-      return;
-    }
+    if (!validateFields()) return;
 
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
@@ -138,36 +118,25 @@ const Form = ({ isSignup }) => {
   return (
     <>
       <div className="relative flex flex-col justify-center items-center lg:flex-row w-full p-2">
-        <CircleContainer />
-
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
+        <div
           style={{
-            borderRadius: "16px",
             padding: "20px",
             width: "100%",
             maxWidth: "500px",
           }}
-          className="z-30 h-[500px] lg:h-auto bg-[#1a1a1a]/95 border-2 border-[#4d4d4d] outline-8 lg:outline-0 outline-[#4d4d4d]/30 lg:border-0 xl:bg-transparent xl:backdrop-blur-none backdrop-blur-lg"
+          className="z-30 h-[500px] lg:h-auto bg-white border border-gray-200 lg:border-0"
         >
-          <motion.div
-            className="flex lg:hidden justify-center items-center mb-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            <div className="flex flex-col justify-center items-center py-5 px-12 rounded-2xl">
-              <h1 className="text-4xl text-[#9966ff] font-semibold">Rhine</h1>
+          <div className="flex lg:hidden justify-center items-center mb-10">
+            <div className="flex flex-col justify-center items-center py-5 px-12">
+              <h1 className="text-4xl text-[#7733ff] font-semibold">Rhine</h1>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div variants={itemVariants} custom={0}>
-            <h2 className="text-3xl font-bold text-center mb-5 text-[#4d4d4d]">
+          <div>
+            <h2 className="text-3xl font-semibold text-center mb-5 text-gray-700">
               {isSignup ? "Create an account" : "Welcome back"}
             </h2>
-          </motion.div>
+          </div>
 
           <form onSubmit={isSignup ? handleSignup : handleLogin}>
             <div className="space-y-3">
@@ -176,52 +145,60 @@ const Form = ({ isSignup }) => {
                   type="text"
                   label="Name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    clearFieldError("name");
+                  }}
                   fullWidth
-                  required
+                  error={!!fieldErrors.name}
+                  helperText={fieldErrors.name}
                 />
               )}
 
-              <motion.div variants={itemVariants} custom={isSignup ? 2 : 1}>
+              <div>
                 <Input
                   type="email"
                   label="Email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    clearFieldError("email");
+                  }}
                   fullWidth
-                  required
+                  error={!!fieldErrors.email}
+                  helperText={fieldErrors.email}
                 />
-              </motion.div>
+              </div>
 
-              <motion.div variants={itemVariants} custom={isSignup ? 3 : 2}>
+              <div>
                 <Input
                   type="password"
                   label="Password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    clearFieldError("password");
+                  }}
                   fullWidth
-                  required
+                  error={!!fieldErrors.password}
+                  helperText={fieldErrors.password}
                 />
-              </motion.div>
+              </div>
 
-              <motion.div
-                variants={itemVariants}
-                custom={isSignup ? 4 : 3}
-                className="flex justify-center pt-2"
-              >
+              <div className="flex justify-center pt-2">
                 <Button
                   type="submit"
                   variant="primary"
                   size="lg"
                   loading={isRegistering || isLoggingIn}
-                  className="w-[70%]"
+                  className="w-full "
                 >
                   {isSignup ? "Sign Up" : "Log In"}
                 </Button>
-              </motion.div>
+              </div>
             </div>
           </form>
-        </motion.div>
+        </div>
       </div>
 
       <Snackbar
@@ -234,7 +211,7 @@ const Form = ({ isSignup }) => {
 
       <div className="absolute bottom-0 w-full flex justify-center">
         <div className="py-2 px-5">
-          <h1 className="text-[#4d4d4d]">Made by Onanta Bassey</h1>
+          <h1 className="text-gray-400">Made by Onanta Bassey</h1>
         </div>
       </div>
     </>

@@ -56,59 +56,59 @@ export const formatDueDateText = (dueDate, status, dueDateStatus) => {
 };
 
 /**
- * Get card background color based on status
+ * Get card background color based on status (light theme)
  */
 export const getCardBackground = (status, dueStatus) => {
-    if (status === "COMPLETED") return "rgba(0, 51, 0, 0.1)";
-    if (status === "CANCELLED") return "rgba(51, 0, 51, 0.1)";
+    if (status === "COMPLETED") return "rgba(220, 252, 231, 0.5)";
+    if (status === "CANCELLED") return "rgba(243, 244, 246, 0.5)";
 
     switch (dueStatus) {
         case "DUE_IN_2_DAYS":
-            return "rgba(51, 51, 0, 0.2)";
+            return "rgba(254, 249, 195, 0.3)";
         case "DUE_TOMORROW":
-            return "rgba(51, 33, 0, 0.2)";
+            return "rgba(255, 237, 213, 0.3)";
         case "DUE_TODAY":
-            return "rgba(51, 0, 0, 0.2)";
+            return "rgba(254, 226, 226, 0.3)";
         case "OVERDUE":
-            return "rgba(128, 128, 128, 0.2)";
+            return "rgba(243, 244, 246, 0.5)";
         default:
-            return "#1f1f1f";
+            return "#ffffff";
     }
 };
 
 /**
- * Get card border color based on status
+ * Get card border color based on status (light theme)
  */
 export const getCardBorder = (status, dueStatus) => {
-    if (status === "COMPLETED") return "1px solid rgba(34, 197, 94, 0.2)";
-    if (status === "CANCELLED") return "1px solid rgba(64, 64, 64, 0.2)";
+    if (status === "COMPLETED") return "1px solid rgba(34, 197, 94, 0.3)";
+    if (status === "CANCELLED") return "1px solid rgba(209, 213, 219, 0.5)";
 
     switch (dueStatus) {
         case "DUE_TODAY":
-            return "1px solid rgba(255, 0, 0, 0.7)";
+            return "1px solid rgba(239, 68, 68, 0.5)";
         case "DUE_TOMORROW":
-            return "1px solid rgba(128, 83, 0, 0.7)";
+            return "1px solid rgba(249, 115, 22, 0.5)";
         case "DUE_IN_2_DAYS":
-            return "1px solid rgba(128, 128, 0, 0.7)";
+            return "1px solid rgba(234, 179, 8, 0.5)";
         default:
-            return "1px solid #404040";
+            return "1px solid #e5e7eb";
     }
 };
 
 /**
- * Color mappings for status and priority
+ * Color mappings for status and priority (light theme)
  */
 export const statusColors = {
-    PENDING: "bg-yellow-500/50",
-    ONGOING: "bg-blue-500/50",
-    COMPLETED: "bg-green-500/50",
-    CANCELLED: "bg-gray-500/50",
-    OVERDUE: "bg-gray-500/50",
+    PENDING: "bg-yellow-100 text-yellow-800",
+    ONGOING: "bg-blue-100 text-blue-800",
+    COMPLETED: "bg-green-100 text-green-800",
+    CANCELLED: "bg-gray-100 text-gray-500",
+    OVERDUE: "bg-gray-100 text-gray-500",
 };
 
 export const priorityColors = {
-    High: "bg-red-500/50",
-    Medium: "bg-orange-500/50",
-    Low: "bg-yellow-500/50",
-    OVERDUE: "bg-gray-500/50",
+    High: "bg-red-100 text-red-800",
+    Medium: "bg-orange-100 text-orange-800",
+    Low: "bg-yellow-100 text-yellow-800",
+    OVERDUE: "bg-gray-100 text-gray-500",
 };

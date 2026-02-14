@@ -1,20 +1,9 @@
 import React from "react";
-import { Drawer, List, ListItem, ListItemButton, IconButton, Typography, Divider } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { LogOut, PenSquare } from "lucide-react";
+import { X, LogOut, PenSquare } from "lucide-react";
 import UserAvatar from "./UserAvatar";
 
 /**
  * MobileDrawer component - Mobile navigation drawer
- * @param {boolean} open - Whether drawer is open
- * @param {boolean} isLoggedIn - Whether user is logged in
- * @param {string} userName - User's full name
- * @param {boolean} isAdmin - Whether user is admin
- * @param {function} onClose - Handler for closing drawer
- * @param {function} onLogin - Handler for login click
- * @param {function} onSignup - Handler for signup click
- * @param {function} onEditProfile - Handler for edit profile click
- * @param {function} onLogout - Handler for logout click
  */
 const MobileDrawer = ({
     open,
@@ -28,130 +17,77 @@ const MobileDrawer = ({
     onLogout,
 }) => {
     return (
-        <Drawer
-            anchor="right"
-            open={open}
-            onClose={onClose}
-            sx={{
-                width: 250,
-                flexShrink: 0,
-                "& .MuiDrawer-paper": {
-                    backgroundColor: "#1E1E1E",
-                    color: "#E0E0E0",
-                    borderLeft: "1px solid #333",
-                    padding: "12px",
-                },
-            }}
-        >
-            <div className="flex justify-end pr-2">
-                <IconButton onClick={onClose}>
-                    <CloseIcon className="text-gray-300" />
-                </IconButton>
-            </div>
-            <List className="min-w-[250px]">
+        <>
+            {/* Overlay */}
+            {open && (
+                <div
+                    className="fixed inset-0 bg-black/30 z-40"
+                    onClick={onClose}
+                />
+            )}
+
+            {/* Drawer */}
+            <div
+                className={`fixed top-0 right-0 h-full w-[280px] bg-white border-l border-gray-200 z-50 p-4 ${open ? "translate-x-0" : "translate-x-full"
+                    }`}
+            >
+                <div className="flex justify-end pr-2">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 cursor-pointer">
+                        <X size={24} />
+                    </button>
+                </div>
+
                 {!isLoggedIn ? (
-                    <>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={onLogin}>Login</ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={onSignup}>Signup</ListItemButton>
-                        </ListItem>
-                    </>
+                    <div className="flex flex-col gap-2 mt-4">
+                        <button
+                            onClick={onLogin}
+                            className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 cursor-pointer"
+                        >
+                            Login
+                        </button>
+                        <button
+                            onClick={onSignup}
+                            className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 cursor-pointer"
+                        >
+                            Signup
+                        </button>
+                    </div>
                 ) : (
-                    <div className="flex flex-col justify-center items-center">
-                        <div className="bg-[#333333] w-full flex p-2 flex-col justify-center items-center rounded-lg">
+                    <div className="flex flex-col justify-center items-center mt-4">
+                        <div className="bg-gray-50 w-full flex p-4 flex-col justify-center items-center">
                             <div className="mb-3">
                                 <UserAvatar userName={userName} size="md" />
                             </div>
-                            <Typography
-                                sx={{
-                                    fontWeight: "semibold",
-                                    fontSize: "25px",
-                                    color: "#8c8c8c",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                }}
-                            >
+                            <p className="font-semibold text-xl text-gray-700">
                                 {userName || "User"}
-                            </Typography>
+                            </p>
                             {isAdmin && (
-                                <Typography
-                                    sx={{
-                                        fontSize: "12px",
-                                        color: "#8c8c8c",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    (Admin)
-                                </Typography>
+                                <p className="text-xs text-gray-500">(Admin)</p>
                             )}
                         </div>
-                        <Divider
-                            sx={{
-                                backgroundColor: "#333333",
-                                margin: "16px 0",
-                                width: "100%",
-                                height: "2px",
-                            }}
-                        />
-                        <ListItem
-                            disablePadding
-                            sx={{
-                                display: "flex",
-                                width: "100%",
-                                gap: "10px",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <ListItemButton
+
+                        <div className="w-full h-px bg-gray-200 my-4" />
+
+                        <div className="w-full flex flex-col gap-2">
+                            <button
                                 onClick={onEditProfile}
-                                sx={{
-                                    backgroundColor: "",
-                                    color: "#808080",
-                                    border: "2px solid #404040",
-                                    width: "100%",
-                                    display: "flex",
-                                    textTransform: "capitalize",
-                                    fontWeight: "semibold",
-                                    justifyContent: "start",
-                                    borderRadius: "8px",
-                                    padding: "10px",
-                                    gap: "10px",
-                                    transition: "all 0.2s ease-in-out",
-                                    "&:hover": {
-                                        backgroundColor: "rgba(128, 128, 128, 0.2)",
-                                        color: "#a6a6a6",
-                                        borderColor: "#a6a6a6",
-                                    },
-                                }}
+                                className="flex items-center gap-3 w-full px-3 py-3 text-gray-600 border border-gray-200 hover:bg-gray-50 cursor-pointer"
                             >
                                 <PenSquare size={18} />
                                 <span>Edit Profile</span>
-                            </ListItemButton>
-                            <ListItemButton
-                                sx={{
-                                    backgroundColor: "#ff3333",
-                                    borderRadius: "8px",
-                                    width: "100%",
-                                    display: "flex",
-                                    gap: "10px",
-                                    transition: "all 0.3s ease-in-out",
-                                    "&:hover": {
-                                        backgroundColor: "#ff0000",
-                                    },
-                                }}
+                            </button>
+                            <button
                                 onClick={onLogout}
+                                className="flex items-center gap-3 w-full px-3 py-3 text-white bg-red-500 hover:bg-red-600 cursor-pointer"
                             >
                                 <LogOut size={18} />
                                 <span>Logout</span>
-                            </ListItemButton>
-                        </ListItem>
+                            </button>
+                        </div>
                     </div>
                 )}
-            </List>
-        </Drawer>
+            </div>
+        </>
     );
 };
 

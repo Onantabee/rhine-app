@@ -22,6 +22,7 @@ const TaskDialog = ({
     taskStatus: "PENDING",
     assigneeId: "",
   });
+  const [fieldErrors, setFieldErrors] = useState({});
 
   // RTK Query hooks
   const { data: nonAdminUsers = [] } = useGetNonAdminUsersQuery();
@@ -38,6 +39,7 @@ const TaskDialog = ({
         taskStatus: "PENDING",
         assigneeId: "",
       });
+      setFieldErrors({});
     }
   }, [open]);
 
@@ -54,16 +56,51 @@ const TaskDialog = ({
     }
   }, [task, open]);
 
+  const clearFieldError = (field) => {
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTaskDetails((prev) => ({ ...prev, [name]: value }));
+    clearFieldError(name);
   };
 
   const handleDateChange = (value) => {
     setTaskDetails((prev) => ({ ...prev, dueDate: value }));
+    clearFieldError("dueDate");
+  };
+
+  const validateFields = () => {
+    const errors = {};
+
+    if (taskDetails.title.trim() === "") {
+      errors.title = "Task name is required";
+    }
+
+    if (taskDetails.description.trim() === "") {
+      errors.description = "Description is required";
+    }
+
+    if (!taskDetails.dueDate) {
+      errors.dueDate = "Due date is required";
+    }
+
+    if (!taskDetails.assigneeId) {
+      errors.assigneeId = "Please assign this task to someone";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSave = async () => {
+    if (!validateFields()) return;
+
     try {
       const taskData = {
         ...taskDetails,
@@ -80,6 +117,8 @@ const TaskDialog = ({
   };
 
   const handleUpdate = async () => {
+    if (!validateFields()) return;
+
     try {
       const taskData = {
         ...taskDetails,
@@ -120,10 +159,11 @@ const TaskDialog = ({
           label="Task Name"
           name="title"
           fullWidth
-          required
           value={taskDetails.title}
           onChange={handleChange}
           autoFocus
+          error={!!fieldErrors.title}
+          helperText={fieldErrors.title}
         />
 
         <TextField
@@ -133,6 +173,8 @@ const TaskDialog = ({
           rows={3}
           value={taskDetails.description}
           onChange={handleChange}
+          error={!!fieldErrors.description}
+          helperText={fieldErrors.description}
         />
 
         <div className="flex flex-row gap-4">
@@ -163,6 +205,8 @@ const TaskDialog = ({
           value={taskDetails.dueDate}
           onChange={handleDateChange}
           fullWidth
+          error={!!fieldErrors.dueDate}
+          helperText={fieldErrors.dueDate}
         />
 
         <Select
@@ -173,6 +217,8 @@ const TaskDialog = ({
           options={assigneeOptions}
           placeholder="Select assignee"
           fullWidth
+          error={!!fieldErrors.assigneeId}
+          helperText={fieldErrors.assigneeId}
         />
 
         <div className="flex justify-end gap-3 pt-4">

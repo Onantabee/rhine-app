@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { AppBar, Toolbar, IconButton } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "../ui";
 import { logout as logoutAction, setSearchTerm } from "../../store/slices/authSlice";
@@ -103,16 +102,12 @@ const Header = ({ setIsSignup }) => {
 
     return (
         <>
-            <AppBar
-                position="sticky"
-                className="px-5 sm:px-8 md:px-12 lg:px-16 mb-5"
-                sx={{ backgroundColor: "#2A2A2A", boxShadow: "none", top: 0 }}
-            >
-                <Toolbar sx={{ padding: "0 !important" }}>
+            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 sm:px-8 md:px-12 lg:px-16 mb-5">
+                <nav className="py-3">
                     {/* Desktop View */}
                     <div className="w-full justify-center max-w-[1240px] mx-auto items-center hidden md:flex space-x-4 gap-4">
                         <div>
-                            <h1 className="text-2xl text-[#808080] font-semibold">Rhine</h1>
+                            <h1 className="text-2xl text-[#7733ff] font-semibold">Rhine</h1>
                         </div>
 
                         {!isLoggedIn ? (
@@ -158,7 +153,6 @@ const Header = ({ setIsSignup }) => {
                                     />
                                     <ProfileDropdown
                                         open={profileDropdownOpen}
-                                        anchorEl={profileRef.current}
                                         userName={userName}
                                         isAdmin={isAdmin}
                                         onEditProfile={handleEditProfileClick}
@@ -171,13 +165,13 @@ const Header = ({ setIsSignup }) => {
 
                     {/* Mobile View */}
                     <div className="md:hidden w-full justify-between items-center flex gap-4">
-                        <h1 className="text-xl font-bold text-gray-500 w-fit">Rhine</h1>
-                        <IconButton edge="end" onClick={handleDrawerToggle}>
-                            <MenuIcon className="text-gray-300" />
-                        </IconButton>
+                        <h1 className="text-xl font-bold text-[#7733ff] w-fit">Rhine</h1>
+                        <button onClick={handleDrawerToggle} className="p-2 text-gray-600 hover:text-gray-800 cursor-pointer">
+                            <Menu size={24} />
+                        </button>
                     </div>
-                </Toolbar>
-            </AppBar>
+                </nav>
+            </header>
 
             {/* Mobile Navigation Drawer */}
             <MobileDrawer
@@ -206,7 +200,7 @@ const Header = ({ setIsSignup }) => {
                 title="Logout?"
                 size="sm"
             >
-                <p className="text-gray-300 mb-6">Are you sure you want to logout?</p>
+                <p className="text-gray-600 mb-6">Are you sure you want to logout?</p>
                 <div className="flex gap-3 justify-end">
                     <Button variant="secondary" onClick={handleLogoutCancel}>
                         Cancel

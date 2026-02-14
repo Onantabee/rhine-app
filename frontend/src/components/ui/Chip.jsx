@@ -11,7 +11,7 @@ const Chip = ({
     className = '',
     ...props
 }) => {
-    const baseStyles = 'inline-flex items-center gap-2 rounded-full font-medium transition-all duration-300';
+    const baseStyles = 'inline-flex items-center gap-2 font-medium';
 
     const sizeStyles = {
         sm: 'px-2 py-1 text-xs',
@@ -19,31 +19,29 @@ const Chip = ({
         lg: 'px-4 py-2 text-base',
     };
 
-    // Predefined status variants
     const statusVariants = {
-        PENDING: 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30',
-        ONGOING: 'bg-blue-500/20 text-blue-300 border border-blue-500/30',
-        COMPLETED: 'bg-green-500/20 text-green-300 border border-green-500/30',
-        CANCELLED: 'bg-gray-500/20 text-gray-400 border border-gray-500/30',
-        OVERDUE: 'bg-gray-500/20 text-gray-400 border border-gray-500/30',
+        PENDING: 'bg-yellow-100 text-yellow-800 border border-yellow-300',
+        ONGOING: 'bg-blue-100 text-blue-800 border border-blue-300',
+        COMPLETED: 'bg-green-100 text-green-800 border border-green-300',
+        CANCELLED: 'bg-gray-100 text-gray-500 border border-gray-300',
+        OVERDUE: 'bg-gray-100 text-gray-500 border border-gray-300',
     };
 
-    // Predefined priority variants
     const priorityVariants = {
-        High: 'bg-red-500/20 text-red-300 border border-red-500/30',
-        Medium: 'bg-orange-500/20 text-orange-300 border border-orange-500/30',
-        Low: 'bg-green-500/20 text-green-300 border border-green-500/30',
+        High: 'bg-red-100 text-red-800 border border-red-300',
+        Medium: 'bg-orange-100 text-orange-800 border border-orange-300',
+        Low: 'bg-green-100 text-green-800 border border-green-300',
     };
 
     const customColor = color
-        ? `bg-${color}-500/20 text-${color}-300 border border-${color}-500/30`
+        ? `bg-${color}-100 text-${color}-800 border border-${color}-300`
         : '';
 
     const variantStyle =
         statusVariants[variant] ||
         priorityVariants[variant] ||
         customColor ||
-        'bg-[#737373]/20 text-gray-300 border border-[#737373]/30';
+        'bg-gray-100 text-gray-700 border border-gray-300';
 
     return (
         <span
@@ -54,7 +52,7 @@ const Chip = ({
             {onDelete && (
                 <button
                     onClick={onDelete}
-                    className="hover:bg-white/10 rounded-full p-0.5 transition-colors"
+                    className="hover:opacity-70 p-0.5 cursor-pointer"
                 >
                     <X size={14} />
                 </button>

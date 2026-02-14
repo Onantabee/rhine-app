@@ -18,7 +18,6 @@ const TextField = forwardRef(
             onChange,
             placeholder,
             autoResize = false,
-            backgroundColor = '#1a1a1a', // Default background
             ...props
         },
         ref
@@ -26,7 +25,6 @@ const TextField = forwardRef(
         const [isFocused, setIsFocused] = useState(false);
         const textareaRef = useRef(ref);
 
-        // Auto-resize functionality
         useEffect(() => {
             if (autoResize && textareaRef.current) {
                 const textarea = textareaRef.current;
@@ -38,13 +36,13 @@ const TextField = forwardRef(
         }, [value, autoResize, maxRows]);
 
         const baseStyles =
-            `w-full px-4 py-3 text-gray-200 rounded-2xl border-2 transition-all duration-300 outline-none resize-none`;
+            'w-full px-4 py-3 bg-white text-gray-800 border border-gray-300 outline-none resize-none';
         const focusStyles = isFocused
-            ? 'border-[#C77BBF] ring-1 ring-[#C77BBF]/50'
-            : 'border-[#333333] hover:border-[#666666]';
+            ? 'border-[#7733ff]'
+            : 'hover:border-gray-400';
         const errorStyles = error ? 'border-red-500' : '';
         const disabledStyles = disabled
-            ? 'opacity-50 cursor-not-allowed bg-[#1a1a1a]/50'
+            ? 'opacity-50 cursor-not-allowed bg-gray-50'
             : '';
 
         const handleChange = (e) => {
@@ -57,7 +55,7 @@ const TextField = forwardRef(
         return (
             <div className={`flex flex-col gap-2 ${fullWidth ? 'w-full' : ''} ${className}`}>
                 {label && (
-                    <label className="text-sm text-[#8c8c8c] font-medium px-2">
+                    <label className="text-sm text-gray-600 font-medium px-1">
                         {label}
                     </label>
                 )}
@@ -68,20 +66,19 @@ const TextField = forwardRef(
                     disabled={disabled}
                     placeholder={placeholder}
                     rows={rows}
-                    style={{ backgroundColor: disabled ? undefined : backgroundColor }}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    className={`${baseStyles} ${focusStyles} ${errorStyles} ${disabledStyles} ${className}`}
+                    className={`${baseStyles} ${focusStyles} ${errorStyles} ${disabledStyles}`}
                     {...props}
                 />
-                <div className="flex justify-between items-center px-2">
-                    {helperText && (
-                        <p className={`text-sm ${error ? 'text-red-400' : 'text-[#737373]'}`}>
-                            {helperText}
+                <div className="flex justify-between items-center px-1">
+                    {(error || helperText) && (
+                        <p className={`text-sm ${error ? 'text-red-500' : 'text-gray-500'}`}>
+                            {error ? (helperText || 'This field is invalid') : helperText}
                         </p>
                     )}
                     {showCount && maxLength && (
-                        <p className="text-sm text-[#737373] ml-auto">
+                        <p className="text-sm text-gray-400 ml-auto">
                             {value.length}/{maxLength}
                         </p>
                     )}
@@ -108,7 +105,6 @@ TextField.propTypes = {
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
     autoResize: PropTypes.bool,
-    backgroundColor: PropTypes.string,
 };
 
 export default TextField;

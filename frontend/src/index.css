@@ -8,121 +8,14 @@ body, html {
 }
 
 body {
-  background-color: #1a1a1a;
-  /* color: #c77bbf8b; */
+  background-color: #ffffff;
+  color: #1f2937;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 main {
   padding-left: 1rem; 
   padding-right: 1rem;
-}
-
-.text-shadow{
-  text-shadow: 1px #1a1a1a;
-}
-
-
-.select {
-  appearance: none;
-  -webkit-appearance: none; 
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'><path d='M5.5 7l4.5 4.5L14.5 7'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 12px;
-  padding-right: 30px;
-}
-
-.custom-select {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-.custom-select select {
-  appearance: none;
-  width: 100%;
-  padding-right: 30px;
-}
-
-.custom-select::after {
-  content: "▼";
-  font-size: 12px;
-  position: absolute;
-  right: 100px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.custom-select select:focus + .select-options {
-  display: block;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: white;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  z-index: 20;
-}
-
-.notification-badge:hover::after {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  border: 3px solid #ff3333;
-  border-radius: 100%;
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 1;
-}
-
-.notification-badge::after {
-  position: relative;
-  opacity: 0;
-  transform: scale(0.5);
-}
-
-.notification-badge:not(:hover)::after {
-  opacity: 0;
-  transform: scale(0.5);
-}
-
-input[type="date"]::-webkit-datetime-edit {
-  color: #d9d9d9;
-}
-
-input[type="date"]::-webkit-datetime-edit-fields-wrapper {
-  background: #4d4d4d;
-}
-
-input[type="date"]::-webkit-datetime-edit-text {
-  color: #d9d9d9;
-  padding: 0 0.2em;
-}
-
-input[type="date"]::-webkit-datetime-edit-month-field,
-input[type="date"]::-webkit-datetime-edit-day-field,
-input[type="date"]::-webkit-datetime-edit-year-field {
-  color: #d9d9d9;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.8);
-  cursor: pointer;
-}
-
-input[type="date"]::-webkit-inner-spin-button {
-  display: none;
-}
-
-input[type="date"] {
-  color-scheme: dark;
 }
 
 .page-logo {

@@ -1,6 +1,6 @@
 import React, { useState, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Input = forwardRef(
     (
@@ -17,7 +17,6 @@ const Input = forwardRef(
             value,
             onChange,
             placeholder,
-            backgroundColor = '#1a1a1a', // Default background
             ...props
         },
         ref
@@ -28,25 +27,25 @@ const Input = forwardRef(
         const inputType = type === 'password' && showPassword ? 'text' : type;
 
         const baseInputStyles =
-            'w-full px-4 py-3 text-gray-200 rounded-2xl border-2 transition-all duration-300 outline-none';
+            'w-full px-4 py-3 bg-white text-gray-800 border border-gray-300 outline-none';
         const focusStyles = isFocused
-            ? 'border-[#C77BBF] bg-[#C77BBF]/10'
-            : 'border-[#333333] hover:border-[#666666]';
+            ? 'border-[#7733ff]'
+            : 'hover:border-gray-400';
         const errorStyles = error ? 'border-red-500' : '';
         const disabledStyles = disabled
-            ? 'opacity-50 cursor-not-allowed'
-            : 'hover:border-[#C77BBF]';
+            ? 'opacity-50 cursor-not-allowed bg-gray-50'
+            : '';
 
         return (
             <div className={`flex flex-col gap-2 ${fullWidth ? 'w-full' : ''} ${className}`}>
                 {label && (
-                    <label className="text-sm text-[#8c8c8c] font-medium px-2">
+                    <label className="text-sm text-gray-600 font-medium px-1">
                         {label}
                     </label>
                 )}
                 <div className="relative">
                     {prefix && (
-                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#8c8c8c]">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                             {prefix}
                         </div>
                     )}
@@ -59,33 +58,32 @@ const Input = forwardRef(
                         placeholder={placeholder}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        style={{ backgroundColor: disabled ? undefined : backgroundColor }}
                         className={`${baseInputStyles} ${focusStyles} ${errorStyles} ${disabledStyles} ${prefix ? 'pl-10' : ''
-                            } ${type === 'password' || suffix ? 'pr-12' : ''} ${className}`}
+                            } ${type === 'password' || suffix ? 'pr-12' : ''}`}
                         {...props}
                     />
                     {type === 'password' && (
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#C77BBF] hover:text-[#9966ff] transition-colors"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
                             tabIndex={-1}
                         >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
                     )}
                     {suffix && type !== 'password' && (
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8c8c8c]">
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                             {suffix}
                         </div>
                     )}
                 </div>
-                {helperText && (
+                {(error || helperText) && (
                     <p
-                        className={`text-sm px-2 ${error ? 'text-red-400' : 'text-[#737373]'
+                        className={`text-sm px-1 ${error ? 'text-red-500' : 'text-gray-500'
                             }`}
                     >
-                        {helperText}
+                        {error ? (helperText || 'This field is invalid') : helperText}
                     </p>
                 )}
             </div>
@@ -108,7 +106,6 @@ Input.propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
-    backgroundColor: PropTypes.string,
 };
 
 export default Input;

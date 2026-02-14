@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Button, Input, Snackbar } from "./ui";
 import {
@@ -25,6 +25,7 @@ export default function Profile({ setEditProfileOpen }) {
 
   const [activeSection, setActiveSection] = useState("profile");
   const [slideDirection, setSlideDirection] = useState("right");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -51,14 +52,25 @@ export default function Profile({ setEditProfileOpen }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserDetails((prev) => ({ ...prev, [name]: value }));
+    clearFieldError(name);
   };
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordDetails((prev) => ({ ...prev, [name]: value }));
+    clearFieldError(name);
+  };
+
+  const clearFieldError = (field) => {
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
   };
 
   const toggleSection = () => {
+    setFieldErrors({});
     setSlideDirection(activeSection === "profile" ? "right" : "left");
     setActiveSection(activeSection === "profile" ? "password" : "profile");
   };
@@ -71,6 +83,15 @@ export default function Profile({ setEditProfileOpen }) {
   };
 
   const handleUpdateProfile = async () => {
+    const errors = {};
+    if (userDetails.name.trim() === "") {
+      errors.name = "Name is required";
+    }
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
     const trimmedName = userDetails.name.trim();
     try {
       await updateUser({
@@ -84,24 +105,28 @@ export default function Profile({ setEditProfileOpen }) {
   };
 
   const handleChangePassword = async () => {
-    try {
-      if (
-        !passwordDetails.oldPassword ||
-        !passwordDetails.newPassword ||
-        !passwordDetails.confirmPassword
-      ) {
-        showSnackbar("All password fields are required", "error");
-        return;
-      }
-      if (passwordDetails.newPassword.length < 6) {
-        showSnackbar("Password must be at least 6 characters", "error");
-        return;
-      }
-      if (passwordDetails.newPassword !== passwordDetails.confirmPassword) {
-        showSnackbar("New passwords don't match", "error");
-        return;
-      }
+    const errors = {};
 
+    if (!passwordDetails.oldPassword) {
+      errors.oldPassword = "Current password is required";
+    }
+    if (!passwordDetails.newPassword) {
+      errors.newPassword = "New password is required";
+    } else if (passwordDetails.newPassword.length < 6) {
+      errors.newPassword = "Password must be at least 6 characters";
+    }
+    if (!passwordDetails.confirmPassword) {
+      errors.confirmPassword = "Please confirm your new password";
+    } else if (passwordDetails.newPassword !== passwordDetails.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
+    try {
       const response = await changePassword({
         email: userEmail,
         currentPassword: passwordDetails.oldPassword,
@@ -113,6 +138,7 @@ export default function Profile({ setEditProfileOpen }) {
         newPassword: "",
         confirmPassword: "",
       });
+      setFieldErrors({});
       showSnackbar(response || "Password changed successfully", "success");
     } catch (error) {
       showSnackbar(error.data?.message || "Failed to change password", "error");
@@ -121,19 +147,19 @@ export default function Profile({ setEditProfileOpen }) {
 
   if (isLoadingUser) {
     return (
-      <div className="min-w-[320px] w-[500px] max-w-[500px] mx-auto p-6 bg-[#2A2A2A] rounded-2xl border border-[#333] min-h-[500px] flex items-center justify-center">
+      <div className="min-w-[320px] w-[500px] max-w-[500px] mx-auto p-6 bg-white border border-gray-200 min-h-[500px] flex items-center justify-center">
         <p className="text-gray-400">Loading profile...</p>
       </div>
     );
   }
 
   return (
-    <div className={`min-w-[320px] w-[500px] max-w-[500px] mx-auto p-6 bg-[#2A2A2A] rounded-2xl border border-[#333] overflow-hidden relative min-h-[500px] ${activeSection === "password" ? "h-[540px]" : "h-[400px]"}`}>
-      <h2 className="text-2xl font-bold text-gray-200 mb-4">Edit Profile</h2>
+    <div className={`min-w-[320px] w-[500px] max-w-[500px] mx-auto p-6 bg-white border border-gray-200 overflow-hidden relative min-h-[500px] ${activeSection === "password" ? "h-[540px]" : "h-[400px]"}`}>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">Edit Profile</h2>
 
       {/* Profile Section */}
       <div
-        className="absolute w-[calc(100%-48px)] transition-all duration-300 ease-in-out"
+        className="absolute w-[calc(100%-48px)]"
         style={{
           transform:
             activeSection === "profile"
@@ -146,7 +172,7 @@ export default function Profile({ setEditProfileOpen }) {
         }}
       >
         <div className="mb-4">
-          <h3 className="text-[#C77BBF] text-lg font-medium mb-4">
+          <h3 className="text-[#7733ff] text-lg font-medium mb-4">
             Personal Information
           </h3>
 
@@ -156,13 +182,15 @@ export default function Profile({ setEditProfileOpen }) {
             fullWidth
             value={userDetails.name}
             onChange={handleChange}
+            error={!!fieldErrors.name}
+            helperText={fieldErrors.name}
           />
         </div>
       </div>
 
       {/* Password Section */}
       <div
-        className="absolute w-[calc(100%-48px)] transition-all duration-300 ease-in-out"
+        className="absolute w-[calc(100%-48px)]"
         style={{
           transform:
             activeSection === "password"
@@ -175,7 +203,7 @@ export default function Profile({ setEditProfileOpen }) {
         }}
       >
         <div className="mb-4">
-          <h3 className="text-[#C77BBF] text-lg font-medium mb-4">
+          <h3 className="text-[#7733ff] text-lg font-medium mb-4">
             Change Password
           </h3>
 
@@ -187,6 +215,8 @@ export default function Profile({ setEditProfileOpen }) {
               fullWidth
               value={passwordDetails.oldPassword}
               onChange={handlePasswordChange}
+              error={!!fieldErrors.oldPassword}
+              helperText={fieldErrors.oldPassword}
             />
 
             <Input
@@ -196,6 +226,8 @@ export default function Profile({ setEditProfileOpen }) {
               fullWidth
               value={passwordDetails.newPassword}
               onChange={handlePasswordChange}
+              error={!!fieldErrors.newPassword}
+              helperText={fieldErrors.newPassword}
             />
 
             <Input
@@ -205,6 +237,8 @@ export default function Profile({ setEditProfileOpen }) {
               fullWidth
               value={passwordDetails.confirmPassword}
               onChange={handlePasswordChange}
+              error={!!fieldErrors.confirmPassword}
+              helperText={fieldErrors.confirmPassword}
             />
           </div>
         </div>
@@ -219,7 +253,7 @@ export default function Profile({ setEditProfileOpen }) {
           className="flex items-center justify-center gap-2"
         >
           {activeSection === "profile" ? "Change Password" : "Back to Profile"}
-          {activeSection === "profile" ? <ChevronRight /> : <ChevronLeft />}
+          {activeSection === "profile" ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </Button>
       </div>
 
