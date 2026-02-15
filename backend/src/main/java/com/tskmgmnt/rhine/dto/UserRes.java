@@ -4,7 +4,7 @@ import com.tskmgmnt.rhine.enums.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
-public class UserRes {  // Renamed to `UserRes` to indicate response DTO
+public class UserRes { 
     @Schema(description = "User's email address", example = "user@example.com")
     private String email;
 
@@ -14,8 +14,6 @@ public class UserRes {  // Renamed to `UserRes` to indicate response DTO
     @Schema(description = "User's role", example = "USER")
     private UserRole userRole;
 
-    @Schema(description = "User's password (usually not returned in response)", example = "********")
-    private String pwd;
 
 
     public UserRes(String email, String name, UserRole userRole) {
@@ -24,9 +22,6 @@ public class UserRes {  // Renamed to `UserRes` to indicate response DTO
         this.userRole = userRole;
     }
 
-    public UserRes(String pwd) {
-        this.pwd = pwd;
-    }
 
     public UserRes() {
 
@@ -36,9 +31,6 @@ public class UserRes {  // Renamed to `UserRes` to indicate response DTO
     public String getName() { return name; }
     public UserRole getUserRole() { return userRole; }
 
-    public String getPwd() {
-        return pwd;
-    }
 
     public void setEmail(String email) {
         this.email = email;
@@ -52,7 +44,4 @@ public class UserRes {  // Renamed to `UserRes` to indicate response DTO
         this.userRole = userRole;
     }
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
 }

@@ -28,7 +28,6 @@ const TaskCard = ({
   const [deleteTaskDialogOpen, setDeleteTaskDialogOpen] = useState(false);
   const [dueDateStatus, setDueDateStatus] = useState(null);
 
-  // RTK Query hooks for user data
   const { data: adminUser } = useGetUserByEmailQuery(createdBy, {
     skip: !createdBy,
   });
@@ -36,7 +35,6 @@ const TaskCard = ({
     skip: !assignee,
   });
 
-  // Unread count query
   const { data: unreadCountByRecipient = 0 } = useCountUnreadCommentsQuery(
     {
       taskId: task.id,
@@ -47,7 +45,6 @@ const TaskCard = ({
     }
   );
 
-  // Task new state query (for employee only)
   const { data: taskNewState } = useGetTaskNewStateQuery(task.id, {
     skip: isAdmin,
   });
@@ -68,7 +65,6 @@ const TaskCard = ({
 
   return (
     <div className="relative">
-      {/* Unread badge */}
       {unreadCountByRecipient > 0 && (
         <button
           onClick={onView}
@@ -78,7 +74,6 @@ const TaskCard = ({
         </button>
       )}
 
-      {/* New task badge */}
       {!isAdmin && taskIsNew && (
         <button
           onClick={onView}
@@ -108,7 +103,6 @@ const TaskCard = ({
                       : "#e5e7eb",
         }}
       >
-        {/* Title */}
         <h3
           className={`text-base font-bold mb-3 truncate ${taskStatus === "CANCELLED"
             ? "text-gray-400 line-through italic"
@@ -120,7 +114,6 @@ const TaskCard = ({
 
         <div className="border-t border-gray-200 my-3" />
 
-        {/* Status and Priority */}
         <div className="flex gap-2 mb-3">
           <Chip
             variant={shouldGrayOut() ? "OVERDUE" : taskStatus}
@@ -138,13 +131,12 @@ const TaskCard = ({
           </Chip>
         </div>
 
-        {/* Assignee/Creator and Due Date */}
         <div className="flex items-center gap-2 mb-3">
           {isAdmin ? (
             <div>
               {taskStatus === "COMPLETED" || taskStatus === "CANCELLED" ? (
                 <div
-                  className={`px-3 py-1.5 font-semibold border text-sm ${taskStatus === "CANCELLED"
+                  className={`px-3 py-1.5 font-semibold border text-sm rounded-[5px] ${taskStatus === "CANCELLED"
                     ? "bg-gray-100 border-gray-300 text-gray-500"
                     : "bg-[#7733ff]/10 border-[#7733ff]/30 text-[#7733ff]"
                     }`}
@@ -190,7 +182,6 @@ const TaskCard = ({
           )}
         </div>
 
-        {/* Admin Actions */}
         {isAdmin && (
           <>
             <div className="border-t border-gray-200 my-3" />
@@ -220,7 +211,6 @@ const TaskCard = ({
         )}
       </Card>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteTaskDialogOpen}
         onClose={() => setDeleteTaskDialogOpen(false)}

@@ -2,9 +2,6 @@ import React from "react";
 import { Select } from "../../components/ui";
 import { formatDueDateText, statusColors, priorityColors } from "../../utils/taskUtils";
 
-/**
- * TaskDetails component - Displays task information card
- */
 const TaskDetails = ({
     task,
     taskStatus,
@@ -26,7 +23,6 @@ const TaskDetails = ({
                 border: cardBorder,
             }}
         >
-            {/* Task Title */}
             <div>
                 <h1
                     className={`text-4xl font-bold ${taskStatus === "CANCELLED"
@@ -38,7 +34,6 @@ const TaskDetails = ({
                 </h1>
             </div>
 
-            {/* Task Description */}
             <div className="flex flex-col gap-1">
                 <p className="text-sm text-gray-500">Description:</p>
                 <div className="h-20 border border-gray-200 px-3 py-1 bg-gray-200/20 rounded-[5px]">
@@ -51,7 +46,6 @@ const TaskDetails = ({
                 </div>
             </div>
 
-            {/* Priority and Status */}
             <div className="flex flex-wrap gap-4">
                 <div className="text-sm text-gray-500 flex items-center justify-center">
                     <span>Priority:&nbsp;</span>
@@ -98,7 +92,6 @@ const TaskDetails = ({
                 </div>
             </div>
 
-            {/* Due Date, Creator, Assignee */}
             <div>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-6">
                     {[

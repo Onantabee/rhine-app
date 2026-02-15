@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { ArrowLeft } from "lucide-react";
+
 import {
     useGetTaskByIdQuery,
     useUpdateTaskStatusMutation,
+    useUpdateTaskNewStateMutation,
 } from "../../store/api/tasksApi";
 import {
     useGetCommentsByTaskQuery,
@@ -13,24 +16,17 @@ import {
     useMarkCommentsAsReadMutation,
 } from "../../store/api/commentsApi";
 import { useGetUserByEmailQuery } from "../../store/api/usersApi";
-import { useUpdateTaskNewStateMutation } from "../../store/api/tasksApi";
 
-// Sub-components
 import TaskDetails from "./TaskDetails";
 import CommentsList from "./CommentsList";
 import CommentInput from "./CommentInput";
 
-// Utilities
 import {
     getDueDateStatus,
     getCardBackground,
     getCardBorder,
 } from "../../utils/taskUtils";
-import { ArrowLeft } from "lucide-react";
 
-/**
- * Task page component - Main task detail and comments view
- */
 export default function Task() {
     const { state } = useLocation();
     const { taskId } = useParams();
@@ -49,7 +45,6 @@ export default function Task() {
     const commentContainerRef = useRef(null);
     const dropdownRef = useRef(null);
 
-    // RTK Query hooks
     const { data: user } = useGetUserByEmailQuery(userEmail, { skip: !userEmail });
     const { data: task, isLoading: isLoadingTask } = useGetTaskByIdQuery(
         taskId || state?.task?.id,
@@ -68,7 +63,6 @@ export default function Task() {
         skip: !task?.assigneeId,
     });
 
-    // Mutations
     const [updateTaskStatus] = useUpdateTaskStatusMutation();
     const [addComment] = useAddCommentMutation();
     const [updateComment] = useUpdateCommentMutation();
@@ -78,21 +72,18 @@ export default function Task() {
 
     const isCommentingAllowed = !(!isAdmin && taskStatus === "CANCELLED");
 
-    // Sync taskStatus with fetched task
     useEffect(() => {
         if (task?.taskStatus) {
             setTaskStatus(task.taskStatus);
         }
     }, [task?.taskStatus]);
 
-    // Due date status calculation
     useEffect(() => {
         if (task?.dueDate) {
             setDueDateStatus(getDueDateStatus(task.dueDate, taskStatus));
         }
     }, [task?.dueDate, taskStatus]);
 
-    // Timer for comment timestamps
     useEffect(() => {
         const interval = setInterval(() => {
             setNow(new Date());
@@ -100,7 +91,6 @@ export default function Task() {
         return () => clearInterval(interval);
     }, []);
 
-    // Mark comments as read on page load
     useEffect(() => {
         if (task?.id && user?.email) {
             markCommentsAsRead({
@@ -111,7 +101,6 @@ export default function Task() {
         }
     }, [task?.id, user?.email, markCommentsAsRead, updateTaskNewState]);
 
-    // Close dropdown on outside click
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -124,7 +113,6 @@ export default function Task() {
         };
     }, []);
 
-    // Auto-scroll to bottom on new comments
     useEffect(() => {
         if (commentContainerRef.current) {
             setTimeout(() => {
@@ -134,7 +122,6 @@ export default function Task() {
         }
     }, [comments]);
 
-    // Get author name for comments
     const getAuthorName = (authorEmail) => {
         if (authorEmail === user?.email) return "Me";
         if (authorEmail === creatorUser?.email) return creatorUser?.name;
@@ -142,7 +129,6 @@ export default function Task() {
         return authorEmail;
     };
 
-    // Event handlers
     const handleUpdateComment = async () => {
         if (!editingComment) return;
 
@@ -174,7 +160,6 @@ export default function Task() {
             isRead: true,
         };
 
-        // Clear input immediately for snappy UX
         setNewComment("");
         if (commentInputRef.current) {
             commentInputRef.current.innerText = "";

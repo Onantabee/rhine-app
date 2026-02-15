@@ -34,7 +34,6 @@ const DatePicker = forwardRef(
 
         const containerRef = useRef(null);
 
-        // Close on outside click
         useEffect(() => {
             const handleClickOutside = (e) => {
                 if (containerRef.current && !containerRef.current.contains(e.target)) {
@@ -45,7 +44,6 @@ const DatePicker = forwardRef(
             return () => document.removeEventListener('mousedown', handleClickOutside);
         }, []);
 
-        // Sync viewDate when value changes externally
         useEffect(() => {
             if (value) setViewDate(new Date(value + 'T00:00:00'));
         }, [value]);
@@ -73,7 +71,6 @@ const DatePicker = forwardRef(
             setViewDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
         };
 
-        // Build calendar grid
         const year = viewDate.getFullYear();
         const month = viewDate.getMonth();
         const firstDay = new Date(year, month, 1).getDay();
@@ -120,7 +117,6 @@ const DatePicker = forwardRef(
                     </label>
                 )}
 
-                {/* Trigger field */}
                 <div
                     onClick={toggleOpen}
                     className={`flex items-center justify-between w-full px-4 py-3 bg-white border outline-none cursor-pointer select-none ${borderColor} ${disabledStyles}`}
@@ -131,10 +127,8 @@ const DatePicker = forwardRef(
                     <Calendar size={18} className="text-gray-400 flex-shrink-0" />
                 </div>
 
-                {/* Calendar dropdown — opens ABOVE */}
                 {open && (
                     <div className="absolute max-w-[350px] min-h-[300px] bottom-full left-0 mb-1 w-full bg-white border border-gray-300 shadow-md z-50 select-none">
-                        {/* Header */}
                         <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200">
                             <button
                                 type="button"
@@ -155,7 +149,6 @@ const DatePicker = forwardRef(
                             </button>
                         </div>
 
-                        {/* Day labels */}
                         <div className="grid grid-cols-7 px-2 pt-2">
                             {DAYS.map((d) => (
                                 <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">
@@ -164,9 +157,7 @@ const DatePicker = forwardRef(
                             ))}
                         </div>
 
-                        {/* Day grid */}
                         <div className="grid grid-cols-7 px-2 pb-2">
-                            {/* Empty cells for offset */}
                             {Array.from({ length: firstDay }).map((_, i) => (
                                 <div key={`empty-${i}`} />
                             ))}
@@ -212,7 +203,6 @@ const DatePicker = forwardRef(
                     </div>
                 )}
 
-                {/* Error / helper text */}
                 {(error || helperText) && (
                     <p className={`text-sm px-1 ${error ? 'text-red-500' : 'text-gray-500'}`}>
                         {error ? (helperText || 'This field is required') : helperText}

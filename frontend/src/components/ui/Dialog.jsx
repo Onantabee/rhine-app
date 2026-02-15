@@ -12,7 +12,6 @@ const Dialog = ({
     className = '',
     ...props
 }) => {
-    // Handle escape key
     useEffect(() => {
         const handleEscape = (e) => {
             if (e.key === 'Escape' && open) {
@@ -35,19 +34,16 @@ const Dialog = ({
 
     return (
         <>
-            {/* Backdrop */}
             <div
                 onClick={onClose}
                 className="fixed inset-0 bg-black/30 z-40"
             />
 
-            {/* Dialog */}
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
                 <div
                     className={`w-full ${sizeStyles[size]} bg-white border border-gray-200 ${className}`}
                     {...props}
                 >
-                    {/* Header */}
                     {(title || showClose) && (
                         <div className="flex items-center justify-between p-6 border-b border-gray-200">
                             {title && (
@@ -64,7 +60,6 @@ const Dialog = ({
                         </div>
                     )}
 
-                    {/* Content */}
                     <div className="p-6">{children}</div>
                 </div>
             </div>

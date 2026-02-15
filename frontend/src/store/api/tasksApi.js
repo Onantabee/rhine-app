@@ -5,7 +5,7 @@ export const tasksApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         // Get all tasks
         getTasks: builder.query({
-            query: () => '/task',
+            query: () => '/tasks',
             providesTags: (result) =>
                 result
                     ? [
@@ -17,20 +17,20 @@ export const tasksApi = baseApi.injectEndpoints({
 
         // Get task by ID
         getTaskById: builder.query({
-            query: (id) => `/task/${id}`,
+            query: (id) => `/tasks/${id}`,
             providesTags: (result, error, id) => [{ type: 'Task', id }],
         }),
 
         // Get task's "is new" state
         getTaskNewState: builder.query({
-            query: (id) => `/task/${id}/is-new`,
+            query: (id) => `/tasks/${id}/is-new`,
             providesTags: (result, error, id) => [{ type: 'Task', id }],
         }),
 
         // Create new task
         createTask: builder.mutation({
             query: (taskData) => ({
-                url: '/task/create-task',
+                url: '/tasks/create-task',
                 method: 'POST',
                 body: taskData,
             }),
@@ -59,7 +59,7 @@ export const tasksApi = baseApi.injectEndpoints({
         // Update task
         updateTask: builder.mutation({
             query: ({ id, taskData }) => ({
-                url: `/task/update-task/${id}`,
+                url: `/tasks/update-task/${id}`,
                 method: 'PUT',
                 body: taskData,
             }),
@@ -72,7 +72,7 @@ export const tasksApi = baseApi.injectEndpoints({
         // Update task status
         updateTaskStatus: builder.mutation({
             query: ({ id, taskStatus }) => ({
-                url: `/task/${id}/status`,
+                url: `/tasks/${id}/status`,
                 method: 'PUT',
                 body: { taskStatus },
             }),
@@ -95,7 +95,7 @@ export const tasksApi = baseApi.injectEndpoints({
         // Update task "is new" state
         updateTaskNewState: builder.mutation({
             query: ({ id, isNew }) => ({
-                url: `/task/task-is-new-state/${id}`,
+                url: `/tasks/task-is-new-state/${id}`,
                 method: 'PUT',
                 body: { isNew },
             }),
@@ -105,7 +105,7 @@ export const tasksApi = baseApi.injectEndpoints({
         // Delete task
         deleteTask: builder.mutation({
             query: (id) => ({
-                url: `/task/${id}`,
+                url: `/tasks/${id}`,
                 method: 'DELETE',
             }),
             invalidatesTags: [{ type: 'Task', id: 'LIST' }],

@@ -47,7 +47,6 @@ const Snackbar = ({
         'bottom-right': 'bottom-4 right-4',
     };
 
-    // Auto-close after duration
     useEffect(() => {
         if (open && duration > 0) {
             const timer = setTimeout(() => {

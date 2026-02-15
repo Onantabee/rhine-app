@@ -48,7 +48,6 @@ const TaskList = ({
     skip: !assignee,
   });
 
-  // Task new state query (for employee only)
   const { data: taskNewState } = useGetTaskNewStateQuery(task.id, {
     skip: isAdmin,
   });
@@ -69,7 +68,6 @@ const TaskList = ({
       onClick={onClick}
       className="relative bg-white border-b border-gray-200 hover:bg-gray-50 group cursor-pointer"
     >
-      {/* Title */}
       <td className="p-3.5 relative flex items-center justify-between gap-2">
         <h3
           className={`text-base font-bold truncate ${taskStatus === "CANCELLED"
@@ -96,21 +94,18 @@ const TaskList = ({
         </div>
       </td>
 
-      {/* Status */}
       <td className="p-3.5 text-center">
         <Chip variant={shouldGrayOut ? "OVERDUE" : taskStatus} size="sm">
           {taskStatus}
         </Chip>
       </td>
 
-      {/* Priority */}
       <td className="p-3.5 text-center">
         <Chip variant={shouldGrayOut ? "OVERDUE" : priority} size="sm">
           {priority}
         </Chip>
       </td>
 
-      {/* Assignee/Creator */}
       <td className="p-3.5">
         {isAdmin ? (
           <div className="flex items-center gap-2">
@@ -131,7 +126,6 @@ const TaskList = ({
         )}
       </td>
 
-      {/* Due Date */}
       <td className="p-3.5 text-center">
         <span
           className={`px-3 py-1 border text-sm font-medium italic rounded-[5px] whitespace-nowrap ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
@@ -143,7 +137,6 @@ const TaskList = ({
         </span>
       </td>
 
-      {/* Actions (Admin Only) */}
       {isAdmin && (
         <td className="p-3.5">
           <div className="flex justify-center items-center gap-1">

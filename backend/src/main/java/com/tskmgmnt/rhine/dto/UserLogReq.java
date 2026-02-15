@@ -43,7 +43,7 @@ public class UserLogReq {
     public String toString() {
         return "UserLogReq{" +
                 "email='" + email + '\'' +
-                ", password='" + password + '\'' +
+                ", password='***'" +
                 '}';
     }
 }

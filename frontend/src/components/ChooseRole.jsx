@@ -12,7 +12,6 @@ const ChooseRole = () => {
   const navigate = useNavigate();
   const userEmail = useSelector((state) => state.auth.userEmail);
 
-  // RTK Query mutation
   const [updateRole, { isLoading }] = useUpdateRoleMutation();
 
   const handleChange = (event) => {

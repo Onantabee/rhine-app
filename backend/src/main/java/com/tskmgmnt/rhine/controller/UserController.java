@@ -1,7 +1,6 @@
 package com.tskmgmnt.rhine.controller;
 
 import com.tskmgmnt.rhine.dto.PasswordChangeReq;
-import com.tskmgmnt.rhine.dto.UserReq;
 import com.tskmgmnt.rhine.dto.UserRes;
 import com.tskmgmnt.rhine.dto.LoginResponse;
 import com.tskmgmnt.rhine.entity.User;
@@ -42,7 +41,7 @@ public class UserController {
     public LoginResponse getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        UserReq userReq = userService.getUserByEmail(email);
+        UserRes userReq = userService.getUserByEmail(email);
         return new LoginResponse(
                 "Authenticated",
                 userReq.getEmail(),
@@ -79,7 +78,7 @@ public class UserController {
             }
     )
     @GetMapping("/{email}")
-    public UserReq getUserByEmail(@PathVariable String email) {
+    public UserRes getUserByEmail(@PathVariable String email) {
         return userService.getUserByEmail(email);
     }
 

@@ -22,9 +22,15 @@ export default function Home() {
   const { showSnackbar } = useSnackbar();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [isCardView, setIsCardView] = useState(true);
+  const [isCardView, setIsCardView] = useState(() => {
+    const savedView = localStorage.getItem("taskViewPreference");
+    return savedView !== null ? JSON.parse(savedView) : true;
+  });
 
-  // RTK Query hooks
+  useEffect(() => {
+    localStorage.setItem("taskViewPreference", JSON.stringify(isCardView));
+  }, [isCardView]);
+
   const { data: user } = useGetUserByEmailQuery(userEmail, {
     skip: !userEmail,
   });
@@ -34,7 +40,6 @@ export default function Home() {
 
   const isAdmin = user?.userRole === "ADMIN";
 
-  // Clear search term on unmount
   useEffect(() => {
     return () => {
       dispatch(setSearchTerm(""));
@@ -68,8 +73,6 @@ export default function Home() {
     }
   };
 
-
-
   const getUserTasks = () => {
     const filtered = filterTasks(tasks);
     return filtered.filter(
@@ -90,13 +93,15 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Header */}
       <div className="flex flex-col">
         <div
           className={`${isAdmin ? "flex justify-between" : "inline"
             } border-b border-gray-200 py-3 gap-2`}
         >
-          <h1 className="text-3xl text-gray-600">Tasks</h1>
+          <div className="flex gap-3 items-center">
+            <h1 className="text-3xl text-gray-600">Tasks</h1>
+            <p className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">{userTasks.length}</p>
+          </div>
           {isAdmin && (
             <Button
               size="md"
@@ -109,7 +114,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* View Toggle */}
         <div className="flex flex-row gap-2 border-b border-gray-200 py-3">
           <Button
             onClick={() => setIsCardView(true)}
@@ -130,7 +134,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Task Display */}
       {isLoadingTasks ? (
         <div className="flex justify-center py-10">
           <p className="text-gray-400">Loading tasks...</p>

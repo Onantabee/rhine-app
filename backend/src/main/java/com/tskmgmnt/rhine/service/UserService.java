@@ -1,6 +1,5 @@
 package com.tskmgmnt.rhine.service;
 
-import com.tskmgmnt.rhine.dto.UserReq;
 import com.tskmgmnt.rhine.dto.UserRes;
 import com.tskmgmnt.rhine.entity.User;
 import com.tskmgmnt.rhine.enums.UserRole;
@@ -27,11 +26,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public UserReq getUserByEmail(String email) {
+    public UserRes getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return new UserReq(user.getEmail(), user.getName(), user.getUserRole());
+        return new UserRes(user.getEmail(), user.getName(), user.getUserRole());
     }
 
     public List<UserRes> getNonAdminUsers() {
@@ -79,24 +78,4 @@ public class UserService {
         return "Password changed successfully.";
     }
 
-//    public UserReq updateIsNewState(String email, UserReq userReq){
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new RuntimeException("Task not Found!"));
-//        user.setList(userReq.isList());
-//        User updatedViewState = userRepository.save(user);
-//        UserReq userReq1 = new UserReq(updatedViewState);
-//        messagingTemplate.convertAndSend("/topic/user-task-view-state",
-//                new NotificationDto<>("USER_TASK_VIEW_STATE", (updatedTaskState)));
-//        return mapToTaskResponse(updatedTaskState);
-//    }
-//
-//    public TaskDto getIsNewState(Long id) {
-//        Task task = taskRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Task not found!"));
-//
-//        TaskDto response = new TaskDto();
-//        response.setIsNew(task.getIsNew());
-//
-//        return response;
-//    }
 }

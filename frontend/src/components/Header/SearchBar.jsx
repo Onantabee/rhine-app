@@ -1,9 +1,6 @@
 import React from "react";
 import { Search, X } from "lucide-react";
 
-/**
- * SearchBar component - Task search input with clear functionality
- */
 const SearchBar = ({ value, onChange, onClear }) => {
     return (
         <div className="flex items-center justify-center w-[30rem] border border-gray-300 focus-within:border-[#7733ff] pl-6 pr-1 bg-white py-1">

@@ -25,7 +25,6 @@ const TaskDialog = ({
   });
   const [fieldErrors, setFieldErrors] = useState({});
 
-  // RTK Query hooks
   const { data: nonAdminUsers = [] } = useGetNonAdminUsersQuery();
   const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();

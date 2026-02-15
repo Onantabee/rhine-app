@@ -6,31 +6,24 @@ import { Button, Dialog } from "../ui";
 import { logout as logoutAction, setSearchTerm } from "../../store/slices/authSlice";
 import { useLogoutMutation } from "../../store/api/authApi";
 
-// Sub-components
+import MobileDrawer from "./MobileDrawer";
+import EditProfileDrawer from "./EditProfileDrawer";
 import UserAvatar from "./UserAvatar";
 import SearchBar from "./SearchBar";
 import ProfileDropdown from "./ProfileDropdown";
-import MobileDrawer from "./MobileDrawer";
-import EditProfileDrawer from "./EditProfileDrawer";
 
-/**
- * Header component - Main navigation header with authentication and search
- * @param {function} setIsSignup - Handler to toggle between login/signup views
- */
 const Header = ({ setIsSignup }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
     const [logoutServer] = useLogoutMutation();
 
-    // Redux state
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const userName = useSelector((state) => state.auth.userName);
     const userRole = useSelector((state) => state.auth.userRole);
     const searchTerm = useSelector((state) => state.auth.searchTerm);
     const isAdmin = userRole === "ADMIN";
 
-    // Local UI state
     const [mobileOpen, setMobileOpen] = useState(false);
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -38,7 +31,6 @@ const Header = ({ setIsSignup }) => {
 
     const profileRef = useRef(null);
 
-    // Event handlers
     const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
     const handleLoginClick = () => {
@@ -94,7 +86,6 @@ const Header = ({ setIsSignup }) => {
         setEditProfileOpen(false);
     };
 
-    // Close profile dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -111,14 +102,12 @@ const Header = ({ setIsSignup }) => {
         <>
             <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 sm:px-8 md:px-12 lg:px-16 mb-5">
                 <nav className="py-3">
-                    {/* Desktop View */}
                     <div className="w-full justify-center max-w-[1240px] mx-auto items-center hidden md:flex space-x-4 gap-4">
                         <div>
                             <h1 className="text-2xl text-[#7733ff] font-semibold">Rhine</h1>
                         </div>
 
                         {!isLoggedIn ? (
-                            // Unauthenticated state
                             <div className="w-full flex justify-end gap-3">
                                 <Button
                                     variant="outlined"
@@ -140,7 +129,6 @@ const Header = ({ setIsSignup }) => {
                                 </Button>
                             </div>
                         ) : (
-                            // Authenticated state
                             <div className="flex w-full justify-between items-center gap-4">
                                 <div className="w-full flex justify-center items-center">
                                     {location.pathname === "/home" && (
@@ -170,7 +158,6 @@ const Header = ({ setIsSignup }) => {
                         )}
                     </div>
 
-                    {/* Mobile View */}
                     <div className="md:hidden w-full justify-between items-center flex gap-4">
                         <h1 className="text-xl font-bold text-[#7733ff] w-fit">Rhine</h1>
                         <button onClick={handleDrawerToggle} className="p-2 text-gray-600 hover:text-gray-800 cursor-pointer">
@@ -180,7 +167,6 @@ const Header = ({ setIsSignup }) => {
                 </nav>
             </header>
 
-            {/* Mobile Navigation Drawer */}
             <MobileDrawer
                 open={mobileOpen}
                 isLoggedIn={isLoggedIn}
@@ -193,14 +179,12 @@ const Header = ({ setIsSignup }) => {
                 onLogout={handleLogoutClick}
             />
 
-            {/* Edit Profile Drawer */}
             <EditProfileDrawer
                 open={editProfileOpen}
                 userName={userName}
                 onClose={handleEditProfileClose}
             />
 
-            {/* Logout Confirmation Dialog */}
             <Dialog
                 open={logoutDialogOpen}
                 onClose={handleLogoutCancel}

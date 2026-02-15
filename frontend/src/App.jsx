@@ -17,8 +17,6 @@ function App() {
   const dispatch = useDispatch();
   const { sessionChecked } = useSelector((state) => state.auth);
   const [triggerGetCurrentUser] = useLazyGetCurrentUserQuery();
-
-  // Validate server session on app mount
   useEffect(() => {
     if (!sessionChecked) {
       triggerGetCurrentUser()

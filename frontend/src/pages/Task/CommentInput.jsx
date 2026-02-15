@@ -1,9 +1,6 @@
 import React from "react";
 import { ArrowUp, Check, X } from "lucide-react";
 
-/**
- * CommentInput component - Input area for adding/editing comments
- */
 const CommentInput = ({
     isCommentingAllowed,
     newComment,

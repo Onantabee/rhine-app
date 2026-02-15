@@ -28,7 +28,7 @@ const MobileDrawer = ({
 
             {/* Drawer */}
             <div
-                className={`fixed top-0 right-0 h-full w-[480px] bg-white border-l border-gray-200 z-50 p-4 ${open ? "translate-x-0" : "translate-x-full"
+                className={`fixed top-0 right-0 h-full w-full md:w-[480px] bg-white border-l border-gray-200 z-50 p-4 ${open ? "translate-x-0" : "translate-x-full"
                     }`}
             >
                 <div className="flex justify-end pr-2">
@@ -61,9 +61,6 @@ const MobileDrawer = ({
                             <p className="font-semibold text-xl text-gray-700">
                                 {userName || "User"}
                             </p>
-                            {isAdmin && (
-                                <p className="text-xs text-gray-500">(Admin)</p>
-                            )}
                         </div>
 
                         <div className="w-full h-px bg-gray-200 my-4" />

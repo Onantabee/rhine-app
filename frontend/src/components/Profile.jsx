@@ -9,6 +9,7 @@ import {
   useUpdateUserMutation,
   useChangePasswordMutation,
 } from "../store/api/usersApi";
+import { capitalizeWords } from "../utils/stringUtils";
 
 export default function Profile({ setEditProfileOpen }) {
   const dispatch = useDispatch();
@@ -31,7 +32,6 @@ export default function Profile({ setEditProfileOpen }) {
   const [slideDirection, setSlideDirection] = useState("right");
   const [fieldErrors, setFieldErrors] = useState({});
 
-  // RTK Query hooks
   const { data: userData, isLoading: isLoadingUser } = useGetUserByEmailQuery(userEmail, {
     skip: !userEmail,
   });
@@ -70,12 +70,6 @@ export default function Profile({ setEditProfileOpen }) {
     setActiveSection(activeSection === "profile" ? "password" : "profile");
   };
 
-  const capitalizeWords = (str) => {
-    return str
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
-  };
 
   const handleUpdateProfile = async () => {
     const errors = {};
@@ -153,7 +147,6 @@ export default function Profile({ setEditProfileOpen }) {
     <div className={`w-full h-full p-6 bg-white border border-gray-200 overflow-hidden relative max-h-[520px] ${activeSection === "password" ? "h-[540px]" : "h-[400px]"}`}>
       <h2 className="text-2xl font-bold text-gray-900 mb-4">Edit Profile</h2>
 
-      {/* Profile Section */}
       <div
         className="absolute w-[calc(100%-48px)]"
         style={{
@@ -184,7 +177,6 @@ export default function Profile({ setEditProfileOpen }) {
         </div>
       </div>
 
-      {/* Password Section */}
       <div
         className="absolute w-[calc(100%-48px)]"
         style={{
@@ -240,7 +232,6 @@ export default function Profile({ setEditProfileOpen }) {
         </div>
       </div>
 
-      {/* Toggle Button */}
       <div className="absolute bottom-20 w-[calc(100%-48px)]">
         <Button
           variant="outlined"
@@ -253,7 +244,6 @@ export default function Profile({ setEditProfileOpen }) {
         </Button>
       </div>
 
-      {/* Action Buttons */}
       <div className="absolute bottom-6 w-[calc(100%-48px)] flex justify-end gap-4">
         <Button variant="outlined" className="px-6">
           Cancel

@@ -37,7 +37,7 @@ public class UserRegReq {
         return "UserRegReq{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", pwd='" + pwd + '\'' +
+                ", pwd='***'" +
                 ", userRole=" + userRole +
                 '}';
     }

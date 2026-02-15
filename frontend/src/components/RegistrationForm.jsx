@@ -5,6 +5,7 @@ import { Button, Input } from "./ui";
 import { useSnackbar } from "../context/SnackbarContext";
 import { useRegisterMutation, useLoginMutation } from "../store/api/authApi";
 import { login as loginAction } from "../store/slices/authSlice";
+import { capitalizeWords } from "../utils/stringUtils";
 
 const Form = ({ isSignup }) => {
   const [name, setName] = useState("");
@@ -16,7 +17,6 @@ const Form = ({ isSignup }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // RTK Query mutations
   const [registerUser, { isLoading: isRegistering }] = useRegisterMutation();
   const [loginUser, { isLoading: isLoggingIn }] = useLoginMutation();
 
@@ -51,12 +51,6 @@ const Form = ({ isSignup }) => {
     });
   };
 
-  const capitalizeWords = (str) => {
-    return str
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
-  };
 
   const handleSignup = async (e) => {
     e.preventDefault();

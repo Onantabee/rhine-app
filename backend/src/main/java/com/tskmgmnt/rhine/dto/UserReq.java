@@ -15,18 +15,12 @@ public class UserReq {
     @Schema(description = "User's role", example = "ADMIN")
     private UserRole userRole;
 
-    @Schema(description = "Flag indicating if this is a list request", example = "false")
-    private boolean isList;
 
 
     public UserReq(String email, String name, UserRole userRole) {
         this.email = email;
         this.name = name;
         this.userRole = userRole;
-    }
-
-    public UserReq(boolean isList) {
-        this.isList = isList;
     }
 
     public UserReq(){
@@ -60,11 +54,4 @@ public class UserReq {
         this.userRole = userRole;
     }
 
-    public boolean isList() {
-        return isList;
-    }
-
-    public void setList(boolean list) {
-        isList = list;
-    }
 }
