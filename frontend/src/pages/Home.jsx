@@ -117,7 +117,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col">
-        <div className="flex justify-between border-b border-gray-200 py-3 gap-2">
+        <div className="flex justify-between border-b border-gray-200 pb-3 gap-2">
           <div className="flex gap-3 items-center">
             <h1 className="text-3xl text-gray-600">Tasks</h1>
             {filteredTasks.length > 0 && (
@@ -179,7 +179,7 @@ export default function Home() {
         <div>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
             {filteredTasks.map((task) => (
-              <div key={task.id}>
+              <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
                 <TaskCard
                   task={task}
                   onEdit={() => handleOpenDialog(task)}

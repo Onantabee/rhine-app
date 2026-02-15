@@ -13,7 +13,7 @@ const ProfileDropdown = ({ open, userName, isAdmin, onEditProfile, onLogout }) =
                 {userName || "User"}
             </p>
 
-            <div className="flex flex-col gap-2">
+            {/* <div className="flex flex-col gap-2">
                 <button
                     onClick={onEditProfile}
                     className="flex items-center gap-3 w-full px-3 py-2 text-gray-600 border border-gray-200 hover:bg-gray-50 cursor-pointer"
@@ -28,7 +28,7 @@ const ProfileDropdown = ({ open, userName, isAdmin, onEditProfile, onLogout }) =
                     <LogOut size={18} />
                     <span>Logout</span>
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 };

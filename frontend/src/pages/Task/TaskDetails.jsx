@@ -17,7 +17,7 @@ const TaskDetails = ({
 
     return (
         <div
-            className="relative bg-gray-50 px-6 py-4 w-full max-w-full flex flex-col gap-6 h-fit rounded-[5px]"
+            className="relative bg-gray-50 px-6 py-4 w-full max-w-full flex flex-col gap-6 h-fit"
             style={{
                 backgroundColor: cardBackground,
                 border: cardBorder,
@@ -36,7 +36,7 @@ const TaskDetails = ({
 
             <div className="flex flex-col gap-1">
                 <p className="text-sm text-gray-500">Description:</p>
-                <div className="h-20 border border-gray-200 px-3 py-1 bg-gray-200/20 rounded-[5px]">
+                <div className="h-20 border border-gray-200 px-3 py-1 bg-gray-200/20 overflow-y-auto">
                     <h1
                         className={`text-[15px] ${taskStatus === "CANCELLED" ? "text-gray-400" : "text-gray-700"
                             }`}

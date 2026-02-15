@@ -65,7 +65,7 @@ const MobileDrawer = ({
 
                         <div className="w-full h-px bg-gray-200 my-4" />
 
-                        <div className="w-full flex flex-col gap-2">
+                        {/* <div className="w-full flex flex-col gap-2">
                             <button
                                 onClick={onEditProfile}
                                 className="flex items-center gap-3 w-full px-3 py-3 text-gray-600 border border-gray-200 hover:bg-gray-50 cursor-pointer"
@@ -80,7 +80,7 @@ const MobileDrawer = ({
                                 <LogOut size={18} />
                                 <span>Logout</span>
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 )}
             </div>

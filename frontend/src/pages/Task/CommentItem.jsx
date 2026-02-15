@@ -76,16 +76,15 @@ const CommentItem = ({
                 >
                     <div className="absolute -top-[7px] right-[17px] w-3 h-3 rotate-45 bg-white border-t border-l border-gray-200 z-[-1]" />
                     {canEdit ? (
-                        <p className="uppercase block px-4 py-2 text-sm italic text-gray-400 w-full text-left">
-                            disabled
-                        </p>
-                    ) : (
                         <button
                             onClick={() => onEdit(comment)}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left cursor-pointer"
                         >
                             Edit
                         </button>
+
+                    ) : (
+                        null
                     )}
                     {isCommentingAllowed && (
                         <button

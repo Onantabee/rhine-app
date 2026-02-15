@@ -14,6 +14,8 @@ import SearchBar from "./SearchBar";
 import ProfileDropdown from "./ProfileDropdown";
 import ProjectPicker from "../ProjectPicker";
 
+import { toggleMobileMenu, closeMobileMenu } from "../../store/slices/uiSlice";
+
 const Header = ({ setIsSignup }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -24,25 +26,25 @@ const Header = ({ setIsSignup }) => {
     const userName = useSelector((state) => state.auth.userName);
     const searchTerm = useSelector((state) => state.auth.searchTerm);
     const activeProject = useSelector((state) => state.project.activeProject);
+    const mobileMenuOpen = useSelector((state) => state.ui.mobileMenuOpen);
     const isAdmin = activeProject?.role === "PROJECT_ADMIN";
 
-    const [mobileOpen, setMobileOpen] = useState(false);
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
     const [editProfileOpen, setEditProfileOpen] = useState(false);
 
     const profileRef = useRef(null);
 
-    const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+    const handleDrawerToggle = () => dispatch(toggleMobileMenu());
 
     const handleLoginClick = () => {
         setIsSignup(false);
-        handleDrawerToggle();
+        dispatch(closeMobileMenu());
     };
 
     const handleSignupClick = () => {
         setIsSignup(true);
-        handleDrawerToggle();
+        dispatch(closeMobileMenu());
     };
 
     const handleLogoutClick = () => {
@@ -59,7 +61,7 @@ const Header = ({ setIsSignup }) => {
         // Always clean up client state
         dispatch(logoutAction());
         dispatch(clearActiveProject());
-        setMobileOpen(false);
+        dispatch(closeMobileMenu());
         setLogoutDialogOpen(false);
         // Force navigate to home and reload to ensure clean state
         navigate("/");
@@ -159,7 +161,7 @@ const Header = ({ setIsSignup }) => {
                                     )}
                                 </div>
 
-                                <div className="relative" ref={profileRef}>
+                                {/* <div className="relative" ref={profileRef}>
                                     <UserAvatar
                                         userName={userName}
                                         size="sm"
@@ -172,7 +174,7 @@ const Header = ({ setIsSignup }) => {
                                         onEditProfile={handleEditProfileClick}
                                         onLogout={handleLogoutClick}
                                     />
-                                </div>
+                                </div> */}
                             </div>
                         )}
                     </div>
@@ -187,11 +189,11 @@ const Header = ({ setIsSignup }) => {
             </header>
 
             <MobileDrawer
-                open={mobileOpen}
+                open={mobileMenuOpen && !isLoggedIn}
                 isLoggedIn={isLoggedIn}
                 userName={userName}
                 isAdmin={isAdmin}
-                onClose={handleDrawerToggle}
+                onClose={() => dispatch(closeMobileMenu())}
                 onLogin={handleLoginClick}
                 onSignup={handleSignupClick}
                 onEditProfile={handleEditProfileClick}

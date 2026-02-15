@@ -54,11 +54,11 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         if (!passwordEncoder.matches(currentPassword, user.getPwd())) {
-            throw new RuntimeException("Input Correct password");
+            throw new IllegalArgumentException("Incorrect current password.");
         }
 
         if (passwordEncoder.matches(newPassword, user.getPwd())) {
-            throw new RuntimeException("New password cannot be the same as the old password.");
+            throw new IllegalArgumentException("New password cannot be the same as the old password.");
         }
 
         user.setPwd(passwordEncoder.encode(newPassword));

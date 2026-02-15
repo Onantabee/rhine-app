@@ -105,14 +105,17 @@ function App() {
               {/* Catch all unmatched routes inside project */}
               <Route path="*" element={<NotFound />} />
             </Route>
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  {isVerified ? <Profile /> : <Navigate to="/verify-email" replace />}
-                </ProtectedRoute>
-              }
-            />
+            {/* Profile route wrapped in WorkspaceLayout to show SidePane */}
+            <Route element={<WorkspaceLayout />}>
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    {isVerified ? <Profile /> : <Navigate to="/verify-email" replace />}
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
           </Routes>
         </Layout>
       </Router>

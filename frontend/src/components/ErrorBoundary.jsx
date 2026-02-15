@@ -24,7 +24,7 @@ class ErrorBoundary extends React.Component {
         if (this.state.hasError) {
             return (
                 <div className="flex flex-col items-center h-screen justify-center p-4">
-                    <div className="z-30 h-[500px] lg:h-auto border border-gray-200 rounded-[5px]"
+                    <div className="z-30 h-auto border border-gray-200 rounded-[5px]"
                         style={{ padding: '20px', width: '100%', maxWidth: '500px' }}>
                         <div className="flex flex-col items-center mb-8">
                             <h1 className="text-3xl font-semibold text-center text-gray-700">Something went wrong</h1>

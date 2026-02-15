@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -74,10 +76,11 @@ public class UserController {
 
     @Operation(summary = "Change user password")
     @PutMapping("/change-password/{email}")
-    public String changePassword(
+    public ResponseEntity<Map<String, String>> changePassword(
             @PathVariable String email,
             @RequestBody PasswordChangeReq request) {
-        return userService.changePassword(email, request.getCurrentPassword(), request.getNewPassword());
+        String data = userService.changePassword(email, request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.ok(Collections.singletonMap("message", data));
     }
 
     @Operation(summary = "Logout user")

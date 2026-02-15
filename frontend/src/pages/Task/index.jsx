@@ -100,7 +100,7 @@ export default function Task() {
             });
             updateTaskNewState({ projectId, id: task.id, isNew: false });
         }
-    }, [task?.id, user?.email, markCommentsAsRead, updateTaskNewState, projectId]);
+    }, [task?.id, user?.email, markCommentsAsRead, updateTaskNewState, projectId, comments]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -247,7 +247,7 @@ export default function Task() {
 
     return (
         <div className="flex flex-col text-gray-800 md:px-5 h-full">
-            <div className="py-4">
+            <div className="pb-4">
                 <button className="flex items-center gap-3 text-[#7733ff] hover:text-[#5500ff] cursor-pointer" onClick={() => navigate(`/project/${projectId}`)}>
                     <ArrowLeft />
                     Back
