@@ -148,6 +148,21 @@ pipeline {
                                   --from-literal=mysql-password=Shangrilla#123
                             fi
                         """ 
+
+                        withCredentials([usernamePassword(credentialsId: 'rhine-email-creds', usernameVariable: 'MAIL_USER', passwordVariable: 'MAIL_PASSWORD')]) {
+                             sh """
+                                if kubectl get secret rhine-secrets > /dev/null 2>&1; then
+                                    echo "***************************************************************** + rhine-secrets already exists + *****************************************************************"
+                                    # Update the secret with the latest credentials from Jenkins
+                                    kubectl create secret generic rhine-secrets --from-literal=mail-username=\${MAIL_USER} --from-literal=mail-password=\${MAIL_PASSWORD} --dry-run=client -o yaml | kubectl apply -f -
+                                else
+                                    echo "***************************************************************** + Creating rhine-secrets + *****************************************************************"
+                                    kubectl create secret generic rhine-secrets \\
+                                      --from-literal=mail-username=\${MAIL_USER} \\
+                                      --from-literal=mail-password=\${MAIL_PASSWORD}
+                                fi
+                            """
+                        } 
                         sh 'kubectl apply -f ops/k8s/mysql-pvc.yaml'
                         sh 'kubectl apply -f ops/k8s/mysql-deployment.yaml'
                         
