@@ -9,33 +9,39 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "*")
 @Tag(
         name = "CRUD REST APIs for User Authentication And Login",
         description = "CRUD REST APIs - User Login"
 )
 public class UserLoginController {
     private final UserLoginService userLoginService;
+    private final AuthenticationManager authenticationManager;
 
-
-    public UserLoginController(UserLoginService userLoginService) {
+    public UserLoginController(UserLoginService userLoginService, AuthenticationManager authenticationManager) {
         this.userLoginService = userLoginService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Operation(
             summary = "Authenticate user",
-            description = "Authenticates a user with their email and password and returns a token/session ID",
+            description = "Authenticates a user with their email and password and creates a server-side session",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Authentication successful",
                             content = @Content(
-                                    schema = @Schema(implementation = String.class),
-                                    examples = @ExampleObject(value = "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"")
+                                    schema = @Schema(implementation = LoginResponse.class)
                             )
                     ),
                     @ApiResponse(
@@ -53,9 +59,26 @@ public class UserLoginController {
             }
     )
     @PostMapping(path = "/login")
-    public LoginResponse login(@RequestBody UserLogReq loginRequest) {
-        String username = loginRequest.getEmail();
+    public LoginResponse login(@RequestBody UserLogReq loginRequest, HttpServletRequest request) {
+        String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
-        return userLoginService.loginUser(username, password);
+
+        // Verify credentials and get user data
+        LoginResponse response = userLoginService.loginUser(email, password);
+
+        // Create authenticated security context and bind to session
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, password)
+        );
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        // Create/bind HTTP session
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+
+        return response;
     }
 }

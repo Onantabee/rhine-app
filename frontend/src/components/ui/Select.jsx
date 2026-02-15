@@ -14,6 +14,7 @@ const Select = forwardRef(
             helperText,
             disabled = false,
             fullWidth = false,
+            size = "md",
             className = "",
             ...props
         },
@@ -45,8 +46,12 @@ const Select = forwardRef(
 
         const selectedOption = options.find((opt) => opt.value === value);
 
+        const sizeStyles = size === "sm"
+            ? "px-3 py-1.5 text-sm"
+            : "px-4 py-3";
         const baseStyles =
-            "w-full px-4 py-3 bg-white text-gray-800 border border-gray-300 flex justify-between items-center outline-none cursor-pointer relative z-10";
+            `w-full text-gray-800 border border-gray-300 flex justify-between items-center outline-none cursor-pointer relative z-10 ${sizeStyles}`;
+        const bgStyle = className.includes("bg-") ? "" : "bg-white";
         const focusStyles = isOpen
             ? "border-[#7733ff]"
             : "hover:border-gray-400";
@@ -58,7 +63,7 @@ const Select = forwardRef(
         return (
             <div
                 ref={containerRef}
-                className={`flex flex-col gap-2 ${fullWidth ? "w-full" : ""} ${className} relative`}
+                className={`flex flex-col gap-2 ${fullWidth ? "w-full" : ""} relative`}
             >
                 {label && (
                     <label className="text-sm text-gray-600 font-medium px-1">
@@ -69,7 +74,7 @@ const Select = forwardRef(
                 <div
                     ref={ref}
                     onClick={() => !disabled && setIsOpen(!isOpen)}
-                    className={`${baseStyles} ${focusStyles} ${errorStyles} ${disabledStyles}`}
+                    className={`${baseStyles} ${bgStyle} ${focusStyles} ${errorStyles} ${disabledStyles} ${className}`}
                     {...props}
                 >
                     <span className={!selectedOption ? "text-gray-400" : ""}>
@@ -87,7 +92,7 @@ const Select = forwardRef(
                             <div
                                 key={option.value}
                                 onClick={() => handleSelect(option.value)}
-                                className={`px-4 py-3 flex items-center justify-between cursor-pointer ${value === option.value
+                                className={`${size === "sm" ? "px-3 py-2 text-sm" : "px-4 py-3"} flex items-center justify-between cursor-pointer ${value === option.value
                                     ? "bg-[#7733ff]/10 text-[#7733ff]"
                                     : "text-gray-700 hover:bg-gray-50"
                                     }`}

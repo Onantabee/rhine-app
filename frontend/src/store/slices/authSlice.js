@@ -6,9 +6,10 @@ const initialState = {
     userName: null,
     userRole: null,
     searchTerm: '',
+    sessionChecked: false, // whether /users/me has been called at least once
 };
 
-// Load initial state from sessionStorage
+// Load initial state from sessionStorage (used as a fast cache for UI, server session is the source of truth)
 const loadInitialState = () => {
     const storedUser = sessionStorage.getItem('user');
     if (storedUser) {
@@ -20,6 +21,7 @@ const loadInitialState = () => {
                 userName: parsed.name || null,
                 userRole: parsed.userRole || null,
                 searchTerm: '',
+                sessionChecked: false, // always re-validate server session on load
             };
         } catch (error) {
             console.error('Failed to parse user from sessionStorage:', error);
@@ -38,6 +40,7 @@ const authSlice = createSlice({
             state.userEmail = action.payload.email;
             state.userName = action.payload.name || null;
             state.userRole = action.payload.userRole || null;
+            state.sessionChecked = true;
 
             // Sync to sessionStorage
             sessionStorage.setItem('user', JSON.stringify({
@@ -54,6 +57,7 @@ const authSlice = createSlice({
             state.userName = null;
             state.userRole = null;
             state.searchTerm = '';
+            state.sessionChecked = true;
 
             // Clear sessionStorage
             sessionStorage.removeItem('user');
@@ -76,11 +80,15 @@ const authSlice = createSlice({
             }));
         },
 
+        setSessionChecked: (state) => {
+            state.sessionChecked = true;
+        },
+
         setSearchTerm: (state, action) => {
             state.searchTerm = action.payload;
         },
     },
 });
 
-export const { login, logout, updateUser, setSearchTerm } = authSlice.actions;
+export const { login, logout, updateUser, setSessionChecked, setSearchTerm } = authSlice.actions;
 export default authSlice.reducer;

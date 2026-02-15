@@ -18,9 +18,9 @@ public class UserLoginService {
 
     public com.tskmgmnt.rhine.dto.LoginResponse loginUser (String email, String rawPassword) {
         User user = userRepository.findByEmail(String.valueOf(email))
-                .orElseThrow(() -> new IllegalStateException("Invalid email"));
+                .orElseThrow(() -> new IllegalStateException("Invalid email or password"));
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new IllegalStateException("Invalid Password");
+            throw new IllegalStateException("Invalid email or password");
         }
         return new com.tskmgmnt.rhine.dto.LoginResponse("Login successful", user.getEmail(), user.getName(), user.getUserRole());
     }

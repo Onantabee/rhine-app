@@ -3,19 +3,21 @@ package com.tskmgmnt.rhine.controller;
 import com.tskmgmnt.rhine.dto.PasswordChangeReq;
 import com.tskmgmnt.rhine.dto.UserReq;
 import com.tskmgmnt.rhine.dto.UserRes;
+import com.tskmgmnt.rhine.dto.LoginResponse;
 import com.tskmgmnt.rhine.entity.User;
 import com.tskmgmnt.rhine.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "*")
 @Tag(
         name = "CRUD REST APIs for User Account",
         description = "CRUD REST APIs - Create Account, Update Account, " +
@@ -26,6 +28,27 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @Operation(
+            summary = "Get current authenticated user",
+            description = "Returns the currently authenticated user's details from the session",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully retrieved current user"),
+                    @ApiResponse(responseCode = "401", description = "Not authenticated")
+            }
+    )
+    @GetMapping("/me")
+    public LoginResponse getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        UserReq userReq = userService.getUserByEmail(email);
+        return new LoginResponse(
+                "Authenticated",
+                userReq.getEmail(),
+                userReq.getName(),
+                userReq.getUserRole()
+        );
     }
 
     @Operation(

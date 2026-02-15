@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Button, Input, Snackbar } from "./ui";
+import { Button, Input } from "./ui";
+import { useSnackbar } from "../context/SnackbarContext";
 import { useRegisterMutation, useLoginMutation } from "../store/api/authApi";
 import { login as loginAction } from "../store/slices/authSlice";
 
@@ -10,9 +11,7 @@ const Form = ({ isSignup }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("error");
+  const { showSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -82,9 +81,7 @@ const Form = ({ isSignup }) => {
     } catch (error) {
       console.error("Signup failed:", error);
       const errorMessage = error.data?.message || "Couldn't Connect to Server";
-      setSnackbarMessage(errorMessage);
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+      showSnackbar(errorMessage, "error");
     }
   };
 
@@ -109,9 +106,7 @@ const Form = ({ isSignup }) => {
     } catch (error) {
       console.error("Login failed:", error);
       const errorMessage = error.data?.message || "Couldn't Connect to Server";
-      setSnackbarMessage(errorMessage);
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+      showSnackbar(errorMessage, "error");
     }
   };
 
@@ -124,13 +119,8 @@ const Form = ({ isSignup }) => {
             width: "100%",
             maxWidth: "500px",
           }}
-          className="z-30 h-[500px] lg:h-auto bg-white border border-gray-200 lg:border-0"
+          className="z-30 h-[500px] lg:h-auto"
         >
-          <div className="flex lg:hidden justify-center items-center mb-10">
-            <div className="flex flex-col justify-center items-center py-5 px-12">
-              <h1 className="text-4xl text-[#7733ff] font-semibold">Rhine</h1>
-            </div>
-          </div>
 
           <div>
             <h2 className="text-3xl font-semibold text-center mb-5 text-gray-700">
@@ -201,13 +191,7 @@ const Form = ({ isSignup }) => {
         </div>
       </div>
 
-      <Snackbar
-        open={openSnackbar}
-        onClose={() => setOpenSnackbar(false)}
-        message={snackbarMessage}
-        variant={snackbarSeverity}
-        position="bottom-left"
-      />
+
 
       <div className="absolute bottom-0 w-full flex justify-center">
         <div className="py-2 px-5">

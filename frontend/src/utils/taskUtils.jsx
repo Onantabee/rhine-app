@@ -28,28 +28,43 @@ export const getDueDateStatus = (dueDate, currentStatus) => {
 /**
  * Format due date text based on status
  */
+export const dueDateStatusConfig = {
+    OVERDUE: {
+        text: "Overdue",
+        className: "bg-gray-100 border-gray-300 text-gray-500",
+    },
+    DUE_TODAY: {
+        text: "Due",
+        className: "bg-red-50 border-red-300 text-red-600",
+    },
+    DUE_TOMORROW: {
+        text: "Due Tomorrow",
+        className: "bg-orange-50 border-orange-300 text-orange-600",
+    },
+    DUE_IN_2_DAYS: {
+        text: "Due in 2 Days",
+        className: "bg-yellow-50 border-yellow-300 text-yellow-700",
+    },
+};
+
+/**
+ * Format due date text based on status
+ */
 export const formatDueDateText = (dueDate, status, dueDateStatus) => {
     if (status === "COMPLETED" || status === "CANCELLED") {
         return new Intl.DateTimeFormat("en-US", {
-            month: "long",
+            month: "short",
             day: "numeric",
             year: "numeric",
         }).format(new Date(dueDate));
     }
 
-    const statusConfig = {
-        OVERDUE: { text: "Overdue" },
-        DUE_TODAY: { text: "Due" },
-        DUE_TOMORROW: { text: "Due Tomorrow" },
-        DUE_IN_2_DAYS: { text: "Due in 2 Days" },
-    };
-
-    if (statusConfig[dueDateStatus]) {
-        return statusConfig[dueDateStatus].text;
+    if (dueDateStatusConfig[dueDateStatus]) {
+        return dueDateStatusConfig[dueDateStatus].text;
     }
 
     return new Intl.DateTimeFormat("en-US", {
-        month: "long",
+        month: "short",
         day: "numeric",
         year: "numeric",
     }).format(new Date(dueDate));
@@ -111,4 +126,25 @@ export const priorityColors = {
     Medium: "bg-orange-100 text-orange-800",
     Low: "bg-yellow-100 text-yellow-800",
     OVERDUE: "bg-gray-100 text-gray-500",
+};
+
+/**
+ * Highlight search term matches in text
+ */
+export const highlightSearchMatch = (text, searchTerm) => {
+    if (!searchTerm || searchTerm.trim() === "") return text;
+
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    return text.split(regex).map((part, index) =>
+        part.toLowerCase() === searchTerm.toLowerCase() ? (
+            <span
+                key={index}
+                className="bg-[#7733ff]/30 text-[#7733ff] px-1 font-bold"
+            >
+                {part}
+            </span>
+        ) : (
+            part
+        )
+    );
 };

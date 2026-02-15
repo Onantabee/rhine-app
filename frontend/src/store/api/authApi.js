@@ -22,6 +22,19 @@ export const authApi = baseApi.injectEndpoints({
             }),
         }),
 
+        // Get current authenticated user (session validation)
+        getCurrentUser: builder.query({
+            query: () => '/users/me',
+        }),
+
+        // Logout user (server-side session invalidation)
+        logout: builder.mutation({
+            query: () => ({
+                url: '/users/logout',
+                method: 'POST',
+            }),
+        }),
+
         // Update user role
         updateRole: builder.mutation({
             query: (roleData) => ({
@@ -37,5 +50,8 @@ export const authApi = baseApi.injectEndpoints({
 export const {
     useRegisterMutation,
     useLoginMutation,
+    useGetCurrentUserQuery,
+    useLazyGetCurrentUserQuery,
+    useLogoutMutation,
     useUpdateRoleMutation,
 } = authApi;

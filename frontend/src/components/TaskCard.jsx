@@ -5,6 +5,13 @@ import { Pencil, Trash2, Eye } from "lucide-react";
 import { useGetUserByEmailQuery } from "../store/api/usersApi";
 import { useGetTaskNewStateQuery } from "../store/api/tasksApi";
 import { useCountUnreadCommentsQuery } from "../store/api/commentsApi";
+import {
+  getDueDateStatus,
+  formatDueDateText,
+  getCardBackground,
+  dueDateStatusConfig,
+  highlightSearchMatch,
+} from "../utils/taskUtils";
 
 const TaskCard = ({
   task,
@@ -37,7 +44,6 @@ const TaskCard = ({
     },
     {
       skip: !loggedInUser?.email,
-      pollingInterval: 30000,
     }
   );
 
@@ -48,111 +54,13 @@ const TaskCard = ({
   const taskIsNew = taskNewState?.isNew || false;
 
   useEffect(() => {
-    if (taskStatus === "COMPLETED" || taskStatus === "CANCELLED") {
-      setDueDateStatus(null);
-      return;
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const due = new Date(dueDate);
-    due.setHours(0, 0, 0, 0);
-
-    const diffTime = due - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays < 0) {
-      setDueDateStatus("OVERDUE");
-    } else if (diffDays === 0) {
-      setDueDateStatus("DUE_TODAY");
-    } else if (diffDays === 1) {
-      setDueDateStatus("DUE_TOMORROW");
-    } else if (diffDays === 2) {
-      setDueDateStatus("DUE_IN_2_DAYS");
-    } else {
-      setDueDateStatus(null);
-    }
+    setDueDateStatus(getDueDateStatus(dueDate, taskStatus));
   }, [dueDate, taskStatus]);
-
-  const highlightSearchMatch = (text) => {
-    if (!searchTerm || searchTerm.trim() === "") return text;
-
-    const regex = new RegExp(`(${searchTerm})`, "gi");
-    return text.split(regex).map((part, index) =>
-      part.toLowerCase() === searchTerm.toLowerCase() ? (
-        <span
-          key={index}
-          className="bg-[#7733ff]/30 text-[#7733ff] px-1 font-bold"
-        >
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    );
-  };
 
   const fullName = String(employeeUser?.name || "");
   const names = fullName.split(/\s+/);
   const firstName = names[0];
   const lastName = names[1];
-
-  const getCardBackground = () => {
-    if (taskStatus === "COMPLETED") return "rgba(220, 252, 231, 0.5)";
-    if (taskStatus === "CANCELLED") return "rgba(243, 244, 246, 0.5)";
-
-    switch (dueDateStatus) {
-      case "DUE_IN_2_DAYS":
-        return "rgba(254, 249, 195, 0.3)";
-      case "DUE_TOMORROW":
-        return "rgba(255, 237, 213, 0.3)";
-      case "DUE_TODAY":
-        return "rgba(254, 226, 226, 0.3)";
-      case "OVERDUE":
-        return "rgba(243, 244, 246, 0.5)";
-      default:
-        return "#ffffff";
-    }
-  };
-
-  const dueDateStatusConfig = {
-    OVERDUE: {
-      text: "Overdue",
-      className: "bg-gray-100 border-gray-300 text-gray-500",
-    },
-    DUE_TODAY: {
-      text: "Due",
-      className: "bg-red-50 border-red-300 text-red-600",
-    },
-    DUE_TOMORROW: {
-      text: "Due Tomorrow",
-      className: "bg-orange-50 border-orange-300 text-orange-600",
-    },
-    DUE_IN_2_DAYS: {
-      text: "Due in 2 Days",
-      className: "bg-yellow-50 border-yellow-300 text-yellow-700",
-    },
-  };
-
-  const getDueDateText = () => {
-    if (["COMPLETED", "CANCELLED"].includes(taskStatus)) {
-      return formatDate(dueDate);
-    }
-
-    if (dueDateStatusConfig[dueDateStatus]) {
-      return dueDateStatusConfig[dueDateStatus].text;
-    }
-
-    return formatDate(dueDate);
-  };
-
-  const formatDate = (date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(new Date(date));
-  };
 
   const shouldGrayOut = () => {
     return dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED";
@@ -164,7 +72,7 @@ const TaskCard = ({
       {unreadCountByRecipient > 0 && (
         <button
           onClick={onView}
-          className="absolute h-6 w-6 bg-red-500 text-white text-xs border border-red-400 flex justify-center items-center -right-2 -top-2 cursor-pointer z-10"
+          className="absolute h-6 w-6 bg-red-500 text-white text-xs border border-red-400 flex justify-center items-center -right-2 -top-2 cursor-pointer z-10 rounded-full"
         >
           {unreadCountByRecipient}
         </button>
@@ -174,7 +82,7 @@ const TaskCard = ({
       {!isAdmin && taskIsNew && (
         <button
           onClick={onView}
-          className={`absolute h-6 px-3 bg-[#7733ff] text-white text-xs border border-[#8855ee] flex justify-center items-center ${unreadCountByRecipient > 0 ? "right-8" : "-right-2"
+          className={`absolute rounded-full  h-6 px-3 bg-[#14B8A6] text-white text-xs flex justify-center items-center ${unreadCountByRecipient > 0 ? "right-8" : "-right-2"
             } -top-2 cursor-pointer z-10`}
         >
           New
@@ -185,7 +93,7 @@ const TaskCard = ({
         padding="default"
         className=""
         style={{
-          backgroundColor: getCardBackground(),
+          backgroundColor: getCardBackground(taskStatus, dueDateStatus),
           borderColor:
             taskStatus === "COMPLETED"
               ? "rgba(34, 197, 94, 0.3)"
@@ -202,12 +110,12 @@ const TaskCard = ({
       >
         {/* Title */}
         <h3
-          className={`text-base font-bold mb-3 ${taskStatus === "CANCELLED"
+          className={`text-base font-bold mb-3 truncate ${taskStatus === "CANCELLED"
             ? "text-gray-400 line-through italic"
             : "text-gray-700"
             }`}
         >
-          {highlightSearchMatch(title)}
+          {highlightSearchMatch(title, searchTerm)}
         </h3>
 
         <div className="border-t border-gray-200 my-3" />
@@ -241,10 +149,10 @@ const TaskCard = ({
                     : "bg-[#7733ff]/10 border-[#7733ff]/30 text-[#7733ff]"
                     }`}
                 >
-                  {firstName || "User"} {lastName || ""}
+                  {firstName || "User"} {lastName ? lastName.charAt(0) + "." : ""}
                 </div>
               ) : (
-                <div className="w-8 h-8 border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
+                <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
                   {firstName?.charAt(0) || "U"}
                   {lastName?.charAt(0) || ""}
                 </div>
@@ -254,28 +162,28 @@ const TaskCard = ({
             <div className="flex flex-col">
               <span className="text-gray-400 text-xs mb-1">Creator</span>
               <span
-                className={`px-3 py-1 border text-sm font-medium ${taskStatus === "CANCELLED"
+                className={`px-3 py-1 rounded-[5px] border text-sm font-medium truncate max-w-[115px] ${taskStatus === "CANCELLED"
                   ? "bg-gray-100 border-gray-300 text-gray-500"
                   : "bg-blue-50 border-blue-300 text-blue-700"
                   }`}
               >
-                {adminUser?.name || "Loading..."}
+                {adminUser?.name ? `${adminUser.name.split(" ")[0]} ${adminUser.name.split(" ")[1] ? adminUser.name.split(" ")[1].charAt(0) + "." : ""}`.trim() : "Loading..."}
               </span>
             </div>
           )}
 
           {!(taskStatus === "COMPLETED" || taskStatus === "CANCELLED") && (
             <>
-              <div className="bg-gray-300 w-1 h-1" />
+              <div className="bg-gray-300 w-1 h-1 rounded-full" />
               <div className="flex flex-col">
                 {!isAdmin && <span className="text-gray-400 text-xs mb-1">Due</span>}
                 <span
-                  className={`px-3 py-1 border text-sm font-medium italic ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
+                  className={`px-3 py-1 border text-sm font-medium italic rounded-[5px] ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
                     ? dueDateStatusConfig[dueDateStatus].className
                     : "bg-gray-50 border-gray-200 text-gray-600"
                     }`}
                 >
-                  {getDueDateText()}
+                  {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
                 </span>
               </div>
             </>
@@ -286,19 +194,21 @@ const TaskCard = ({
         {isAdmin && (
           <>
             <div className="border-t border-gray-200 my-3" />
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end items-center gap-2">
               <button
                 onClick={onView}
                 className="p-2 text-gray-400 hover:text-blue-500 cursor-pointer"
               >
                 <Eye size={18} />
               </button>
+              <hr className="h-6 w-[2px] border-none bg-gray-200" />
               <button
                 onClick={onEdit}
                 className="p-2 text-gray-400 hover:text-[#7733ff] cursor-pointer"
               >
                 <Pencil size={18} />
               </button>
+              <hr className="h-6 w-[2px] border-none bg-gray-200" />
               <button
                 onClick={() => setDeleteTaskDialogOpen(true)}
                 className="p-2 text-red-400 hover:text-red-600 cursor-pointer"

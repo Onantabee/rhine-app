@@ -23,7 +23,7 @@ const UserAvatar = ({ userName = "", size = "md", onClick }) => {
         >
             <span>
                 {firstName?.charAt(0) || "U"}
-                {lastName?.charAt(0) || " "}
+                {/* {lastName?.charAt(0) || " "} */}
             </span>
         </div>
     );

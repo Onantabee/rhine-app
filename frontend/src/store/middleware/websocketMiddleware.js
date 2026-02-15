@@ -29,6 +29,20 @@ function initializeWebSocket(store) {
         onConnect: () => {
             console.log('[WebSocket] Connected');
 
+            // Subscribe to unread count updates
+            stompClient.subscribe('/topic/unread-updates', (message) => {
+                try {
+                    const { taskId, recipientEmail } = JSON.parse(message.body);
+                    store.dispatch(
+                        commentsApi.util.invalidateTags([
+                            { type: 'UnreadCount', id: `${taskId}-${recipientEmail}` },
+                        ])
+                    );
+                } catch (error) {
+                    console.error('[WebSocket] Error parsing unread update:', error);
+                }
+            });
+
             // Subscribe to comment updates
             stompClient.subscribe('/topic/comments', (message) => {
                 try {

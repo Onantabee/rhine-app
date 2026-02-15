@@ -28,7 +28,7 @@ const MobileDrawer = ({
 
             {/* Drawer */}
             <div
-                className={`fixed top-0 right-0 h-full w-[280px] bg-white border-l border-gray-200 z-50 p-4 ${open ? "translate-x-0" : "translate-x-full"
+                className={`fixed top-0 right-0 h-full w-[480px] bg-white border-l border-gray-200 z-50 p-4 ${open ? "translate-x-0" : "translate-x-full"
                     }`}
             >
                 <div className="flex justify-end pr-2">

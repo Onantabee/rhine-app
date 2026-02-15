@@ -33,7 +33,7 @@ const Button = React.forwardRef(
             secondary:
                 'bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed',
             outlined:
-                'bg-transparent text-[#7733ff] border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed',
+                'bg-transparent text-[#7733ff] border border-[#7733ff] hover:bg-[#7733ff]/10 disabled:opacity-50 disabled:cursor-not-allowed',
             ghost:
                 'bg-transparent text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed',
             danger:

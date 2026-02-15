@@ -27,7 +27,7 @@ const CommentItem = ({
                     }`}
             >
                 <div
-                    className={`h-10 w-[4px] ${isOwnComment ? "bg-[#7733ff]/30 group-hover:bg-[#7733ff]" : "bg-gray-300"
+                    className={`h-10 w-[4px] rounded ${isOwnComment ? "bg-[#7733ff]/30 group-hover:bg-[#7733ff]" : "bg-gray-300"
                         }`}
                 />
                 <div className="flex justify-between w-full items-center">
@@ -41,7 +41,7 @@ const CommentItem = ({
                             >
                                 {authorName}
                             </span>
-                            <div className="bg-gray-300 w-1 h-1" />
+                            <div className="bg-gray-300 w-1 h-1 rounded-full" />
                             <p
                                 className={`text-xs ${isOwnComment
                                     ? "text-gray-400 group-hover:text-[#7733ff]/70"
@@ -58,7 +58,7 @@ const CommentItem = ({
                         <p className="text-md text-gray-700">{comment.content}</p>
                     </div>
                     {isOwnComment && (
-                        <div className="relative top-0 opacity-0 right-0 mt-2 mr-2 group-hover:opacity-100">
+                        <div className="relative top-0 opacity-0 right-0 group-hover:opacity-100">
                             <button
                                 onClick={() => onToggleDropdown(comment.id)}
                                 className="cursor-pointer p-1 text-gray-400 hover:text-[#7733ff]"
@@ -76,16 +76,16 @@ const CommentItem = ({
                 >
                     <div className="absolute -top-[7px] right-[17px] w-3 h-3 rotate-45 bg-white border-t border-l border-gray-200 z-[-1]" />
                     {canEdit ? (
+                        <p className="uppercase block px-4 py-2 text-sm italic text-gray-400 w-full text-left">
+                            disabled
+                        </p>
+                    ) : (
                         <button
                             onClick={() => onEdit(comment)}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left cursor-pointer"
                         >
                             Edit
                         </button>
-                    ) : (
-                        <p className="uppercase block px-4 py-2 text-sm italic text-gray-400 w-full text-left">
-                            disabled
-                        </p>
                     )}
                     {isCommentingAllowed && (
                         <button

@@ -5,9 +5,8 @@ export const baseApi = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
-
+        credentials: 'include', // Send JSESSIONID cookie with every request
         prepareHeaders: (headers) => {
-            // Add any auth headers here if needed in the future
             headers.set('Content-Type', 'application/json');
             return headers;
         },

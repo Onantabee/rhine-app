@@ -77,12 +77,21 @@ public class CommentController {
     )
     @PostMapping("/task/{taskId}")
     public Comment addComment(@PathVariable Long taskId, @RequestBody Map<String, String> payload) {
-        return commentService.addComment(
+        Comment comment = commentService.addComment(
                 taskId,
                 payload.get("authorEmail"),
                 payload.get("content"),
                 payload.get("recipientEmail")
         );
+
+        String recipientEmail = payload.get("recipientEmail");
+        long newCount = commentService.countUnreadCommentsByRecipient(recipientEmail, taskId);
+        messagingTemplate.convertAndSend(
+                "/topic/unread-updates",
+                Map.of("taskId", taskId, "count", newCount, "recipientEmail", recipientEmail)
+        );
+
+        return comment;
     }
 
     @Operation(
@@ -175,6 +184,17 @@ public class CommentController {
     )
     @DeleteMapping("/{commentId}")
     public Comment deleteCommentById(@PathVariable Long commentId) {
-        return commentService.deleteCommentById(commentId);
+        Comment deletedComment = commentService.deleteCommentById(commentId);
+
+        if (deletedComment.getTask() != null && deletedComment.getRecipient() != null) {
+            Long taskId = deletedComment.getTask().getId();
+            String recipientEmail = deletedComment.getRecipient().getEmail();
+            long newCount = commentService.countUnreadCommentsByRecipient(recipientEmail, taskId);
+            messagingTemplate.convertAndSend(
+                    "/topic/unread-updates",
+                    Map.of("taskId", taskId, "count", newCount, "recipientEmail", recipientEmail)
+            );
+        }
+        return deletedComment;
     }
 }

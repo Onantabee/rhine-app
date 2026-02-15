@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
     useGetTaskByIdQuery,
@@ -25,7 +25,8 @@ import {
     getDueDateStatus,
     getCardBackground,
     getCardBorder,
-} from "./taskUtils";
+} from "../../utils/taskUtils";
+import { ArrowLeft } from "lucide-react";
 
 /**
  * Task page component - Main task detail and comments view
@@ -33,6 +34,7 @@ import {
 export default function Task() {
     const { state } = useLocation();
     const { taskId } = useParams();
+    const navigate = useNavigate();
     const userEmail = useSelector((state) => state.auth.userEmail);
 
     const isAdmin = state?.isAdmin || false;
@@ -57,7 +59,6 @@ export default function Task() {
         taskId || state?.task?.id,
         {
             skip: !taskId && !state?.task?.id,
-            pollingInterval: 5000,
         }
     );
     const { data: creatorUser } = useGetUserByEmailQuery(task?.createdById, {
@@ -147,38 +148,40 @@ export default function Task() {
 
         try {
             await updateComment({
-                id: editingComment.id,
+                commentId: editingComment.id,
                 content: newComment.trim(),
+                taskId: task.id,
             }).unwrap();
+        } catch (error) {
+            console.error("Error updating comment:", error);
+        } finally {
             setEditingComment(null);
             setNewComment("");
             if (commentInputRef.current) {
                 commentInputRef.current.innerText = "";
-                commentInputRef.current.dataset.placeholder = "Add a comment...";
             }
-        } catch (error) {
-            console.error("Error updating comment:", error);
         }
     };
 
     const handleAddComment = async () => {
         if (!user || !newComment.trim()) return;
 
-        try {
-            const commentPayload = {
-                taskId: task.id,
-                authorEmail: user.email,
-                content: newComment.trim(),
-                recipientEmail: isAdmin ? task.assigneeId : task.createdById,
-                isRead: true,
-            };
+        const commentPayload = {
+            taskId: task.id,
+            authorEmail: user.email,
+            content: newComment.trim(),
+            recipientEmail: isAdmin ? task.assigneeId : task.createdById,
+            isRead: true,
+        };
 
+        // Clear input immediately for snappy UX
+        setNewComment("");
+        if (commentInputRef.current) {
+            commentInputRef.current.innerText = "";
+        }
+
+        try {
             await addComment(commentPayload).unwrap();
-            setNewComment("");
-            if (commentInputRef.current) {
-                commentInputRef.current.innerText = "";
-                commentInputRef.current.dataset.placeholder = "Add a comment...";
-            }
         } catch (error) {
             console.error("Error adding comment:", error);
         }
@@ -236,8 +239,7 @@ export default function Task() {
         setNewComment(e.target.innerText);
         e.target.style.height = "auto";
         e.target.style.height = `${Math.min(e.target.scrollHeight, 5 * 24)}px`;
-        e.target.dataset.placeholder =
-            e.target.innerText.trim() === "" ? "Add a comment..." : "";
+        e.target.style.height = `${Math.min(e.target.scrollHeight, 5 * 24)}px`;
     };
 
     const handleCancelEdit = () => {
@@ -257,8 +259,14 @@ export default function Task() {
     }
 
     return (
-        <div className="flex flex-col justify-between min-h-full h-[calc(100dvh-84px)] text-gray-800 md:px-5">
-            <div className="md:p-2 w-full max-w-3xl mx-auto">
+        <div className="flex flex-col min-h-full h-[calc(100dvh-84px)] overflow-y-auto md:overflow-hidden text-gray-800 md:px-5">
+            <div className="pb-4">
+                <button className="flex items-center gap-3 text-[#7733ff] hover:text-[#5500ff] cursor-pointer" onClick={() => navigate(-1)}>
+                    <ArrowLeft />
+                    Back
+                </button>
+            </div>
+            <div className="md:p-2 w-full max-w-full flex flex-col md:flex-row gap-6 flex-1 min-h-0">
                 <TaskDetails
                     task={task}
                     taskStatus={taskStatus}
@@ -271,32 +279,33 @@ export default function Task() {
                     cardBorder={getCardBorder(taskStatus, dueDateStatus)}
                 />
 
-                <CommentsList
-                    comments={comments}
-                    currentUserEmail={user?.email}
-                    getAuthorName={getAuthorName}
-                    now={now}
-                    isCommentingAllowed={isCommentingAllowed}
-                    openDropdownId={openDropdownId}
-                    onToggleDropdown={(id) =>
-                        setOpenDropdownId(openDropdownId === id ? null : id)
-                    }
-                    onEditComment={handleEditClick}
-                    onDeleteComment={handleDeleteClick}
-                    dropdownRef={dropdownRef}
-                    containerRef={commentContainerRef}
-                />
+                <div className="w-full flex flex-col flex-1 md:flex-initial min-h-0">
+                    <CommentsList
+                        comments={comments}
+                        currentUserEmail={user?.email}
+                        getAuthorName={getAuthorName}
+                        now={now}
+                        isCommentingAllowed={isCommentingAllowed}
+                        openDropdownId={openDropdownId}
+                        onToggleDropdown={(id) =>
+                            setOpenDropdownId(openDropdownId === id ? null : id)
+                        }
+                        onEditComment={handleEditClick}
+                        onDeleteComment={handleDeleteClick}
+                        dropdownRef={dropdownRef}
+                        containerRef={commentContainerRef}
+                    />
+                    <CommentInput
+                        isCommentingAllowed={isCommentingAllowed}
+                        newComment={newComment}
+                        editingComment={editingComment}
+                        onCommentChange={handleCommentChange}
+                        onSubmit={editingComment ? handleUpdateComment : handleAddComment}
+                        onCancelEdit={handleCancelEdit}
+                        inputRef={commentInputRef}
+                    />
+                </div>
             </div>
-
-            <CommentInput
-                isCommentingAllowed={isCommentingAllowed}
-                newComment={newComment}
-                editingComment={editingComment}
-                onCommentChange={handleCommentChange}
-                onSubmit={editingComment ? handleUpdateComment : handleAddComment}
-                onCancelEdit={handleCancelEdit}
-                inputRef={commentInputRef}
-            />
         </div>
     );
 }

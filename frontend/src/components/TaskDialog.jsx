@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Dialog, Button, Input, TextField, Select, DatePicker } from "./ui";
+import { useSnackbar } from "../context/SnackbarContext";
 import {
   useCreateTaskMutation,
   useUpdateTaskMutation,
@@ -11,8 +12,8 @@ const TaskDialog = ({
   open,
   onClose,
   task,
-  showSnackbar,
 }) => {
+  const { showSnackbar } = useSnackbar();
   const userEmail = useSelector((state) => state.auth.userEmail);
   const [taskDetails, setTaskDetails] = useState({
     title: "",

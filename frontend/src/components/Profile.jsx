@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useSelector } from "react-redux";
-import { Button, Input, Snackbar } from "./ui";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUser as updateAuthUser } from "../store/slices/authSlice";
+import { useSnackbar } from "../context/SnackbarContext";
+import { Button, Input } from "./ui";
 import {
   useGetUserByEmailQuery,
   useUpdateUserMutation,
@@ -9,6 +11,8 @@ import {
 } from "../store/api/usersApi";
 
 export default function Profile({ setEditProfileOpen }) {
+  const dispatch = useDispatch();
+  const { showSnackbar } = useSnackbar();
   const userEmail = useSelector((state) => state.auth.userEmail);
 
   const [userDetails, setUserDetails] = useState({
@@ -26,15 +30,12 @@ export default function Profile({ setEditProfileOpen }) {
   const [activeSection, setActiveSection] = useState("profile");
   const [slideDirection, setSlideDirection] = useState("right");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   // RTK Query hooks
   const { data: userData, isLoading: isLoadingUser } = useGetUserByEmailQuery(userEmail, {
     skip: !userEmail,
   });
-  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
+  const [updateUserApi, { isLoading: isUpdating }] = useUpdateUserMutation();
   const [changePassword, { isLoading: isChangingPassword }] = useChangePasswordMutation();
 
   useEffect(() => {
@@ -42,12 +43,6 @@ export default function Profile({ setEditProfileOpen }) {
       setUserDetails(userData);
     }
   }, [userData]);
-
-  const showSnackbar = (message, severity) => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,10 +89,11 @@ export default function Profile({ setEditProfileOpen }) {
 
     const trimmedName = userDetails.name.trim();
     try {
-      await updateUser({
+      await updateUserApi({
         email: userEmail,
         userData: { name: capitalizeWords(trimmedName) },
       }).unwrap();
+      dispatch(updateAuthUser({ name: capitalizeWords(trimmedName) }));
       showSnackbar("User profile updated.", "success");
     } catch (error) {
       showSnackbar("An error occurred.", "error");
@@ -147,14 +143,14 @@ export default function Profile({ setEditProfileOpen }) {
 
   if (isLoadingUser) {
     return (
-      <div className="min-w-[320px] w-[500px] max-w-[500px] mx-auto p-6 bg-white border border-gray-200 min-h-[500px] flex items-center justify-center">
+      <div className="w-full h-full bg-white border border-gray-200 max-h-[520px] flex items-center justify-center">
         <p className="text-gray-400">Loading profile...</p>
       </div>
     );
   }
 
   return (
-    <div className={`min-w-[320px] w-[500px] max-w-[500px] mx-auto p-6 bg-white border border-gray-200 overflow-hidden relative min-h-[500px] ${activeSection === "password" ? "h-[540px]" : "h-[400px]"}`}>
+    <div className={`w-full h-full p-6 bg-white border border-gray-200 overflow-hidden relative max-h-[520px] ${activeSection === "password" ? "h-[540px]" : "h-[400px]"}`}>
       <h2 className="text-2xl font-bold text-gray-900 mb-4">Edit Profile</h2>
 
       {/* Profile Section */}
@@ -275,14 +271,6 @@ export default function Profile({ setEditProfileOpen }) {
           {activeSection === "profile" ? "Save Changes" : "Change Password"}
         </Button>
       </div>
-
-      <Snackbar
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
-        variant={snackbarSeverity}
-        position="bottom-center"
-      />
     </div>
   );
 }

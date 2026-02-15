@@ -7,11 +7,17 @@ import com.tskmgmnt.rhine.service.UserRegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://localhost:5173")
 @Tag(
         name = "CRUD REST APIs for User Registration",
         description = "CRUD REST APIs - Create Account"
@@ -19,14 +25,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserSignupController {
 
     private final UserRegistrationService userRegistrationService;
+    private final AuthenticationManager authenticationManager;
 
-    public UserSignupController(UserRegistrationService userRegistrationService) {
+    public UserSignupController(UserRegistrationService userRegistrationService, AuthenticationManager authenticationManager) {
         this.userRegistrationService = userRegistrationService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Operation(
             summary = "Register a new user",
-            description = "Creates a new user account with the provided details",
+            description = "Creates a new user account and automatically logs them in with a session",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully registered user"),
                     @ApiResponse(responseCode = "400", description = "Invalid input data"),
@@ -36,9 +44,25 @@ public class UserSignupController {
             }
     )
     @PostMapping(path = "/register")
-    public LoginResponse register (@RequestBody UserRegReq request) {
+    public LoginResponse register(@RequestBody UserRegReq request, HttpServletRequest httpRequest) {
+        // Store raw password before registration hashes it
+        String rawPassword = request.getPwd();
+
         User user = userRegistrationService.createUser(request);
-        return new com.tskmgmnt.rhine.dto.LoginResponse("Registration successful", user.getEmail(), user.getName(), user.getUserRole());
+
+        // Auto-login: create authenticated session after registration
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), rawPassword)
+        );
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        HttpSession session = httpRequest.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+
+        return new LoginResponse("Registration successful", user.getEmail(), user.getName(), user.getUserRole());
     }
 
     @Operation(
@@ -53,7 +77,7 @@ public class UserSignupController {
             }
     )
     @PostMapping(path = "/update-role")
-    public User updateUserRole (@RequestBody UserRegReq request){
+    public User updateUserRole(@RequestBody UserRegReq request) {
         return userRegistrationService.updateUserRole(request.getEmail(), request.getUserRole());
     }
 

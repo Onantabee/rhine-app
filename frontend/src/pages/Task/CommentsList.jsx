@@ -1,9 +1,6 @@
 import React from "react";
 import CommentItem from "./CommentItem";
 
-/**
- * CommentsList component - Displays list of comments
- */
 const CommentsList = ({
     comments,
     currentUserEmail,
@@ -22,14 +19,16 @@ const CommentsList = ({
     );
 
     return (
-        <div className="mt-2">
-            <h2 className="text-lg font-semibold text-gray-700">Comments</h2>
+        <div className="flex-1 flex flex-col min-h-0 gap-3">
+            <h2 className="text-lg font-semibold text-gray-700 shrink-0">Comments</h2>
             <div
                 ref={containerRef}
-                className="space-y-2 max-h-[300px] mt-3 px-5 overflow-y-auto"
+                className="flex flex-col space-y-2 flex-1 px-3 overflow-y-auto"
             >
                 {comments.length === 0 ? (
-                    <p className="text-gray-400">No comments yet.</p>
+                    <div className="flex items-center justify-center flex-1 h-full">
+                        <p className="text-gray-300 text-5xl font-semibold">No comments yet.</p>
+                    </div>
                 ) : (
                     sortedComments.map((comment) => (
                         <CommentItem

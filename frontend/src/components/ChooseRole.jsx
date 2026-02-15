@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Button, Select, Snackbar } from "./ui";
+import { Button, Select } from "./ui";
+import { useSnackbar } from "../context/SnackbarContext";
 import { useUpdateRoleMutation } from "../store/api/authApi";
 
 const ChooseRole = () => {
   const [option, setOption] = useState("admin");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const userEmail = useSelector((state) => state.auth.userEmail);
 
@@ -40,8 +40,7 @@ const ChooseRole = () => {
       navigate("/home");
     } catch (error) {
       console.error("Error updating role:", error);
-      setSnackbarMessage("Failed to update role. Please try again.");
-      setOpenSnackbar(true);
+      showSnackbar("Failed to update role. Please try again.", "error");
     }
   };
 
@@ -60,15 +59,8 @@ const ChooseRole = () => {
               width: "100%",
               maxWidth: "500px",
             }}
-            className="z-30 h-[500px] lg:h-auto bg-white border border-gray-200 lg:border-0"
+            className="z-30 h-[500px] lg:h-auto"
           >
-            <div className="flex lg:hidden justify-center items-center mb-10">
-              <div className="flex flex-col justify-center items-center py-5 px-12">
-                <h1 className="text-4xl text-[#7733ff] font-semibold">
-                  Rhine
-                </h1>
-              </div>
-            </div>
 
             <h2 className="text-3xl font-semibold text-center mb-5 text-gray-700">
               Choose Your Role
@@ -101,13 +93,7 @@ const ChooseRole = () => {
         </div>
       </div>
 
-      <Snackbar
-        open={openSnackbar}
-        onClose={() => setOpenSnackbar(false)}
-        message={snackbarMessage}
-        variant="error"
-        position="bottom-left"
-      />
+
 
       <div className="absolute bottom-0 left-0 w-full flex justify-center">
         <div className="py-2 px-5">

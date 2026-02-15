@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Snackbar } from "../components/ui";
+import { Button } from "../components/ui";
+import { useSnackbar } from "../context/SnackbarContext";
 import { Plus } from "lucide-react";
 import TaskCard from "../components/TaskCard.jsx";
 import TaskDialog from "../components/TaskDialog.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { Grid, List } from "lucide-react";
-import { Masonry } from "react-plock";
-import TaskList from "../components/TaskList.jsx";
+
+import TaskList, { TaskListHeader } from "../components/TaskList.jsx";
 import { useGetTasksQuery, useDeleteTaskMutation } from "../store/api/tasksApi";
 import { useGetUserByEmailQuery, useGetNonAdminUsersQuery } from "../store/api/usersApi";
 import { setSearchTerm } from "../store/slices/authSlice";
@@ -18,9 +19,7 @@ export default function Home() {
   const userEmail = useSelector((state) => state.auth.userEmail);
   const searchTerm = useSelector((state) => state.auth.searchTerm);
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const { showSnackbar } = useSnackbar();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isCardView, setIsCardView] = useState(true);
@@ -69,11 +68,7 @@ export default function Home() {
     }
   };
 
-  const showSnackbar = (message, severity) => {
-    setSnackbarMessage(message);
-    setSnackbarSeverity(severity);
-    setSnackbarOpen(true);
-  };
+
 
   const getUserTasks = () => {
     const filtered = filterTasks(tasks);
@@ -142,14 +137,8 @@ export default function Home() {
         </div>
       ) : isCardView ? (
         <div>
-          <Masonry
-            items={userTasks}
-            config={{
-              columns: [1, 2, 3, 4],
-              gap: [16, 16, 16, 16],
-              media: [640, 768, 1024, 1280],
-            }}
-            render={(task) => (
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
+            {userTasks.map((task) => (
               <div key={task.id}>
                 {!isAdmin ? (
                   <Link
@@ -185,36 +174,49 @@ export default function Home() {
                   />
                 )}
               </div>
-            )}
-          />
+            ))}
+          </div>
 
           {userTasks.length === 0 && (
             <p className="text-gray-400">No tasks available</p>
           )}
         </div>
       ) : (
-        <div className="text-gray-300 w-full mt-20 flex justify-center items-center">
-          <h1 className="text-[10vw] sm:text-[8vw] md:text-[6vw]">
-            {"<>Coming Soon!</>"}
-          </h1>
+        <div className="overflow-x-auto w-full">
+          <table className="w-full min-w-[700px] sm:min-w-[1000px] border-collapse border border-gray-200">
+            <TaskListHeader isAdmin={isAdmin} />
+            <tbody>
+              {userTasks.map((task) => (
+                <TaskList
+                  key={task.id}
+                  task={task}
+                  onEdit={() => handleOpenDialog(task)}
+                  onDelete={() => handleDeleteTask(task.id)}
+                  onView={() =>
+                    navigate(`/task/${task.id}`, {
+                      state: { task, isAdmin, user },
+                    })
+                  }
+                  onClick={!isAdmin ? () => navigate(`/task/${task.id}`, { state: { task, isAdmin, user } }) : undefined}
+                  loggedInUser={user}
+                  isAdmin={isAdmin}
+                  assignee={task.assigneeId}
+                  createdBy={task.createdById}
+                  searchTerm={searchTerm}
+                />
+              ))}
+            </tbody>
+          </table>
+          {userTasks.length === 0 && (
+            <p className="text-gray-400 p-4">No tasks available</p>
+          )}
         </div>
       )}
 
-      {/* Task Dialog */}
       <TaskDialog
         open={openDialog}
         onClose={handleCloseDialog}
         task={selectedTask}
-        showSnackbar={showSnackbar}
-      />
-
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
-        variant={snackbarSeverity}
-        position="bottom-left"
       />
     </div>
   );

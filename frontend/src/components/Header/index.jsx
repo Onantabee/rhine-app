@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "../ui";
 import { logout as logoutAction, setSearchTerm } from "../../store/slices/authSlice";
+import { useLogoutMutation } from "../../store/api/authApi";
 
 // Sub-components
 import UserAvatar from "./UserAvatar";
@@ -20,6 +21,7 @@ const Header = ({ setIsSignup }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const [logoutServer] = useLogoutMutation();
 
     // Redux state
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -54,7 +56,12 @@ const Header = ({ setIsSignup }) => {
         setProfileDropdownOpen(false);
     };
 
-    const handleLogoutConfirm = () => {
+    const handleLogoutConfirm = async () => {
+        try {
+            await logoutServer().unwrap();
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
         dispatch(logoutAction());
         setMobileOpen(false);
         setLogoutDialogOpen(false);

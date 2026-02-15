@@ -19,6 +19,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
+    @JsonIgnoreProperties({"tasks", "assignedTasks", "pwd", "authorities", "enabled", "accountNonExpired", "accountNonLocked", "credentialsNonExpired"})
     private User author;
 
     @ManyToOne
@@ -28,7 +29,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "recipient_id")
-    @JsonIgnoreProperties({"tasks", "comments"})
+    @JsonIgnoreProperties({"tasks", "assignedTasks", "pwd", "authorities", "enabled", "accountNonExpired", "accountNonLocked", "credentialsNonExpired"})
     private User recipient;
 
     @Column(nullable = false)

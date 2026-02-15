@@ -11,7 +11,7 @@ const Chip = ({
     className = '',
     ...props
 }) => {
-    const baseStyles = 'inline-flex items-center gap-2 font-medium';
+    const baseStyles = 'inline-flex items-center gap-2 font-medium rounded-[5px] justify-center';
 
     const sizeStyles = {
         sm: 'px-2 py-1 text-xs',

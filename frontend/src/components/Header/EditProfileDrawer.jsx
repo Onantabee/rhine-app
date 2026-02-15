@@ -1,15 +1,10 @@
-import React from "react";
 import { X } from "lucide-react";
 import Profile from "../Profile";
 import UserAvatar from "./UserAvatar";
 
-/**
- * EditProfileDrawer component - Right drawer for editing user profile
- */
 const EditProfileDrawer = ({ open, userName, onClose }) => {
     return (
         <>
-            {/* Overlay */}
             {open && (
                 <div
                     className="fixed inset-0 bg-black/30 z-40"
@@ -19,7 +14,7 @@ const EditProfileDrawer = ({ open, userName, onClose }) => {
 
             {/* Drawer */}
             <div
-                className={`fixed top-0 right-0 h-full w-[320px] bg-white border-l border-gray-200 z-50 p-5 overflow-y-auto ${open ? "translate-x-0" : "translate-x-full"
+                className={`fixed top-0 right-0 w-[480px] h-full bg-white border-l border-gray-200 z-50 p-5 overflow-y-auto ${open ? "translate-x-0" : "translate-x-full"
                     }`}
             >
                 <div className="flex justify-between items-center mb-6">
