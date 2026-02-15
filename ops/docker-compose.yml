@@ -10,7 +10,7 @@ services:
       - ../backend:/workspace
       - /workspace/target # Avoid sync conflicts with local machine
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/rhine_db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/rhine_db?createDatabaseIfNotExist=true
       - SPRING_DATASOURCE_USERNAME=rhine_user
       - SPRING_DATASOURCE_PASSWORD=rhine_password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update

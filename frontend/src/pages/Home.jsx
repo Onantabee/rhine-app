@@ -35,26 +35,18 @@ export default function Home() {
     skip: !userEmail,
   });
   const { data: tasks = [], isLoading: isLoadingTasks } = useGetTasksQuery();
-  const { data: nonAdminUsers = [] } = useGetNonAdminUsersQuery();
-  const [deleteTask] = useDeleteTaskMutation();
+
+  const sortedTasks = [...tasks].sort((a, b) => {
+    if (user?.userRole === "ADMIN") {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    } else {
+      const dateA = a.lastAssignedAt ? new Date(a.lastAssignedAt) : new Date(a.createdAt);
+      const dateB = b.lastAssignedAt ? new Date(b.lastAssignedAt) : new Date(b.createdAt);
+      return dateB - dateA;
+    }
+  });
 
   const isAdmin = user?.userRole === "ADMIN";
-
-  useEffect(() => {
-    return () => {
-      dispatch(setSearchTerm(""));
-    };
-  }, [dispatch]);
-
-  const handleOpenDialog = (task = null) => {
-    setSelectedTask(task);
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setSelectedTask(null);
-  };
 
   const filterTasks = (tasks) => {
     if (!searchTerm) return tasks;
@@ -74,11 +66,21 @@ export default function Home() {
   };
 
   const getUserTasks = () => {
-    const filtered = filterTasks(tasks);
+    const filtered = filterTasks(sortedTasks);
     return filtered.filter(
       (task) =>
         user?.email === task.createdById || user?.email === task.assigneeId
     );
+  };
+
+  const handleOpenDialog = (task = null) => {
+    setSelectedTask(task);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedTask(null);
   };
 
   const userTasks = getUserTasks();

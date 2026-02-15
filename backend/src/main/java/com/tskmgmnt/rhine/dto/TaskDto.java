@@ -3,7 +3,7 @@ package com.tskmgmnt.rhine.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tskmgmnt.rhine.enums.TaskStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Date;
+import java.time.Instant;
 
 public class TaskDto {
 
@@ -16,9 +16,9 @@ public class TaskDto {
     @Schema(description = "Detailed description of the task", example = "Analyze Q1 financial data and draft the summary section.")
     private String description;
 
-    @Schema(description = "Due date of the task", example = "2023-12-31")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date dueDate;
+    @Schema(description = "Due date of the task", example = "2023-12-31T10:00:00Z")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", timezone = "UTC")
+    private Instant dueDate;
 
     @Schema(description = "Priority level of the task", example = "HIGH", allowableValues = {"HIGH", "MEDIUM", "LOW"})
     private String priority;
@@ -35,7 +35,13 @@ public class TaskDto {
     @Schema(description = "ID of the user assigned to the task", example = "user-456")
     private String assigneeId;
 
-    public TaskDto(Long id, String title, String description, Date dueDate, String priority, TaskStatus taskStatus, String createdById, String assigneeId) {
+    @Schema(description = "Timestamp when the task was created", example = "2023-10-27T10:00:00Z")
+    private Instant createdAt;
+
+    @Schema(description = "Timestamp when the task was last assigned", example = "2023-10-28T10:00:00Z")
+    private Instant lastAssignedAt;
+
+    public TaskDto(Long id, String title, String description, Instant dueDate, String priority, TaskStatus taskStatus, String createdById, String assigneeId, Instant createdAt, Instant lastAssignedAt) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -44,6 +50,8 @@ public class TaskDto {
         this.taskStatus = taskStatus;
         this.createdById = createdById;
         this.assigneeId = assigneeId;
+        this.createdAt = createdAt;
+        this.lastAssignedAt = lastAssignedAt;
     }
 
     public TaskDto(boolean isNew) {
@@ -78,11 +86,11 @@ public class TaskDto {
         this.description = description;
     }
 
-    public Date getDueDate() {
+    public Instant getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(Instant dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -124,5 +132,21 @@ public class TaskDto {
 
     public void setAssigneeId(String assigneeId) {
         this.assigneeId = assigneeId;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getLastAssignedAt() {
+        return lastAssignedAt;
+    }
+
+    public void setLastAssignedAt(Instant lastAssignedAt) {
+        this.lastAssignedAt = lastAssignedAt;
     }
 }

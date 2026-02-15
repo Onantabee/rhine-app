@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.Instant;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +40,10 @@ public class TaskService {
         User createdBy = userRepository.findByEmail(taskReq.getCreatedById())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         task.setCreatedBy(createdBy);
+        task.setCreatedAt(Instant.now());
+        task.setIsNew(true);
+        // Default lastAssignedAt to creation time if no assignee yet, or now if assigned immediately.
+        task.setLastAssignedAt(Instant.now());
 
         if (taskReq.getAssigneeId() != null) {
             User assignee = userRepository.findByEmail(taskReq.getAssigneeId())
@@ -71,6 +76,8 @@ public class TaskService {
         response.setTaskStatus(task.getTaskStatus());
         response.setCreatedById(task.getCreatedBy().getEmail());
         response.setIsNew(task.getIsNew());
+        response.setCreatedAt(task.getCreatedAt());
+        response.setLastAssignedAt(task.getLastAssignedAt());
         if (task.getAssignee() != null) {
             response.setAssigneeId(task.getAssignee().getEmail());
         }
@@ -96,10 +103,17 @@ public class TaskService {
                     .orElseThrow(() -> new RuntimeException("User not Found!"));
             existingTask.setCreatedBy(createdBy);
         }
+
         if (taskReq.getAssigneeId() != null) {
             User assignee = userRepository.findByEmail(taskReq.getAssigneeId())
                     .orElseThrow(() -> new RuntimeException("Assignee not Found!"));
-            existingTask.setAssignee(assignee);
+
+            // Logic: If assignee changes, it's "New" for the new assignee, and we update lastAssignedAt
+            if (existingTask.getAssignee() == null || !existingTask.getAssignee().getEmail().equals(assignee.getEmail())) {
+                existingTask.setAssignee(assignee);
+                existingTask.setLastAssignedAt(Instant.now());
+                existingTask.setIsNew(true);
+            }
         } else {
             existingTask.setAssignee(null);
         }

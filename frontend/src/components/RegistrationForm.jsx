@@ -127,6 +127,7 @@ const Form = ({ isSignup }) => {
               {isSignup && (
                 <Input
                   type="text"
+                  placeholder=" eg. Onanta Seychellés"
                   label="Name"
                   value={name}
                   onChange={(e) => {
@@ -142,6 +143,7 @@ const Form = ({ isSignup }) => {
               <div>
                 <Input
                   type="email"
+                  placeholder=" eg. onanta@seychellés.com"
                   label="Email"
                   value={email}
                   onChange={(e) => {
@@ -158,6 +160,7 @@ const Form = ({ isSignup }) => {
                 <Input
                   type="password"
                   label="Password"
+                  placeholder=" eg. Password$31"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);

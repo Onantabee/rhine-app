@@ -104,6 +104,7 @@ const TaskDialog = ({
     try {
       const taskData = {
         ...taskDetails,
+        dueDate: new Date(taskDetails.dueDate).toISOString(),
         createdById: userEmail,
       };
 
@@ -122,6 +123,7 @@ const TaskDialog = ({
     try {
       const taskData = {
         ...taskDetails,
+        dueDate: new Date(taskDetails.dueDate).toISOString(),
         createdById: userEmail,
       };
 

@@ -128,10 +128,7 @@ const TaskList = ({
 
       <td className="p-3.5 text-center">
         <span
-          className={`px-3 py-1 border text-sm font-medium italic rounded-[5px] whitespace-nowrap ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
-            ? dueDateStatusConfig[dueDateStatus].className
-            : "bg-gray-50 border-gray-200 text-gray-600"
-            }`}
+          className={`px-3 py-1 text-sm font-medium whitespace-nowrap text-gray-600`}
         >
           {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
         </span>

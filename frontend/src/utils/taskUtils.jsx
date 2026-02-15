@@ -12,7 +12,7 @@ export const getDueDateStatus = (dueDate, currentStatus) => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const due = new Date(dueDate);
+    const due = new Date(dueDate); // ISO 8601 strings parse correctly here
     due.setHours(0, 0, 0, 0);
 
     const diffTime = due - today;

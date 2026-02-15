@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "comments")
@@ -36,7 +36,7 @@ public class Comment {
     private boolean isReadByRecipient;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public Comment() {
         this.isReadByRecipient = false;
@@ -47,7 +47,7 @@ public class Comment {
         this.author = author;
         this.task = task;
         this.recipient = recipient;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = Instant.now();
     }
 
     // Getters and Setters
@@ -99,7 +99,7 @@ public class Comment {
         isReadByRecipient = readByRecipient;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 }

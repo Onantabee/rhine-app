@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tskmgmnt.rhine.enums.TaskStatus;
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -20,12 +20,17 @@ public class Task {
 
     private String description;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date dueDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", timezone = "UTC")
+    private Instant dueDate;
 
     private String priority;
 
     private boolean isNew;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    private Instant lastAssignedAt;
 
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
@@ -46,9 +51,11 @@ public class Task {
 
     public Task() {
         this.isNew = true;
+        this.createdAt = Instant.now();
+        this.lastAssignedAt = Instant.now();
     }
 
-    public Task(Long id, String title, String description, Date dueDate, String priority, TaskStatus taskStatus) {
+    public Task(Long id, String title, String description, Instant dueDate, String priority, TaskStatus taskStatus) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -82,11 +89,11 @@ public class Task {
         this.description = description;
     }
 
-    public Date getDueDate() {
+    public Instant getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(Instant dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -136,5 +143,21 @@ public class Task {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getLastAssignedAt() {
+        return lastAssignedAt;
+    }
+
+    public void setLastAssignedAt(Instant lastAssignedAt) {
+        this.lastAssignedAt = lastAssignedAt;
     }
 }

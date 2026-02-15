@@ -1,7 +1,7 @@
 package com.tskmgmnt.rhine.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 
 public class CommentDto {
@@ -24,7 +24,7 @@ public class CommentDto {
     private boolean isReadByRecipient;
 
     @Schema(description = "Timestamp when the comment was created", example = "2023-11-21T10:00:00")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
 
     public CommentDto(Long taskId, boolean isReadByRecipient) {
@@ -32,7 +32,7 @@ public class CommentDto {
         this.isReadByRecipient = isReadByRecipient;
     }
 
-    public CommentDto(Long id, String content, String authorEmail, String recipientEmail, boolean isReadByRecipient, LocalDateTime createdAt) {
+    public CommentDto(Long id, String content, String authorEmail, String recipientEmail, boolean isReadByRecipient, Instant createdAt) {
         this.id = id;
         this.content = content;
         this.authorEmail = authorEmail;
@@ -93,11 +93,11 @@ public class CommentDto {
         this.recipientEmail = recipientEmail;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 }
