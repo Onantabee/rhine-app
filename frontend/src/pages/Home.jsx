@@ -102,7 +102,9 @@ export default function Home() {
         >
           <div className="flex gap-3 items-center">
             <h1 className="text-3xl text-gray-600">Tasks</h1>
-            <p className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">{userTasks.length}</p>
+            {userTasks.length > 0 && (
+              <p className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">{userTasks.length}</p>
+            )}
           </div>
           {isAdmin && (
             <Button
