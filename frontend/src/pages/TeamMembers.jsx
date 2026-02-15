@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Users, UserPlus, Trash2, Shield, UserCheck } from "lucide-react";
+import { Users, UserPlus, Trash2, Shield, UserCheck, AlertCircle } from "lucide-react";
 import { Button, Input, Dialog } from "../components/ui";
 import {
     useGetProjectMembersQuery,
@@ -9,36 +9,43 @@ import {
     useRemoveMemberMutation,
 } from "../store/api/projectsApi";
 import { TeamTable } from "../components/TeamTable";
-import { toast } from "sonner";
+import { useSnackbar } from "../context/SnackbarContext";
 
 const TeamMembers = () => {
     const { projectId } = useParams();
     const activeProject = useSelector((state) => state.project.activeProject);
     const userEmail = useSelector((state) => state.auth.userEmail);
     const isAdmin = activeProject?.role === "PROJECT_ADMIN";
+    const { showSnackbar } = useSnackbar();
 
     const { data: members = [], isLoading } = useGetProjectMembersQuery(projectId);
-    const [inviteMember] = useInviteMemberMutation();
+    const [inviteMember, { isLoading: inviteLoading }] = useInviteMemberMutation();
     const [removeMember] = useRemoveMemberMutation();
 
     const [inviteEmail, setInviteEmail] = useState("");
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+    const [inviteError, setInviteError] = useState({});
     const [removeTarget, setRemoveTarget] = useState(null);
 
     const handleInvite = async (e) => {
         e.preventDefault();
-        if (!inviteEmail.trim()) return;
+        if (!inviteEmail.trim()) {
+            setInviteError({ email: "Email is required" });
+            return;
+        }
 
         try {
             await inviteMember({
                 projectId,
                 email: inviteEmail.trim(),
             }).unwrap();
-            toast.success(`Invited ${inviteEmail}`);
+            showSnackbar(`Invited ${inviteEmail}`, "success");
             setInviteEmail("");
             setInviteDialogOpen(false);
         } catch (error) {
-            toast.error(error?.data?.message || "Failed to invite member");
+            const errorMessage = error?.data?.message || "Failed to invite member";
+            // setInviteError({ email: errorMessage }); // Optional: if you want to keep the field error
+            showSnackbar(errorMessage, "error");
         }
     };
 
@@ -49,10 +56,10 @@ const TeamMembers = () => {
                 projectId,
                 email: removeTarget.email,
             }).unwrap();
-            toast.success(`Removed ${removeTarget.name}`);
+            showSnackbar(`Removed ${removeTarget.name}`, "success");
             setRemoveTarget(null);
         } catch (error) {
-            toast.error(error?.data?.message || "Failed to remove member");
+            showSnackbar(error?.data?.message || "Failed to remove member", "error");
         }
     };
 
@@ -68,7 +75,7 @@ const TeamMembers = () => {
         <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between border-b border-gray-200">
                 <div className="flex justify-between py-3 gap-2">
-                    <h1 className="text-3xl text-gray-600">Team Members</h1>
+                    <h1 className="text-3xl text-gray-600 truncate">Team Members</h1>
                     <span className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">
                         {members.length}
                     </span>
@@ -110,10 +117,16 @@ const TeamMembers = () => {
                             type="email"
                             placeholder="colleague@example.com"
                             value={inviteEmail}
-                            onChange={(e) => setInviteEmail(e.target.value)}
+                            onChange={(e) => {
+                                setInviteEmail(e.target.value);
+                                if (inviteError.email) setInviteError({});
+                            }}
                             autoFocus
+                            error={!!inviteError.email}
+                            helperText={inviteError.email}
                         />
-                        <p className="text-xs text-gray-400 mt-1.5">
+                        <p className="text-orange-400 text-sm font-light mt-2 flex gap-2 items-center">
+                            <AlertCircle size={16} />
                             The user must already have a Rhine account.
                         </p>
                     </div>
@@ -124,6 +137,7 @@ const TeamMembers = () => {
                             onClick={() => {
                                 setInviteDialogOpen(false);
                                 setInviteEmail("");
+                                setInviteError({});
                             }}
                         >
                             Cancel
@@ -131,7 +145,7 @@ const TeamMembers = () => {
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={!inviteEmail.trim()}
+                            loading={inviteLoading}
                         >
                             Send Invite
                         </Button>

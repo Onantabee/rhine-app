@@ -27,6 +27,13 @@ const usersApi = baseApi.injectEndpoints({
                 body: { currentPassword, newPassword },
             }),
         }),
+        updateLastProject: builder.mutation({
+            query: (projectId) => ({
+                url: `/users/update-last-project/${projectId}`,
+                method: "PUT",
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
@@ -35,6 +42,7 @@ export const {
     useGetUserByEmailQuery,
     useUpdateUserMutation,
     useChangePasswordMutation,
+    useUpdateLastProjectMutation,
 } = usersApi;
 
 export default usersApi;

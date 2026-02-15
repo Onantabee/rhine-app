@@ -23,15 +23,18 @@ public class ProjectService {
     private final ProjectMemberRepository projectMemberRepository;
     private final UserRepository userRepository;
     private final com.tskmgmnt.rhine.repository.TaskRepository taskRepository;
+    private final org.springframework.mail.javamail.JavaMailSender mailSender;
 
     public ProjectService(ProjectRepository projectRepository,
                           ProjectMemberRepository projectMemberRepository,
                           UserRepository userRepository,
-                          com.tskmgmnt.rhine.repository.TaskRepository taskRepository) {
+                          com.tskmgmnt.rhine.repository.TaskRepository taskRepository,
+                          org.springframework.mail.javamail.JavaMailSender mailSender) {
         this.projectRepository = projectRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
+        this.mailSender = mailSender;
     }
 
     public ProjectDto createProject(String ownerEmail, CreateProjectReq req) {
@@ -45,12 +48,17 @@ public class ProjectService {
         ProjectMember membership = new ProjectMember(owner, project, ProjectRole.PROJECT_ADMIN);
         projectMemberRepository.save(membership);
 
+        // Update owner's lastProjectId
+        owner.setLastProjectId(project.getId());
+        userRepository.save(owner);
+
         return mapToDto(project, ProjectRole.PROJECT_ADMIN.name());
     }
 
     public List<ProjectDto> getProjectsForUser(String email) {
         List<ProjectMember> memberships = projectMemberRepository.findByUserEmail(email);
         return memberships.stream()
+                .filter(m -> m.getStatus() == com.tskmgmnt.rhine.enums.ProjectMemberStatus.ACTIVE)
                 .map(m -> mapToDto(m.getProject(), m.getProjectRole().name()))
                 .collect(Collectors.toList());
     }
@@ -61,6 +69,10 @@ public class ProjectService {
 
         ProjectMember membership = projectMemberRepository.findByUserEmailAndProjectId(email, id)
                 .orElseThrow(() -> new RuntimeException("You are not a member of this project"));
+
+        if (membership.getStatus() != com.tskmgmnt.rhine.enums.ProjectMemberStatus.ACTIVE) {
+            throw new RuntimeException("You have not accepted the invitation to this project yet.");
+        }
 
         return mapToDto(project, membership.getProjectRole().name());
     }
@@ -108,16 +120,45 @@ public class ProjectService {
         }
 
         User user = userRepository.findByEmail(req.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found. They must register first."));
+                .orElseThrow(() -> new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found. They must register first."));
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
 
         ProjectRole role = req.getProjectRole() != null ? req.getProjectRole() : ProjectRole.PROJECT_EMPLOYEE;
-        ProjectMember membership = new ProjectMember(user, project, role);
+        String token = java.util.UUID.randomUUID().toString();
+        ProjectMember membership = new ProjectMember(user, project, role, com.tskmgmnt.rhine.enums.ProjectMemberStatus.PENDING, token);
         projectMemberRepository.save(membership);
 
+        sendInviteEmail(user.getEmail(), project.getName(), role, token);
+
         return new ProjectMemberDto(user.getEmail(), user.getName(), role, 0);
+    }
+
+    private void sendInviteEmail(String to, String projectName, ProjectRole role, String token) {
+        try {
+            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
+            message.setFrom("onantabasseyvee@gmail.com");
+            message.setTo(to);
+            message.setSubject("You've been invited to join " + projectName);
+            String inviteLink = "http://localhost:5173/accept-invite?token=" + token;
+            message.setText("Hello,\n\nYou have been invited to join the project '" + projectName + "' as a " + role + ".\n\nPlease click the link below to accept the invitation:\n" + inviteLink);
+            mailSender.send(message);
+            System.out.println("Invite email sent to " + to + " with link: " + inviteLink);
+        } catch (Exception e) {
+            System.err.println("Failed to send invite email: " + e.getMessage());
+        }
+    }
+
+    public Long acceptInvite(String token) {
+        ProjectMember membership = projectMemberRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid invitation token"));
+
+        membership.setStatus(com.tskmgmnt.rhine.enums.ProjectMemberStatus.ACTIVE);
+        membership.setToken(null); // Invalidate token
+        projectMemberRepository.save(membership);
+        
+        return membership.getProject().getId();
     }
 
     public void removeMember(Long projectId, String adminEmail, String memberEmail) {
@@ -151,9 +192,13 @@ public class ProjectService {
                             m.getUser().getEmail(),
                             com.tskmgmnt.rhine.enums.TaskStatus.CANCELLED
                     );
+                     String name = m.getUser().getName();
+                     if (m.getStatus() == com.tskmgmnt.rhine.enums.ProjectMemberStatus.PENDING) {
+                         name += " (Pending)";
+                     }
                     return new ProjectMemberDto(
                             m.getUser().getEmail(),
-                            m.getUser().getName(),
+                            name,
                             m.getProjectRole(),
                             activeTaskCount);
                 })
@@ -167,7 +212,8 @@ public class ProjectService {
     }
 
     public boolean userHasProjects(String email) {
-        return !projectMemberRepository.findByUserEmail(email).isEmpty();
+        return projectMemberRepository.findByUserEmail(email).stream()
+                .anyMatch(m -> m.getStatus() == com.tskmgmnt.rhine.enums.ProjectMemberStatus.ACTIVE);
     }
 
     private ProjectDto mapToDto(Project project, String currentUserRole) {
@@ -176,7 +222,7 @@ public class ProjectService {
         dto.setName(project.getName());
         dto.setOwnerEmail(project.getOwner().getEmail());
         dto.setOwnerName(project.getOwner().getName());
-        dto.setMemberCount(project.getMembers() != null ? project.getMembers().size() : 0);
+        dto.setMemberCount(project.getMembers() != null ? (int) project.getMembers().stream().filter(m -> m.getStatus() == com.tskmgmnt.rhine.enums.ProjectMemberStatus.ACTIVE).count() : 0);
         dto.setCreatedAt(project.getCreatedAt());
         dto.setCurrentUserRole(currentUserRole);
         return dto;

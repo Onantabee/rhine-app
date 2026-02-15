@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { Trash2, Shield, UserCheck, MoreVertical, Eye } from "lucide-react";
+import { Trash2, Shield, UserCheck, MoreVertical, Eye, AlertCircle, Check, CheckCircleIcon, CheckCircle2Icon, CheckCircle2, CheckCheck, CheckCircle } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
@@ -33,7 +33,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
                             <th className="px-6 py-4">Name</th>
                             <th className="px-6 py-4">Email</th>
                             <th className="px-6 py-4">Role</th>
-                            <th className="px-6 py-4 text-center">Active Tasks</th>
+                            <th className="px-6 py-4 text-center truncate">Active Tasks</th>
                             {isAdmin && <th className="px-6 py-4 text-right">Actions</th>}
                         </tr>
                     </thead>
@@ -42,13 +42,20 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
                             <tr key={member.email} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
+                                        <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm flex-shrink-0">
                                             {member.name?.[0]?.toUpperCase() || "?"}
                                         </div>
-                                        <p className="text-sm font-medium text-gray-900">
-                                            {member.name}
+                                        <p className="flex items-center gap-2 text-sm font-medium text-gray-900 truncate">
+                                            {member.name.replace(/\(Pending\)/g, "").trim()}
+                                            {member.name.includes("(Pending)") && member.projectRole !== "PROJECT_ADMIN" ? (
+                                                <AlertCircle size={16} className="text-amber-500" />
+                                            ) : member.projectRole === "PROJECT_ADMIN" ? (
+                                                null
+                                            ) : (
+                                                <CheckCircle size={16} className="text-green-500" />
+                                            )}
                                             {member.email === userEmail && (
-                                                <span className="ml-2 text-sm text-gray-400">
+                                                <span className="ml-0 text-sm text-gray-400">
                                                     [you]
                                                 </span>
                                             )}
@@ -104,7 +111,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
                 <div className="fixed inset-0 z-[9999] flex flex-col" style={{ top: 0, left: 0 }}>
                     <div className="fixed inset-0 bg-transparent" onClick={closeMenu} />
                     <div
-                        className="absolute z-[10000] w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        className="absolute z-[10000] w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-200 ring-opacity-5 focus:outline-none"
                         style={{ top: menuPosition.top, left: menuPosition.left }}
                     >
                         <button
@@ -117,17 +124,24 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
                             <Eye className="mr-3 h-4 w-4 text-gray-400" />
                             View Tasks
                         </button>
-                        <button
-                            onClick={() => {
-                                const memberToRemove = members.find(m => m.email === actionMenuOpen);
-                                onRemove(memberToRemove);
-                                closeMenu();
-                            }}
-                            className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                        >
-                            <Trash2 className="mr-3 h-4 w-4 text-red-500" />
-                            Remove Member
-                        </button>
+                        {(() => {
+                            const member = members.find(m => m.email === actionMenuOpen);
+                            if (member && member.email !== userEmail) {
+                                return (
+                                    <button
+                                        onClick={() => {
+                                            onRemove(member);
+                                            closeMenu();
+                                        }}
+                                        className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                                    >
+                                        <Trash2 className="mr-3 h-4 w-4 text-red-500" />
+                                        Remove Member
+                                    </button>
+                                );
+                            }
+                            return null;
+                        })()}
                     </div>
                 </div>,
                 document.body

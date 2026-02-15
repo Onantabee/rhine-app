@@ -27,9 +27,12 @@ public class UserSignupController {
     private final UserRegistrationService userRegistrationService;
     private final com.tskmgmnt.rhine.service.OtpService otpService;
 
-    public UserSignupController(UserRegistrationService userRegistrationService, com.tskmgmnt.rhine.service.OtpService otpService) {
+    private final AuthenticationManager authenticationManager;
+
+    public UserSignupController(UserRegistrationService userRegistrationService, com.tskmgmnt.rhine.service.OtpService otpService, AuthenticationManager authenticationManager) {
         this.userRegistrationService = userRegistrationService;
         this.otpService = otpService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Operation(
@@ -43,10 +46,27 @@ public class UserSignupController {
             }
     )
     @PostMapping(path = "/register")
-    public LoginResponse register(@RequestBody UserRegReq request) {
+    public LoginResponse register(@RequestBody UserRegReq request, HttpServletRequest httpServletRequest) {
         User user = userRegistrationService.createUser(request);
-        // No auto-login. User must verify.
-        return new LoginResponse("Registration successful. Please verify your email.", user.getEmail(), user.getName(), false);
+
+        // Auto-login after registration to enable "Soft Login"
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPwd())
+            );
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+            securityContext.setAuthentication(authentication);
+            SecurityContextHolder.setContext(securityContext);
+
+            HttpSession session = httpServletRequest.getSession(true);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        } catch (Exception e) {
+            // Log error but don't fail registration if auto-login fails
+            // In a real scenario, we might want to handle this better
+            e.printStackTrace();
+        }
+
+        return new LoginResponse("Registration successful. Please verify your email.", user.getEmail(), user.getName(), false, false);
     }
 
     @PostMapping(path = "/verify")
@@ -61,7 +81,7 @@ public class UserSignupController {
              // I need to update the user entity. 
              // Refactoring: I'll add verifyUser to UserRegistrationService.
              userRegistrationService.verifyUser(email);
-             return new LoginResponse("Verification successful", email, null, false);
+             return new LoginResponse("Verification successful", email, null, false, true);
         } else {
             throw new IllegalArgumentException("Invalid or expired OTP");
         }

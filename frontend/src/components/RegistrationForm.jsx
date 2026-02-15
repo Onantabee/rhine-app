@@ -67,11 +67,17 @@ const Form = ({ isSignup }) => {
       }).unwrap();
 
       console.log("Signup successful!", userData);
-      // Removed auto-login dispatch since user is not verified
+
+      // Auto-login on frontend
+      dispatch(loginAction({
+        ...userData,
+        isVerified: false // Explicitly set to false as expected from register response
+      }));
+
       setName("");
       setEmail("");
       setPassword("");
-      // Redirect to verification page
+
       navigate("/verify-email", { state: { email: trimmedEmail } });
     } catch (error) {
       console.error("Signup failed:", error);
@@ -97,15 +103,12 @@ const Form = ({ isSignup }) => {
       dispatch(loginAction(userData));
       setEmail("");
       setPassword("");
+      // App.jsx will handle redirect based on isVerified
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
       const errorMessage = error.data?.message || "Couldn't Connect to Server";
       showSnackbar(errorMessage, "error");
-
-      if (errorMessage.includes("Account not verified")) {
-        navigate("/verify-email", { state: { email: trimmedEmail } });
-      }
     }
   };
 

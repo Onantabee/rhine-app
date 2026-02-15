@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "./components/Layout";
 import RegistrationForm from "./components/RegistrationForm";
-import VerifyEmail from "./pages/verify-email";
+import VerifyEmail from "./pages/VerifyEmail";
 import Home from "./pages/Home";
 import Task from "./pages/Task";
 import Profile from "./components/Profile";
@@ -11,6 +11,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CreateProject from "./pages/CreateProject";
 import ProjectSettings from "./pages/ProjectSettings";
 import TeamMembers from "./pages/TeamMembers";
+import AcceptInvite from "./pages/AcceptInvite";
+import RequireProjectAdmin from './components/RequireProjectAdmin';
+import NotFound from './pages/NotFound';
 import WorkspaceLayout from "./components/WorkspaceLayout";
 import { SnackbarProvider } from "./context/SnackbarContext";
 import { login, logout, setSessionChecked } from "./store/slices/authSlice";
@@ -20,7 +23,7 @@ import { useLazyGetCurrentUserQuery } from "./store/api/authApi";
 function App() {
   const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch();
-  const { sessionChecked, isLoggedIn, hasProjects, lastProjectId } = useSelector(
+  const { sessionChecked, isLoggedIn, hasProjects, lastProjectId, isVerified } = useSelector(
     (state) => state.auth
   );
   const activeProject = useSelector((state) => state.project.activeProject);
@@ -37,6 +40,7 @@ function App() {
               name: userData.name,
               hasProjects: userData.hasProjects,
               lastProjectId: userData.lastProjectId,
+              isVerified: userData.isVerified,
             })
           );
         })
@@ -60,12 +64,17 @@ function App() {
       <Router>
         <Layout setIsSignup={setIsSignup}>
           <Routes>
+            <Route path="/accept-invite" element={<AcceptInvite />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route
               path="/"
               element={
                 isLoggedIn ? (
-                  <Navigate to={getDefaultRedirect()} replace />
+                  !isVerified ? (
+                    <Navigate to="/verify-email" replace />
+                  ) : (
+                    <Navigate to={getDefaultRedirect()} replace />
+                  )
                 ) : (
                   <RegistrationForm isSignup={isSignup} />
                 )
@@ -75,7 +84,7 @@ function App() {
               path="/create-project"
               element={
                 <ProtectedRoute>
-                  <CreateProject />
+                  {isVerified ? <CreateProject /> : <Navigate to="/verify-email" replace />}
                 </ProtectedRoute>
               }
             />
@@ -83,20 +92,24 @@ function App() {
               path="/project/:projectId"
               element={
                 <ProtectedRoute>
-                  <WorkspaceLayout />
+                  {isVerified ? <WorkspaceLayout /> : <Navigate to="/verify-email" replace />}
                 </ProtectedRoute>
               }
             >
               <Route index element={<Home />} />
               <Route path="task/:taskId" element={<Task />} />
-              <Route path="team" element={<TeamMembers />} />
-              <Route path="settings" element={<ProjectSettings />} />
+              <Route element={<RequireProjectAdmin />}>
+                <Route path="team" element={<TeamMembers />} />
+                <Route path="settings" element={<ProjectSettings />} />
+              </Route>
+              {/* Catch all unmatched routes inside project */}
+              <Route path="*" element={<NotFound />} />
             </Route>
             <Route
               path="/profile"
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  {isVerified ? <Profile /> : <Navigate to="/verify-email" replace />}
                 </ProtectedRoute>
               }
             />

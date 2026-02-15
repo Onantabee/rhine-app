@@ -81,6 +81,13 @@ public class ProjectController {
         projectService.removeMember(projectId, auth.getName(), email);
     }
 
+    @Operation(summary = "Accept an invitation to join a project")
+    @PostMapping("/accept-invite")
+    public org.springframework.http.ResponseEntity<Long> acceptInvite(@RequestParam String token) {
+        Long projectId = projectService.acceptInvite(token);
+        return org.springframework.http.ResponseEntity.ok(projectId);
+    }
+
     @Operation(summary = "Get your role in a specific project")
     @GetMapping("/{projectId}/my-role")
     public ProjectRole getMyRole(@PathVariable Long projectId, Authentication auth) {

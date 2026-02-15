@@ -17,5 +17,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
 
     Optional<ProjectMember> findByUserEmailAndProjectId(String email, Long projectId);
 
+    Optional<ProjectMember> findByToken(String token);
+
     boolean existsByUserEmailAndProjectId(String email, Long projectId);
 }

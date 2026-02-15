@@ -17,16 +17,16 @@ const SidePane = () => {
             label: "Tasks",
             icon: <LayoutDashboard size={20} />,
             path: `/project/${projectId}`,
-        },
-        {
-            label: "Team",
-            icon: <Users size={20} />,
-            path: `/project/${projectId}/team`,
-        },
+        }
     ];
 
     if (isAdmin) {
         navItems.push({
+            label: "Team",
+            icon: <Users size={20} />,
+            path: `/project/${projectId}/team`,
+        },
+        {
             label: "Settings",
             icon: <Settings size={20} />,
             path: `/project/${projectId}/settings`,

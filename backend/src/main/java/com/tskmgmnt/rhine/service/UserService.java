@@ -28,7 +28,7 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return new UserRes(user.getEmail(), user.getName());
+        return new UserRes(user.getEmail(), user.getName(), user.isVerified(), user.getLastProjectId());
     }
 
     public UserRes updateUserDetails(String userEmail, UserRes user) {
@@ -44,6 +44,8 @@ public class UserService {
         UserRes response = new UserRes();
         response.setEmail(user.getEmail());
         response.setName(user.getName());
+        response.setVerified(user.isVerified());
+        response.setLastProjectId(user.getLastProjectId());
         return response;
     }
 

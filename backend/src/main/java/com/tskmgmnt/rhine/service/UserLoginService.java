@@ -27,10 +27,8 @@ public class UserLoginService {
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
             throw new IllegalStateException("Invalid email or password");
         }
-        if (!user.isVerified()) {
-            throw new IllegalStateException("Account not verified. Please verify your email.");
-        }
+        // Removed explicit verification check to allow soft login
         boolean hasProjects = !projectMemberRepository.findByUserEmail(email).isEmpty();
-        return new LoginResponse("Login successful", user.getEmail(), user.getName(), hasProjects, user.getLastProjectId());
+        return new LoginResponse("Login successful", user.getEmail(), user.getName(), hasProjects, user.getLastProjectId(), user.isVerified());
     }
 }

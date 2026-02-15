@@ -1,6 +1,7 @@
 package com.tskmgmnt.rhine.entity;
 
 import com.tskmgmnt.rhine.enums.ProjectRole;
+import com.tskmgmnt.rhine.enums.ProjectMemberStatus;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -30,15 +31,28 @@ public class ProjectMember {
     @Column(nullable = false, updatable = false)
     private Instant joinedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProjectMemberStatus status = ProjectMemberStatus.PENDING;
+
+    @Column
+    private String token;
+
     public ProjectMember() {
         this.joinedAt = Instant.now();
     }
 
-    public ProjectMember(User user, Project project, ProjectRole projectRole) {
+    public ProjectMember(User user, Project project, ProjectRole projectRole, ProjectMemberStatus status, String token) {
         this.user = user;
         this.project = project;
         this.projectRole = projectRole;
+        this.status = status;
+        this.token = token;
         this.joinedAt = Instant.now();
+    }
+
+    public ProjectMember(User user, Project project, ProjectRole projectRole) {
+        this(user, project, projectRole, ProjectMemberStatus.ACTIVE, null);
     }
 
     public Long getId() {
@@ -67,6 +81,22 @@ public class ProjectMember {
 
     public ProjectRole getProjectRole() {
         return projectRole;
+    }
+
+    public ProjectMemberStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProjectMemberStatus status) {
+        this.status = status;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setProjectRole(ProjectRole projectRole) {

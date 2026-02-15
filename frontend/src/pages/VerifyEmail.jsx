@@ -1,34 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Input } from "../components/ui";
 import { useSnackbar } from "../context/SnackbarContext";
 import { useVerifyEmailMutation, useResendOtpMutation } from "../store/api/authApi";
+import { login } from "../store/slices/authSlice";
+import { ArrowLeft } from "lucide-react";
 
 const VerifyEmail = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { showSnackbar } = useSnackbar();
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
+    const [fieldErrors, setFieldErrors] = useState({});
     const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
     const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
+
+    const { userEmail } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (location.state?.email) {
             setEmail(location.state.email);
+        } else if (userEmail) {
+            setEmail(userEmail);
         } else {
-            // If no email in state, redirect to login or ask user to enter email?
-            // For now, let's keep it empty or redirect
-            // navigate("/login");
+            navigate("/login");
         }
-    }, [location.state, navigate]);
+    }, [location.state, userEmail, navigate]);
 
     const handleVerify = async (e) => {
         e.preventDefault();
+
+        const errors = {};
+        if (otp.length !== 6) errors.name = "Verification code must be 6 digits";
+        setFieldErrors(errors);
+
+        if (Object.keys(errors).length > 0) return;
+
         try {
-            await verifyEmail({ email, code: otp }).unwrap();
+            const userData = await verifyEmail({ email, code: otp }).unwrap();
             showSnackbar("Email verified successfully!", "success");
-            navigate("/login"); // Redirect to login after verification
+
+            dispatch(login(userData));
+
+            navigate("/");
         } catch (error) {
             console.error("Verification failed:", error);
             showSnackbar(error.data?.message || "Verification failed", "error");
@@ -46,12 +63,15 @@ const VerifyEmail = () => {
     };
 
     return (
-        <div className="h-screen flex justify-center items-center bg-gray-50">
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 max-w-md w-full">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Verify your email</h2>
-                <p className="text-gray-500 text-center mb-6 text-sm">
-                    We've sent a verification code to <span className="font-medium text-gray-700">{email}</span>
-                </p>
+        <div className="h-[70vh] flex justify-center items-center">
+            <div className="z-30 h-[500px] lg:h-auto"
+                style={{ padding: '20px', width: '100%', maxWidth: '500px' }}>
+                <div className="flex flex-col items-center mb-8">
+                    <h1 className="text-3xl font-semibold text-center text-gray-700">Verify your email</h1>
+                    <p className="text-gray-400 font-light text-md mt-2 text-center">
+                        We've sent a verification code to <span className="font-medium text-gray-700">{email}</span>
+                    </p>
+                </div>
 
                 <form onSubmit={handleVerify} className="space-y-4">
                     <Input
@@ -61,14 +81,16 @@ const VerifyEmail = () => {
                         onChange={(e) => setOtp(e.target.value)}
                         fullWidth
                         autoFocus
+                        error={!!fieldErrors.name}
+                        helperText={fieldErrors.name}
                     />
 
                     <Button
                         type="submit"
                         variant="primary"
+                        size="lg"
                         fullWidth
                         loading={isLoading}
-                        disabled={otp.length < 6}
                         className="w-full"
                     >
                         Verify Email
@@ -76,23 +98,24 @@ const VerifyEmail = () => {
                 </form>
 
                 <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-500">
+                    <p className="font-light text-md text-gray-500">
                         Didn't receive the code?{" "}
                         <button
                             onClick={handleResend}
                             disabled={isResending}
-                            className="text-[#7733ff] font-medium hover:underline disabled:opacity-50"
+                            className="text-[#7733ff] hover:text-[#5a189a] text-center cursor-pointer"
                         >
                             {isResending ? "Resending..." : "Resend"}
                         </button>
                     </p>
                 </div>
 
-                <div className="mt-4 text-center">
+                <div className="mt-4 flex items-center justify-center">
                     <button
                         onClick={() => navigate("/login")}
-                        className="text-xs text-gray-400 hover:text-gray-600"
+                        className="font-light text-md text-center text-gray-400 hover:text-gray-600 flex gap-2 items-center cursor-pointer"
                     >
+                        <ArrowLeft size={16} />
                         Back to Login
                     </button>
                 </div>

@@ -54,14 +54,16 @@ const Header = ({ setIsSignup }) => {
         try {
             await logoutServer().unwrap();
         } catch (error) {
-            console.error("Logout failed:", error);
+            console.error("Logout failed on server:", error);
         }
+        // Always clean up client state
         dispatch(logoutAction());
         dispatch(clearActiveProject());
         setMobileOpen(false);
         setLogoutDialogOpen(false);
+        // Force navigate to home and reload to ensure clean state
         navigate("/");
-        setIsSignup(false);
+        window.location.reload();
     };
 
     const handleLogoutCancel = () => {

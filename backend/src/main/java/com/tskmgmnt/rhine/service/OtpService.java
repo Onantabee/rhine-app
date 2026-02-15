@@ -11,9 +11,11 @@ import java.util.Random;
 public class OtpService {
 
     private final OtpRepository otpRepository;
+    private final org.springframework.mail.javamail.JavaMailSender mailSender;
 
-    public OtpService(OtpRepository otpRepository) {
+    public OtpService(OtpRepository otpRepository, org.springframework.mail.javamail.JavaMailSender mailSender) {
         this.otpRepository = otpRepository;
+        this.mailSender = mailSender;
     }
 
     public void generateOtp(String email) {
@@ -26,8 +28,23 @@ public class OtpService {
         Otp otp = new Otp(email, otpCode, expiryDate);
         otpRepository.save(otp);
 
-        // TODO: Integrate real email service
-        System.out.println("OTP for " + email + ": " + otpCode);
+        sendOtpEmail(email, otpCode);
+    }
+
+    private void sendOtpEmail(String to, String otpCode) {
+        try {
+            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
+            message.setFrom("onantabasseyvee@gmail.com");
+            message.setTo(to);
+            message.setSubject("Rhine Verification Code");
+            message.setText("Your verification code is: " + otpCode + "\n\nThis code expires in 15 minutes.");
+            mailSender.send(message);
+            System.out.println("OTP sent to " + to + " with code: " + otpCode);
+        } catch (Exception e) {
+            System.err.println("Failed to send OTP email: " + e.getMessage());
+            e.printStackTrace();
+            // In production, you might want to throw this up or handle it more gracefully
+        }
     }
 
     public boolean validateOtp(String email, String otpCode) {

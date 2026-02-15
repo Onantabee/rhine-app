@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../components/ui";
 import { useSnackbar } from "../context/SnackbarContext";
-import { Plus, Grid, List } from "lucide-react";
+import { Plus, Grid, List, X } from "lucide-react";
 import TaskCard from "../components/TaskCard.jsx";
 import TaskDialog from "../components/TaskDialog.jsx";
 import TaskList, { TaskListHeader } from "../components/TaskList.jsx";
@@ -132,7 +132,7 @@ export default function Home() {
                 </span>
                 <button
                   onClick={() => navigate(`/project/${projectId}`)}
-                  className="text-xs text-blue-600 hover:text-blue-800 underline"
+                  className="text-xs text-red-500 hover:text-red-800 underline cursor-pointer hover:bg-gray-300 p-1.5 rounded-full"
                 >
                   <X size={16} />
                 </button>

@@ -54,6 +54,14 @@ const projectsApi = baseApi.injectEndpoints({
                 { type: "ProjectMember", id: projectId },
             ],
         }),
+        acceptInvite: builder.mutation({
+            query: (token) => ({
+                url: `/api/projects/accept-invite`,
+                method: "POST",
+                params: { token },
+            }),
+            invalidatesTags: ["Project"],
+        }),
         removeMember: builder.mutation({
             query: ({ projectId, email }) => ({
                 url: `/api/projects/${projectId}/members/${email}`,
@@ -77,6 +85,7 @@ export const {
     useDeleteProjectMutation,
     useGetProjectMembersQuery,
     useInviteMemberMutation,
+    useAcceptInviteMutation,
     useRemoveMemberMutation,
     useGetMyRoleInProjectQuery,
 } = projectsApi;

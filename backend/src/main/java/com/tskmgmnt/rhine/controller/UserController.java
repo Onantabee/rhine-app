@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,7 +48,9 @@ public class UserController {
                 "Authenticated",
                 userRes.getEmail(),
                 userRes.getName(),
-                hasProjects
+                hasProjects,
+                userRes.getLastProjectId(),
+                userRes.isVerified()
         );
     }
 
@@ -77,11 +80,24 @@ public class UserController {
         return userService.changePassword(email, request.getCurrentPassword(), request.getNewPassword());
     }
 
+    @Operation(summary = "Logout user")
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(jakarta.servlet.http.HttpServletRequest request) {
+        SecurityContextHolder.clearContext();
+        jakarta.servlet.http.HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
     @Operation(summary = "Update last accessed project")
     @PutMapping("/update-last-project/{projectId}")
-    public void updateLastProject(@PathVariable Long projectId) {
+    public ResponseEntity<String> updateLastProject(@PathVariable Long projectId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
+        System.out.println("Updating last project for " + email + " to " + projectId);
         userService.updateLastProjectId(email, projectId);
+        return ResponseEntity.ok("Last project updated successfully");
     }
 }
