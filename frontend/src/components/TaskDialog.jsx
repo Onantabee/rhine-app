@@ -6,12 +6,13 @@ import {
   useCreateTaskMutation,
   useUpdateTaskMutation,
 } from "../store/api/tasksApi";
-import { useGetNonAdminUsersQuery } from "../store/api/usersApi";
+import { useGetProjectMembersQuery } from "../store/api/projectsApi";
 
 const TaskDialog = ({
   open,
   onClose,
   task,
+  projectId,
 }) => {
   const { showSnackbar } = useSnackbar();
   const userEmail = useSelector((state) => state.auth.userEmail);
@@ -25,7 +26,9 @@ const TaskDialog = ({
   });
   const [fieldErrors, setFieldErrors] = useState({});
 
-  const { data: nonAdminUsers = [] } = useGetNonAdminUsersQuery();
+  const { data: projectMembers = [] } = useGetProjectMembersQuery(projectId, {
+    skip: !projectId,
+  });
   const [createTask, { isLoading: isCreating }] = useCreateTaskMutation();
   const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
 
@@ -108,7 +111,7 @@ const TaskDialog = ({
         createdById: userEmail,
       };
 
-      await createTask(taskData).unwrap();
+      await createTask({ projectId, taskData }).unwrap();
       showSnackbar("Task created successfully!", "success");
       onClose();
     } catch (error) {
@@ -127,7 +130,7 @@ const TaskDialog = ({
         createdById: userEmail,
       };
 
-      await updateTask({ id: task.id, taskData }).unwrap();
+      await updateTask({ projectId, id: task.id, taskData }).unwrap();
       showSnackbar("Task updated successfully!", "success");
       onClose();
     } catch (error) {
@@ -149,9 +152,9 @@ const TaskDialog = ({
     { value: "CANCELLED", label: "Cancelled" },
   ];
 
-  const assigneeOptions = nonAdminUsers.map((user) => ({
-    value: user.email,
-    label: user.name,
+  const assigneeOptions = projectMembers.map((member) => ({
+    value: member.email,
+    label: member.name,
   }));
 
   return (

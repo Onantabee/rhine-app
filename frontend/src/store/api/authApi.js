@@ -1,48 +1,43 @@
 import { baseApi } from './baseApi';
 
-// Authentication API slice
-export const authApi = baseApi.injectEndpoints({
+const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // Register new user
         register: builder.mutation({
-            query: (userData) => ({
+            query: (data) => ({
                 url: '/users/register',
                 method: 'POST',
-                body: userData,
+                body: data,
             }),
             invalidatesTags: ['User'],
         }),
-
-        // Login user
         login: builder.mutation({
-            query: (credentials) => ({
+            query: (data) => ({
                 url: '/users/login',
                 method: 'POST',
-                body: credentials,
+                body: data,
             }),
         }),
-
-        // Get current authenticated user (session validation)
         getCurrentUser: builder.query({
             query: () => '/users/me',
+            providesTags: ['User'],
         }),
-
-        // Logout user (server-side session invalidation)
         logout: builder.mutation({
             query: () => ({
                 url: '/users/logout',
                 method: 'POST',
             }),
         }),
-
-        // Update user role
-        updateRole: builder.mutation({
-            query: (roleData) => ({
-                url: '/users/update-role',
+        verifyEmail: builder.mutation({
+            query: (data) => ({
+                url: `/users/verify?email=${encodeURIComponent(data.email)}&code=${encodeURIComponent(data.code)}`,
                 method: 'POST',
-                body: roleData,
             }),
-            invalidatesTags: ['User'],
+        }),
+        resendOtp: builder.mutation({
+            query: (data) => ({
+                url: `/users/resend-otp?email=${encodeURIComponent(data.email)}`,
+                method: 'POST',
+            }),
         }),
     }),
 });
@@ -53,5 +48,8 @@ export const {
     useGetCurrentUserQuery,
     useLazyGetCurrentUserQuery,
     useLogoutMutation,
-    useUpdateRoleMutation,
+    useVerifyEmailMutation,
+    useResendOtpMutation,
 } = authApi;
+
+export default authApi;

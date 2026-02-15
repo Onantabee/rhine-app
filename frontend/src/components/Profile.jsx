@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { updateUser as updateAuthUser } from "../store/slices/authSlice";
+import { updateAuthUser } from "../store/slices/authSlice";
 import { useSnackbar } from "../context/SnackbarContext";
 import { Button, Input } from "./ui";
 import {

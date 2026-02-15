@@ -5,20 +5,20 @@ export const commentsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         // Get comments by task ID
         getCommentsByTask: builder.query({
-            query: (taskId) => `/comment/task/${taskId}`,
+            query: (taskId) => `/api/comments/task/${taskId}`,
             providesTags: (result, error, taskId) => [{ type: 'Comment', id: taskId }],
         }),
 
         // Get comments by recipient email
         getCommentsByRecipient: builder.query({
-            query: (recipientEmail) => `/comment/recipient/${recipientEmail}`,
+            query: (recipientEmail) => `/api/comments/recipient/${recipientEmail}`,
             providesTags: ['Comment'],
         }),
 
         // Count unread comments
         countUnreadComments: builder.query({
             query: ({ taskId, recipientEmail }) =>
-                `/comment/count-unread-by-recipient/${taskId}/${recipientEmail}`,
+                `/api/comments/count-unread-by-recipient/${taskId}/${recipientEmail}`,
             providesTags: (result, error, { taskId, recipientEmail }) => [
                 { type: 'UnreadCount', id: `${taskId}-${recipientEmail}` },
             ],
@@ -27,7 +27,7 @@ export const commentsApi = baseApi.injectEndpoints({
         // Add comment
         addComment: builder.mutation({
             query: ({ taskId, authorEmail, content, recipientEmail }) => ({
-                url: `/comment/task/${taskId}`,
+                url: `/api/comments/task/${taskId}`,
                 method: 'POST',
                 body: { authorEmail, content, recipientEmail },
             }),
@@ -74,7 +74,7 @@ export const commentsApi = baseApi.injectEndpoints({
         // Mark comments as read by recipient
         markCommentsAsRead: builder.mutation({
             query: ({ taskId, recipientEmail }) => ({
-                url: `/comment/mark-as-read-by-recipient/${taskId}`,
+                url: `/api/comments/mark-as-read-by-recipient/${taskId}`,
                 method: 'POST',
                 body: { recipientEmail },
             }),
@@ -87,7 +87,7 @@ export const commentsApi = baseApi.injectEndpoints({
         // Mark single comment as read
         markCommentAsRead: builder.mutation({
             query: ({ commentId, userEmail }) => ({
-                url: `/comment/mark-as-read/${commentId}`,
+                url: `/api/comments/mark-as-read/${commentId}`,
                 method: 'POST',
                 body: { userEmail },
             }),
@@ -97,7 +97,7 @@ export const commentsApi = baseApi.injectEndpoints({
         // Update comment
         updateComment: builder.mutation({
             query: ({ commentId, content }) => ({
-                url: `/comment/${commentId}`,
+                url: `/api/comments/${commentId}`,
                 method: 'PUT',
                 body: { content },
             }),

@@ -35,6 +35,11 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    @JsonBackReference("project-tasks")
+    private Project project;
+
     @ManyToOne
     @JoinColumn(name = "created_by_id")
     @JsonBackReference
@@ -159,5 +164,13 @@ public class Task {
 
     public void setLastAssignedAt(Instant lastAssignedAt) {
         this.lastAssignedAt = lastAssignedAt;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

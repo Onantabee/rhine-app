@@ -1,11 +1,11 @@
 import { baseApi } from './baseApi';
 
-// Tasks API slice
+// Tasks API slice — all endpoints scoped under /api/projects/{projectId}/tasks
 export const tasksApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // Get all tasks
+        // Get all tasks in a project
         getTasks: builder.query({
-            query: () => '/tasks',
+            query: (projectId) => `/api/projects/${projectId}/tasks`,
             providesTags: (result) =>
                 result
                     ? [
@@ -17,49 +17,30 @@ export const tasksApi = baseApi.injectEndpoints({
 
         // Get task by ID
         getTaskById: builder.query({
-            query: (id) => `/tasks/${id}`,
-            providesTags: (result, error, id) => [{ type: 'Task', id }],
+            query: ({ projectId, taskId }) => `/api/projects/${projectId}/tasks/${taskId}`,
+            providesTags: (result, error, { taskId }) => [{ type: 'Task', id: taskId }],
         }),
 
         // Get task's "is new" state
         getTaskNewState: builder.query({
-            query: (id) => `/tasks/${id}/is-new`,
-            providesTags: (result, error, id) => [{ type: 'Task', id }],
+            query: ({ projectId, taskId }) => `/api/projects/${projectId}/tasks/${taskId}/is-new`,
+            providesTags: (result, error, { taskId }) => [{ type: 'Task', id: taskId }],
         }),
 
-        // Create new task
+        // Create new task in a project
         createTask: builder.mutation({
-            query: (taskData) => ({
-                url: '/tasks/create-task',
+            query: ({ projectId, taskData }) => ({
+                url: `/api/projects/${projectId}/tasks`,
                 method: 'POST',
                 body: taskData,
             }),
             invalidatesTags: [{ type: 'Task', id: 'LIST' }],
-            // Optimistic update
-            async onQueryStarted(taskData, { dispatch, queryFulfilled }) {
-                const patchResult = dispatch(
-                    tasksApi.util.updateQueryData('getTasks', undefined, (draft) => {
-                        const tempTask = {
-                            ...taskData,
-                            id: Date.now(), // Temporary ID
-                            isNew: true,
-                            _optimistic: true,
-                        };
-                        draft.push(tempTask);
-                    })
-                );
-                try {
-                    await queryFulfilled;
-                } catch {
-                    patchResult.undo();
-                }
-            },
         }),
 
         // Update task
         updateTask: builder.mutation({
-            query: ({ id, taskData }) => ({
-                url: `/tasks/update-task/${id}`,
+            query: ({ projectId, id, taskData }) => ({
+                url: `/api/projects/${projectId}/tasks/${id}`,
                 method: 'PUT',
                 body: taskData,
             }),
@@ -71,31 +52,18 @@ export const tasksApi = baseApi.injectEndpoints({
 
         // Update task status
         updateTaskStatus: builder.mutation({
-            query: ({ id, taskStatus }) => ({
-                url: `/tasks/${id}/status`,
+            query: ({ projectId, id, taskStatus }) => ({
+                url: `/api/projects/${projectId}/tasks/${id}/status`,
                 method: 'PUT',
                 body: { taskStatus },
             }),
             invalidatesTags: (result, error, { id }) => [{ type: 'Task', id }],
-            // Optimistic update for status change
-            async onQueryStarted({ id, taskStatus }, { dispatch, queryFulfilled }) {
-                const patchResult = dispatch(
-                    tasksApi.util.updateQueryData('getTaskById', id, (draft) => {
-                        draft.taskStatus = taskStatus;
-                    })
-                );
-                try {
-                    await queryFulfilled;
-                } catch {
-                    patchResult.undo();
-                }
-            },
         }),
 
         // Update task "is new" state
         updateTaskNewState: builder.mutation({
-            query: ({ id, isNew }) => ({
-                url: `/tasks/task-is-new-state/${id}`,
+            query: ({ projectId, id, isNew }) => ({
+                url: `/api/projects/${projectId}/tasks/${id}/is-new`,
                 method: 'PUT',
                 body: { isNew },
             }),
@@ -104,24 +72,11 @@ export const tasksApi = baseApi.injectEndpoints({
 
         // Delete task
         deleteTask: builder.mutation({
-            query: (id) => ({
-                url: `/tasks/${id}`,
+            query: ({ projectId, id }) => ({
+                url: `/api/projects/${projectId}/tasks/${id}`,
                 method: 'DELETE',
             }),
             invalidatesTags: [{ type: 'Task', id: 'LIST' }],
-            // Optimistic update for deletion
-            async onQueryStarted(id, { dispatch, queryFulfilled }) {
-                const patchResult = dispatch(
-                    tasksApi.util.updateQueryData('getTasks', undefined, (draft) => {
-                        return draft.filter((task) => task.id !== id);
-                    })
-                );
-                try {
-                    await queryFulfilled;
-                } catch {
-                    patchResult.undo();
-                }
-            },
         }),
     }),
 });

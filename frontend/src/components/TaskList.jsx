@@ -37,7 +37,7 @@ const TaskList = ({
   onClick,
   searchTerm,
 }) => {
-  const { title, priority, dueDate, taskStatus } = task;
+  const { title, priority, dueDate, taskStatus, projectId } = task;
   const dueDateStatus = getDueDateStatus(dueDate, taskStatus);
   const shouldGrayOut = dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED";
 
@@ -48,9 +48,12 @@ const TaskList = ({
     skip: !assignee,
   });
 
-  const { data: taskNewState } = useGetTaskNewStateQuery(task.id, {
-    skip: isAdmin,
-  });
+  const { data: taskNewState } = useGetTaskNewStateQuery(
+    { projectId, taskId: task.id },
+    {
+      skip: isAdmin || !projectId,
+    }
+  );
   const taskIsNew = taskNewState?.isNew || false;
 
   const { data: unreadCountByRecipient = 0 } = useCountUnreadCommentsQuery(

@@ -3,7 +3,6 @@ package com.tskmgmnt.rhine.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tskmgmnt.rhine.enums.UserRole;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,11 +25,12 @@ public class User implements UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String pwd;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRole userRole;
-
     private boolean isList;
+
+    @Column(nullable = false)
+    private boolean isVerified = false;
+
+    private Long lastProjectId;
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
@@ -39,6 +39,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Task> assignedTasks; // Tasks assigned to this user
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ProjectMember> projectMemberships = new ArrayList<>();
 
     public User() {
         this.isList = false;
@@ -69,20 +73,28 @@ public class User implements UserDetails {
         this.pwd = pwd;
     }
 
-    public UserRole getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
-    }
-
     public boolean isList() {
         return isList;
     }
 
     public void setList(boolean list) {
         isList = list;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
+    public Long getLastProjectId() {
+        return lastProjectId;
+    }
+
+    public void setLastProjectId(Long lastProjectId) {
+        this.lastProjectId = lastProjectId;
     }
 
     public List<Task> getTasks() {
@@ -101,18 +113,25 @@ public class User implements UserDetails {
         this.assignedTasks = assignedTasks;
     }
 
-    public User(String name, String email, String pwd, UserRole userRole) {
+    public List<ProjectMember> getProjectMemberships() {
+        return projectMemberships;
+    }
+
+    public void setProjectMemberships(List<ProjectMember> projectMemberships) {
+        this.projectMemberships = projectMemberships;
+    }
+
+    public User(String name, String email, String pwd) {
         this.name = name;
         this.email = email;
         this.pwd = pwd;
-        this.userRole = userRole;
     }
 
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
-        return Collections.singletonList(authority);
+        // No global role — authority is per-project. Return a default for Spring Security.
+        return Collections.singletonList(new SimpleGrantedAuthority("USER"));
     }
 
     @Override

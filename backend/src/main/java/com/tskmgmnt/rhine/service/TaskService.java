@@ -2,9 +2,12 @@ package com.tskmgmnt.rhine.service;
 
 import com.tskmgmnt.rhine.dto.NotificationDto;
 import com.tskmgmnt.rhine.dto.TaskDto;
-import com.tskmgmnt.rhine.dto.TaskDto;
+import com.tskmgmnt.rhine.entity.Project;
 import com.tskmgmnt.rhine.entity.Task;
 import com.tskmgmnt.rhine.entity.User;
+import com.tskmgmnt.rhine.enums.ProjectRole;
+import com.tskmgmnt.rhine.repository.ProjectMemberRepository;
+import com.tskmgmnt.rhine.repository.ProjectRepository;
 import com.tskmgmnt.rhine.repository.TaskRepository;
 import com.tskmgmnt.rhine.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,32 +23,52 @@ import java.util.stream.Collectors;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository, SimpMessagingTemplate messagingTemplate) {
+    public TaskService(TaskRepository taskRepository,
+                       UserRepository userRepository,
+                       ProjectRepository projectRepository,
+                       ProjectMemberRepository projectMemberRepository,
+                       SimpMessagingTemplate messagingTemplate) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
+        this.projectMemberRepository = projectMemberRepository;
         this.messagingTemplate = messagingTemplate;
     }
 
-    public TaskDto createTask(TaskDto taskReq) {
+    public TaskDto createTask(Long projectId, TaskDto taskReq, String requestingUserEmail) {
+        // Verify the user is an admin of the project
+        projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, projectId)
+                .filter(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
+                .orElseThrow(() -> new RuntimeException("Only project admins can create tasks"));
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
         Task task = new Task();
         task.setTitle(taskReq.getTitle());
         task.setDescription(taskReq.getDescription());
         task.setTaskStatus(taskReq.getTaskStatus());
         task.setPriority(taskReq.getPriority());
         task.setDueDate(taskReq.getDueDate());
+        task.setProject(project);
 
         User createdBy = userRepository.findByEmail(taskReq.getCreatedById())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         task.setCreatedBy(createdBy);
         task.setCreatedAt(Instant.now());
         task.setIsNew(true);
-        // Default lastAssignedAt to creation time if no assignee yet, or now if assigned immediately.
         task.setLastAssignedAt(Instant.now());
 
         if (taskReq.getAssigneeId() != null) {
+            // Verify assignee is a member of the project
+            if (!projectMemberRepository.existsByUserEmailAndProjectId(taskReq.getAssigneeId(), projectId)) {
+                throw new RuntimeException("Assignee must be a member of this project");
+            }
             User assignee = userRepository.findByEmail(taskReq.getAssigneeId())
                     .orElseThrow(() -> new RuntimeException("Assignee not found"));
             task.setAssignee(assignee);
@@ -59,8 +82,13 @@ public class TaskService {
         return mapToTaskResponse(savedTask);
     }
 
-    public List<TaskDto> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
+    public List<TaskDto> getTasksByProject(Long projectId, String requestingUserEmail) {
+        // Verify user is a member
+        if (!projectMemberRepository.existsByUserEmailAndProjectId(requestingUserEmail, projectId)) {
+            throw new RuntimeException("You are not a member of this project");
+        }
+
+        List<Task> tasks = taskRepository.findByProjectId(projectId);
         return tasks.stream()
                 .map(this::mapToTaskResponse)
                 .collect(Collectors.toList());
@@ -78,6 +106,7 @@ public class TaskService {
         response.setIsNew(task.getIsNew());
         response.setCreatedAt(task.getCreatedAt());
         response.setLastAssignedAt(task.getLastAssignedAt());
+        response.setProjectId(task.getProject() != null ? task.getProject().getId() : null);
         if (task.getAssignee() != null) {
             response.setAssigneeId(task.getAssignee().getEmail());
         }
@@ -105,10 +134,15 @@ public class TaskService {
         }
 
         if (taskReq.getAssigneeId() != null) {
+            // Verify assignee is a member of the task's project
+            Long projectId = existingTask.getProject() != null ? existingTask.getProject().getId() : null;
+            if (projectId != null && !projectMemberRepository.existsByUserEmailAndProjectId(taskReq.getAssigneeId(), projectId)) {
+                throw new RuntimeException("Assignee must be a member of this project");
+            }
+
             User assignee = userRepository.findByEmail(taskReq.getAssigneeId())
                     .orElseThrow(() -> new RuntimeException("Assignee not Found!"));
 
-            // Logic: If assignee changes, it's "New" for the new assignee, and we update lastAssignedAt
             if (existingTask.getAssignee() == null || !existingTask.getAssignee().getEmail().equals(assignee.getEmail())) {
                 existingTask.setAssignee(assignee);
                 existingTask.setLastAssignedAt(Instant.now());
@@ -137,7 +171,7 @@ public class TaskService {
         return mapToTaskResponse(updatedTask);
     }
 
-    public TaskDto updateIsNewState(Long id, TaskDto taskReq){
+    public TaskDto updateIsNewState(Long id, TaskDto taskReq) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not Found!"));
         task.setIsNew(taskReq.getIsNew());
@@ -153,7 +187,6 @@ public class TaskService {
 
         TaskDto response = new TaskDto();
         response.setIsNew(task.getIsNew());
-
         return response;
     }
 
@@ -176,5 +209,4 @@ public class TaskService {
             throw e;
         }
     }
-
 }

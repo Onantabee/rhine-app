@@ -67,11 +67,12 @@ const Form = ({ isSignup }) => {
       }).unwrap();
 
       console.log("Signup successful!", userData);
-      dispatch(loginAction(userData));
+      // Removed auto-login dispatch since user is not verified
       setName("");
       setEmail("");
       setPassword("");
-      navigate("/choose-role");
+      // Redirect to verification page
+      navigate("/verify-email", { state: { email: trimmedEmail } });
     } catch (error) {
       console.error("Signup failed:", error);
       const errorMessage = error.data?.message || "Couldn't Connect to Server";
@@ -96,11 +97,15 @@ const Form = ({ isSignup }) => {
       dispatch(loginAction(userData));
       setEmail("");
       setPassword("");
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
       const errorMessage = error.data?.message || "Couldn't Connect to Server";
       showSnackbar(errorMessage, "error");
+
+      if (errorMessage.includes("Account not verified")) {
+        navigate("/verify-email", { state: { email: trimmedEmail } });
+      }
     }
   };
 

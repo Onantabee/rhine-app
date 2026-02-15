@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "../ui";
 import { logout as logoutAction, setSearchTerm } from "../../store/slices/authSlice";
+import { clearActiveProject } from "../../store/slices/projectSlice";
 import { useLogoutMutation } from "../../store/api/authApi";
 
 import MobileDrawer from "./MobileDrawer";
@@ -11,6 +12,7 @@ import EditProfileDrawer from "./EditProfileDrawer";
 import UserAvatar from "./UserAvatar";
 import SearchBar from "./SearchBar";
 import ProfileDropdown from "./ProfileDropdown";
+import ProjectPicker from "../ProjectPicker";
 
 const Header = ({ setIsSignup }) => {
     const dispatch = useDispatch();
@@ -20,9 +22,9 @@ const Header = ({ setIsSignup }) => {
 
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const userName = useSelector((state) => state.auth.userName);
-    const userRole = useSelector((state) => state.auth.userRole);
     const searchTerm = useSelector((state) => state.auth.searchTerm);
-    const isAdmin = userRole === "ADMIN";
+    const activeProject = useSelector((state) => state.project.activeProject);
+    const isAdmin = activeProject?.role === "PROJECT_ADMIN";
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
@@ -55,6 +57,7 @@ const Header = ({ setIsSignup }) => {
             console.error("Logout failed:", error);
         }
         dispatch(logoutAction());
+        dispatch(clearActiveProject());
         setMobileOpen(false);
         setLogoutDialogOpen(false);
         navigate("/");
@@ -98,14 +101,26 @@ const Header = ({ setIsSignup }) => {
         };
     }, []);
 
+    // Show search only on the project task list page
+    const isTaskListPage = /^\/project\/\d+\/?$/.test(location.pathname);
+
     return (
         <>
-            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 sm:px-8 md:px-12 lg:px-16 mb-5">
-                <nav className="py-3">
-                    <div className="w-full justify-center max-w-[1240px] mx-auto items-center hidden md:flex space-x-4 gap-4">
-                        <div>
-                            <h1 className="text-2xl text-[#7733ff] font-semibold">Rhine</h1>
-                        </div>
+            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 sm:px-8 h-[70px]">
+                <nav className="flex items-center h-full">
+                    <div className="w-full justify-center items-center hidden md:flex space-x-4 gap-4 h-full">
+                        {/* <div>
+                            <h1
+                                className="text-2xl text-[#7733ff] font-semibold cursor-pointer"
+                                onClick={() =>
+                                    activeProject
+                                        ? navigate(`/project/${activeProject.id}`)
+                                        : navigate("/")
+                                }
+                            >
+                                Rhine
+                            </h1>
+                        </div> */}
 
                         {!isLoggedIn ? (
                             <div className="w-full flex justify-end gap-3">
@@ -130,8 +145,10 @@ const Header = ({ setIsSignup }) => {
                             </div>
                         ) : (
                             <div className="flex w-full justify-between items-center gap-4">
+                                <ProjectPicker />
+
                                 <div className="w-full flex justify-center items-center">
-                                    {location.pathname === "/home" && (
+                                    {isTaskListPage && (
                                         <SearchBar
                                             value={searchTerm}
                                             onChange={handleSearchChange}
