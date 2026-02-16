@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-// Base API configuration
 export const baseApi = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
-        credentials: 'include', // Send JSESSIONID cookie with every request
+        credentials: 'include',
         prepareHeaders: (headers) => {
             headers.set('Content-Type', 'application/json');
             return headers;

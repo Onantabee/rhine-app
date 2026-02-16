@@ -65,7 +65,6 @@ public class WebSecurityConfig {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-            // No global role - just return the user (which implements UserDetails)
             return user;
         };
     }

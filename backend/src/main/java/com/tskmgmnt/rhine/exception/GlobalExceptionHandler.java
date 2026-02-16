@@ -34,7 +34,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoResourceFoundException(org.springframework.web.servlet.resource.NoResourceFoundException exc) {
-        // Log at debug level to avoid noise for favicon.ico etc
         log.debug("Resource not found: {}", exc.getMessage());
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -65,8 +64,6 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         error.setMessage("An unexpected error occurred. Please contact support.");
-        // meaningful message for dev
-        // error.setMessage(exc.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

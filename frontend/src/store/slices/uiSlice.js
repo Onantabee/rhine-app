@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  mobileMenuOpen: false, // Default closed
+  mobileMenuOpen: false,
 };
 
 const uiSlice = createSlice({

@@ -42,7 +42,6 @@ const Form = ({ isSignup }) => {
         errors.password = "Please meet all password requirements";
       }
     } else if (password.length < 6) {
-      // Keep simple check for login to avoid frustrating existing users with old weak passwords
       errors.password = "Password must be at least 6 characters";
     }
 
@@ -80,10 +79,9 @@ const Form = ({ isSignup }) => {
 
       console.log("Signup successful!", userData);
 
-      // Auto-login on frontend
       dispatch(loginAction({
         ...userData,
-        isVerified: false // Explicitly set to false as expected from register response
+        isVerified: false
       }));
 
       setName("");
@@ -115,7 +113,6 @@ const Form = ({ isSignup }) => {
       dispatch(loginAction(userData));
       setEmail("");
       setPassword("");
-      // App.jsx will handle redirect based on isVerified
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
@@ -185,7 +182,6 @@ const Form = ({ isSignup }) => {
                   onChange={(e) => {
                     const newPassword = e.target.value;
                     setPassword(newPassword);
-                    // Only clear error if it exists AND the new password is fully valid
                     if (fieldErrors.password && checkPasswordValid(newPassword)) {
                       clearFieldError("password");
                     }

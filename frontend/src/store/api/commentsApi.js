@@ -1,21 +1,15 @@
 import { baseApi } from './baseApi';
 
-// Comments API slice
 export const commentsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // Get comments by task ID
         getCommentsByTask: builder.query({
             query: (taskId) => `/api/comments/task/${taskId}`,
             providesTags: (result, error, taskId) => [{ type: 'Comment', id: taskId }],
         }),
-
-        // Get comments by recipient email
         getCommentsByRecipient: builder.query({
             query: (recipientEmail) => `/api/comments/recipient/${recipientEmail}`,
             providesTags: ['Comment'],
         }),
-
-        // Count unread comments
         countUnreadComments: builder.query({
             query: ({ taskId, recipientEmail }) =>
                 `/api/comments/count-unread-by-recipient/${taskId}/${recipientEmail}`,
@@ -23,8 +17,6 @@ export const commentsApi = baseApi.injectEndpoints({
                 { type: 'UnreadCount', id: `${taskId}-${recipientEmail}` },
             ],
         }),
-
-        // Add comment
         addComment: builder.mutation({
             query: ({ taskId, authorEmail, content, recipientEmail }) => ({
                 url: `/api/comments/task/${taskId}`,
@@ -34,7 +26,6 @@ export const commentsApi = baseApi.injectEndpoints({
             invalidatesTags: (result, error, { taskId }) => [
                 { type: 'Comment', id: taskId },
             ],
-            // Optimistic update
             async onQueryStarted(
                 { taskId, authorEmail, content, recipientEmail },
                 { dispatch, queryFulfilled }
@@ -56,7 +47,6 @@ export const commentsApi = baseApi.injectEndpoints({
                 );
                 try {
                     const { data } = await queryFulfilled;
-                    // Update with real comment data
                     dispatch(
                         commentsApi.util.updateQueryData('getCommentsByTask', taskId, (draft) => {
                             const index = draft.findIndex((c) => c._optimistic);
@@ -70,8 +60,6 @@ export const commentsApi = baseApi.injectEndpoints({
                 }
             },
         }),
-
-        // Mark comments as read by recipient
         markCommentsAsRead: builder.mutation({
             query: ({ taskId, recipientEmail }) => ({
                 url: `/api/comments/mark-as-read-by-recipient/${taskId}`,
@@ -83,8 +71,6 @@ export const commentsApi = baseApi.injectEndpoints({
                 { type: 'UnreadCount', id: `${taskId}-${recipientEmail}` },
             ],
         }),
-
-        // Mark single comment as read
         markCommentAsRead: builder.mutation({
             query: ({ commentId, userEmail }) => ({
                 url: `/api/comments/mark-as-read/${commentId}`,
@@ -94,7 +80,6 @@ export const commentsApi = baseApi.injectEndpoints({
             invalidatesTags: ['Comment', 'UnreadCount'],
         }),
 
-        // Update comment
         updateComment: builder.mutation({
             query: ({ commentId, content }) => ({
                 url: `/api/comments/${commentId}`,
@@ -102,7 +87,6 @@ export const commentsApi = baseApi.injectEndpoints({
                 body: { content },
             }),
             invalidatesTags: (result, error, { commentId }) => ['Comment'],
-            // Optimistic update
             async onQueryStarted({ commentId, content, taskId }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     commentsApi.util.updateQueryData('getCommentsByTask', taskId, (draft) => {
@@ -120,14 +104,12 @@ export const commentsApi = baseApi.injectEndpoints({
             },
         }),
 
-        // Delete comment
         deleteComment: builder.mutation({
             query: (commentId) => ({
                 url: `api/comments/${commentId}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['Comment'],
-            // Optimistic update
             async onQueryStarted({ commentId, taskId }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     commentsApi.util.updateQueryData('getCommentsByTask', taskId, (draft) => {

@@ -1,10 +1,4 @@
-/**
- * Utility functions for task due date calculations
- */
 
-/**
- * Calculate due date status based on current date and task status
- */
 export const getDueDateStatus = (dueDate, currentStatus) => {
     if (currentStatus === "COMPLETED" || currentStatus === "CANCELLED") {
         return null;
@@ -12,7 +6,7 @@ export const getDueDateStatus = (dueDate, currentStatus) => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const due = new Date(dueDate); // ISO 8601 strings parse correctly here
+    const due = new Date(dueDate); 
     due.setHours(0, 0, 0, 0);
 
     const diffTime = due - today;
@@ -25,9 +19,7 @@ export const getDueDateStatus = (dueDate, currentStatus) => {
     return null;
 };
 
-/**
- * Format due date text based on status
- */
+
 export const dueDateStatusConfig = {
     OVERDUE: {
         text: "Overdue",
@@ -47,9 +39,7 @@ export const dueDateStatusConfig = {
     },
 };
 
-/**
- * Format due date text based on status
- */
+
 export const formatDueDateText = (dueDate, status, dueDateStatus) => {
     if (status === "COMPLETED" || status === "CANCELLED") {
         return new Intl.DateTimeFormat("en-US", {
@@ -70,9 +60,7 @@ export const formatDueDateText = (dueDate, status, dueDateStatus) => {
     }).format(new Date(dueDate));
 };
 
-/**
- * Get card background color based on status (light theme)
- */
+
 export const getCardBackground = (status, dueStatus) => {
     if (status === "COMPLETED") return "rgba(220, 252, 231, 0.5)";
     if (status === "CANCELLED") return "rgba(243, 244, 246, 0.5)";
@@ -91,9 +79,6 @@ export const getCardBackground = (status, dueStatus) => {
     }
 };
 
-/**
- * Get card border color based on status (light theme)
- */
 export const getCardBorder = (status, dueStatus) => {
     if (status === "COMPLETED") return "1px solid rgba(34, 197, 94, 0.3)";
     if (status === "CANCELLED") return "1px solid rgba(209, 213, 219, 0.5)";
@@ -110,9 +95,6 @@ export const getCardBorder = (status, dueStatus) => {
     }
 };
 
-/**
- * Color mappings for status and priority (light theme)
- */
 export const statusColors = {
     PENDING: "bg-yellow-100 text-yellow-800",
     ONGOING: "bg-blue-100 text-blue-800",
@@ -128,9 +110,6 @@ export const priorityColors = {
     OVERDUE: "bg-gray-100 text-gray-500",
 };
 
-/**
- * Highlight search term matches in text
- */
 export const highlightSearchMatch = (text, searchTerm) => {
     if (!searchTerm || searchTerm.trim() === "") return text;
 

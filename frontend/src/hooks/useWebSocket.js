@@ -10,10 +10,9 @@ export default function useWebSocket() {
   const [connectionError, setConnectionError] = useState(null);
 
   const connect = useCallback(() => {
-    // Determine WebSocket URL from environment variable or fallback
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const wsUrl = baseUrl.replace(/^http/, "ws") + "/ws";
-    const socket = new SockJS(baseUrl + "/ws"); // SockJS handles the http->ws handshake
+    const socket = new SockJS(wsUrl);
 
     const stompClient = new Client({
       webSocketFactory: () => socket,
@@ -108,17 +107,6 @@ export default function useWebSocket() {
       }
     };
   }, [connect]);
-
-  // useEffect(() => {
-  //   connect();
-
-  //   return () => {
-  //     if (client) {
-  //       client.deactivate();
-  //       console.log("WebSocket client deactivated");
-  //     }
-  //   };
-  // }, [connect, client]);
 
   return {
     messages,

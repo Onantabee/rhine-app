@@ -44,11 +44,9 @@ public class ProjectService {
         Project project = new Project(req.getName(), owner);
         project = projectRepository.save(project);
 
-        // Add owner as PROJECT_ADMIN member
         ProjectMember membership = new ProjectMember(owner, project, ProjectRole.PROJECT_ADMIN);
         projectMemberRepository.save(membership);
 
-        // Update owner's lastProjectId
         owner.setLastProjectId(project.getId());
         userRepository.save(owner);
 
@@ -155,7 +153,7 @@ public class ProjectService {
                 .orElseThrow(() -> new RuntimeException("Invalid invitation token"));
 
         membership.setStatus(com.tskmgmnt.rhine.enums.ProjectMemberStatus.ACTIVE);
-        membership.setToken(null); // Invalidate token
+        membership.setToken(null);
         projectMemberRepository.save(membership);
         
         return membership.getProject().getId();
@@ -180,7 +178,6 @@ public class ProjectService {
     }
 
     public List<ProjectMemberDto> getMembers(Long projectId, String email) {
-        // Verify the requesting user is a member
         if (!projectMemberRepository.existsByUserEmailAndProjectId(email, projectId)) {
             throw new RuntimeException("You are not a member of this project");
         }

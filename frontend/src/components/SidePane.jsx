@@ -14,7 +14,6 @@ const SidePane = ({ onLinkClick }) => {
     const location = useLocation();
     const activeProject = useSelector((state) => state.project.activeProject);
 
-    // Fallback to active project ID if not in URL (e.g., when on /profile)
     const projectId = params.projectId || activeProject?.id;
 
     const [logoutServer] = useLogoutMutation();
@@ -24,7 +23,6 @@ const SidePane = ({ onLinkClick }) => {
 
     const navItems = [];
 
-    // Only show project nav items if we have a project context
     if (projectId) {
         navItems.push({
             label: "Tasks",

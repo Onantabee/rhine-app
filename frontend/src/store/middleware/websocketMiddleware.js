@@ -6,7 +6,6 @@ import { commentsApi } from '../api/commentsApi';
 let stompClient = null;
 
 export const websocketMiddleware = (store) => (next) => (action) => {
-    // Initialize WebSocket connection on store creation
     if (!stompClient) {
         initializeWebSocket(store);
     }
@@ -15,7 +14,7 @@ export const websocketMiddleware = (store) => (next) => (action) => {
 };
 
 function initializeWebSocket(store) {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const socket = new SockJS(baseUrl + '/ws');
 
 
@@ -29,7 +28,6 @@ function initializeWebSocket(store) {
         onConnect: () => {
             console.log('[WebSocket] Connected');
 
-            // Subscribe to unread count updates
             stompClient.subscribe('/topic/unread-updates', (message) => {
                 try {
                     const { taskId, recipientEmail } = JSON.parse(message.body);
@@ -43,11 +41,9 @@ function initializeWebSocket(store) {
                 }
             });
 
-            // Subscribe to comment updates
             stompClient.subscribe('/topic/comments', (message) => {
                 try {
                     const newComment = JSON.parse(message.body);
-                    // Invalidate comments cache for the task
                     store.dispatch(
                         commentsApi.util.invalidateTags([{ type: 'Comment', id: newComment.taskId }])
                     );
@@ -56,7 +52,6 @@ function initializeWebSocket(store) {
                 }
             });
 
-            // Subscribe to comment updates
             stompClient.subscribe('/topic/comment-update', (message) => {
                 try {
                     const updatedComment = JSON.parse(message.body);
@@ -68,11 +63,9 @@ function initializeWebSocket(store) {
                 }
             });
 
-            // Subscribe to task creation
             stompClient.subscribe('/topic/task-created', (message) => {
                 try {
                     const data = JSON.parse(message.body);
-                    // Invalidate tasks list
                     store.dispatch(
                         tasksApi.util.invalidateTags([{ type: 'Task', id: 'LIST' }])
                     );
@@ -81,11 +74,9 @@ function initializeWebSocket(store) {
                 }
             });
 
-            // Subscribe to task deletion
             stompClient.subscribe('/topic/task-deleted', (message) => {
                 try {
                     const data = JSON.parse(message.body);
-                    // Invalidate tasks list
                     store.dispatch(
                         tasksApi.util.invalidateTags([{ type: 'Task', id: 'LIST' }])
                     );
@@ -94,13 +85,11 @@ function initializeWebSocket(store) {
                 }
             });
 
-            // Subscribe to task updates
             stompClient.subscribe('/topic/task-updated', (message) => {
                 try {
                     const updatedTask = JSON.parse(message.body);
                     const taskId = updatedTask.payload?.id;
                     if (taskId) {
-                        // Invalidate specific task and list
                         store.dispatch(
                             tasksApi.util.invalidateTags([
                                 { type: 'Task', id: taskId },
@@ -113,7 +102,6 @@ function initializeWebSocket(store) {
                 }
             });
 
-            // Subscribe to task status updates
             stompClient.subscribe('/topic/task-status-updated', (message) => {
                 try {
                     const data = JSON.parse(message.body);
@@ -145,5 +133,4 @@ function initializeWebSocket(store) {
     stompClient.activate();
 }
 
-// Export for potential manual control
 export const getStompClient = () => stompClient;

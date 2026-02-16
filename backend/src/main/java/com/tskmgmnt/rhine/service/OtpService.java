@@ -19,7 +19,6 @@ public class OtpService {
     }
 
     public void generateOtp(String email) {
-        // Clear existing OTP for this email if any
         otpRepository.findByEmail(email).ifPresent(otpRepository::delete);
 
         String otpCode = String.format("%06d", new Random().nextInt(999999));
@@ -43,7 +42,6 @@ public class OtpService {
         } catch (Exception e) {
             System.err.println("Failed to send OTP email: " + e.getMessage());
             e.printStackTrace();
-            // In production, you might want to throw this up or handle it more gracefully
         }
     }
 

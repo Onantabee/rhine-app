@@ -9,8 +9,7 @@ public class ProjectDto {
     private String ownerName;
     private int memberCount;
     private Instant createdAt;
-    private String currentUserRole; // The role of the requesting user in this project
-
+    private String currentUserRole;
     public ProjectDto() {}
 
     public ProjectDto(Long id, String name, String ownerEmail, String ownerName, int memberCount, Instant createdAt, String currentUserRole) {

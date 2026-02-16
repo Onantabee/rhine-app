@@ -119,7 +119,6 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // No global role — authority is per-project. Return a default for Spring Security.
         return Collections.singletonList(new SimpleGrantedAuthority("USER"));
     }
 

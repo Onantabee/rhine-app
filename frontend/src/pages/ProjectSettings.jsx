@@ -75,7 +75,6 @@ const ProjectSettings = () => {
             </div>
 
             <div className="flex flex-col gap-8">
-                {/* Project Name */}
                 <div className="flex flex-col gap-4">
                     <h2 className="text-xl font-semibold text-gray-700">
                         General
@@ -103,7 +102,6 @@ const ProjectSettings = () => {
                     </form>
                 </div>
 
-                {/* Danger Zone */}
                 <div className="bg-white border border-red-200 p-4 flex flex-col gap-4">
                     <h2 className="text-xl font-semibold text-red-600">
                         Danger Zone

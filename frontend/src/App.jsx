@@ -51,7 +51,6 @@ function App() {
     }
   }, []);
 
-  // Determine where to redirect after login
   const getDefaultRedirect = () => {
     if (activeProject) return `/project/${activeProject.id}`;
     if (lastProjectId) return `/project/${lastProjectId}`;
@@ -103,10 +102,8 @@ function App() {
                 <Route path="team" element={<TeamMembers />} />
                 <Route path="settings" element={<ProjectSettings />} />
               </Route>
-              {/* Catch all unmatched routes inside project */}
               <Route path="*" element={<NotFound />} />
             </Route>
-            {/* Profile route wrapped in WorkspaceLayout to show SidePane */}
             <Route element={<WorkspaceLayout />}>
               <Route
                 path="/profile"
@@ -117,8 +114,6 @@ function App() {
                 }
               />
             </Route>
-            {/* </Route> */}
-            {/* Global catch-all for any other 404s */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

@@ -44,7 +44,6 @@ const TeamMembers = () => {
             setInviteDialogOpen(false);
         } catch (error) {
             const errorMessage = error?.data?.message || "Failed to invite member";
-            // setInviteError({ email: errorMessage }); // Optional: if you want to keep the field error
             showSnackbar(errorMessage, "error");
         }
     };
@@ -98,8 +97,6 @@ const TeamMembers = () => {
                 isAdmin={isAdmin}
                 onRemove={setRemoveTarget}
             />
-
-            {/* Invite Dialog */}
             <Dialog
                 open={inviteDialogOpen}
                 onClose={() => {
@@ -154,7 +151,6 @@ const TeamMembers = () => {
                 </form>
             </Dialog>
 
-            {/* Remove Confirmation Dialog */}
             <Dialog
                 open={!!removeTarget}
                 onClose={() => setRemoveTarget(null)}

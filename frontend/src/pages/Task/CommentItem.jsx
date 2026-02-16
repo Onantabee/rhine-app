@@ -3,9 +3,6 @@ import { createPortal } from "react-dom";
 import { MoreVerticalIcon } from "lucide-react";
 import { differenceInSeconds, formatDistanceToNowStrict } from "date-fns";
 
-/**
- * CommentItem component - Individual comment display
- */
 const CommentItem = ({
     comment,
     currentUserEmail,

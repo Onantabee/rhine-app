@@ -16,7 +16,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
             const rect = event.currentTarget.getBoundingClientRect();
             setMenuPosition({
                 top: rect.bottom + window.scrollY,
-                left: rect.right + window.scrollX - 192 // Align right, w-48 is 192px
+                left: rect.right + window.scrollX - 192
             });
             setActionMenuOpen(email);
         }

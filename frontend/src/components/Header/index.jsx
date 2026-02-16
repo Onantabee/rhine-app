@@ -112,7 +112,6 @@ const Header = ({ setIsSignup }) => {
         };
     }, []);
 
-    // Show search only on the project task list page
     const isTaskListPage = /^\/project\/\d+\/?$/.test(location.pathname);
 
     return (

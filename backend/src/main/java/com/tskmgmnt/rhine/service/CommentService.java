@@ -97,7 +97,7 @@ public class CommentService {
             if (comment.getRecipient() != null &&
                     comment.getRecipient().getEmail().equals(userEmail)) {
                 comment.setReadByRecipient(true);
-                commentRepository.save(comment); // Explicit save
+                commentRepository.save(comment);
                 messagingTemplate.convertAndSend("/topic/comments-read",
                         new NotificationDto<>("COMMENTS_READ", mapToDto(comment)));
             }

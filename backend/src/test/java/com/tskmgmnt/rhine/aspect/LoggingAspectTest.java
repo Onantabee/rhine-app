@@ -39,8 +39,6 @@ public class LoggingAspectTest {
     public void testLogBefore() {
         when(joinPoint.getArgs()).thenReturn(new Object[]{"arg1", "arg2"});
         loggingAspect.logBefore(joinPoint);
-        // verification of logger interaction is tricky with internal logger, 
-        // but compiling and running this ensures the Aspect logic is sound.
     }
 
     @Test

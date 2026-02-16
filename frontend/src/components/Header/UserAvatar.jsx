@@ -1,8 +1,6 @@
 import React from "react";
 
-/**
- * UserAvatar component - Displays user initials in a square avatar
- */
+
 const UserAvatar = ({ userName = "", size = "md", onClick }) => {
     const fullName = String(userName || "");
     const names = fullName.split(/\s+/);
@@ -23,7 +21,6 @@ const UserAvatar = ({ userName = "", size = "md", onClick }) => {
         >
             <span>
                 {firstName?.charAt(0) || "U"}
-                {/* {lastName?.charAt(0) || " "} */}
             </span>
         </div>
     );

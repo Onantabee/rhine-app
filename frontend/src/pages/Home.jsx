@@ -48,7 +48,6 @@ export default function Home() {
     skip: !projectId,
   });
 
-  // Update active project state when navigating directly to a project URL
   useEffect(() => {
     if (project && (!activeProject || activeProject.id !== project.id)) {
       dispatch(

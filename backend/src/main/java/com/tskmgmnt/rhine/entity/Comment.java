@@ -50,7 +50,6 @@ public class Comment {
         this.createdAt = Instant.now();
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

@@ -1,9 +1,7 @@
 import { baseApi } from './baseApi';
 
-// Tasks API slice — all endpoints scoped under /api/projects/{projectId}/tasks
 export const tasksApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // Get all tasks in a project
         getTasks: builder.query({
             query: (projectId) => `/api/projects/${projectId}/tasks`,
             providesTags: (result) =>
@@ -15,19 +13,16 @@ export const tasksApi = baseApi.injectEndpoints({
                     : [{ type: 'Task', id: 'LIST' }],
         }),
 
-        // Get task by ID
         getTaskById: builder.query({
             query: ({ projectId, taskId }) => `/api/projects/${projectId}/tasks/${taskId}`,
             providesTags: (result, error, { taskId }) => [{ type: 'Task', id: taskId }],
         }),
 
-        // Get task's "is new" state
         getTaskNewState: builder.query({
             query: ({ projectId, taskId }) => `/api/projects/${projectId}/tasks/${taskId}/is-new`,
             providesTags: (result, error, { taskId }) => [{ type: 'Task', id: taskId }],
         }),
 
-        // Create new task in a project
         createTask: builder.mutation({
             query: ({ projectId, taskData }) => ({
                 url: `/api/projects/${projectId}/tasks`,
@@ -37,7 +32,6 @@ export const tasksApi = baseApi.injectEndpoints({
             invalidatesTags: [{ type: 'Task', id: 'LIST' }],
         }),
 
-        // Update task
         updateTask: builder.mutation({
             query: ({ projectId, id, taskData }) => ({
                 url: `/api/projects/${projectId}/tasks/${id}`,
@@ -50,7 +44,6 @@ export const tasksApi = baseApi.injectEndpoints({
             ],
         }),
 
-        // Update task status
         updateTaskStatus: builder.mutation({
             query: ({ projectId, id, taskStatus }) => ({
                 url: `/api/projects/${projectId}/tasks/${id}/status`,
@@ -60,7 +53,6 @@ export const tasksApi = baseApi.injectEndpoints({
             invalidatesTags: (result, error, { id }) => [{ type: 'Task', id }],
         }),
 
-        // Update task "is new" state
         updateTaskNewState: builder.mutation({
             query: ({ projectId, id, isNew }) => ({
                 url: `/api/projects/${projectId}/tasks/${id}/is-new`,
@@ -70,7 +62,6 @@ export const tasksApi = baseApi.injectEndpoints({
             invalidatesTags: (result, error, { id }) => [{ type: 'Task', id }],
         }),
 
-        // Delete task
         deleteTask: builder.mutation({
             query: ({ projectId, id }) => ({
                 url: `/api/projects/${projectId}/tasks/${id}`,

@@ -7,7 +7,7 @@ public class InviteMemberReq {
     private ProjectRole projectRole;
 
     public InviteMemberReq() {
-        this.projectRole = ProjectRole.PROJECT_EMPLOYEE; // default
+        this.projectRole = ProjectRole.PROJECT_EMPLOYEE;
     }
 
     public InviteMemberReq(String email, ProjectRole projectRole) {

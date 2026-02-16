@@ -41,7 +41,6 @@ public class TaskService {
     }
 
     public TaskDto createTask(Long projectId, TaskDto taskReq, String requestingUserEmail) {
-        // Verify the user is an admin of the project
         projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, projectId)
                 .filter(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
                 .orElseThrow(() -> new RuntimeException("Only project admins can create tasks"));
@@ -65,7 +64,6 @@ public class TaskService {
         task.setLastAssignedAt(Instant.now());
 
         if (taskReq.getAssigneeId() != null) {
-            // Verify assignee is a member of the project
             if (!projectMemberRepository.existsByUserEmailAndProjectId(taskReq.getAssigneeId(), projectId)) {
                 throw new RuntimeException("Assignee must be a member of this project");
             }
@@ -83,7 +81,6 @@ public class TaskService {
     }
 
     public List<TaskDto> getTasksByProject(Long projectId, String requestingUserEmail) {
-        // Verify user is a member
         if (!projectMemberRepository.existsByUserEmailAndProjectId(requestingUserEmail, projectId)) {
             throw new RuntimeException("You are not a member of this project");
         }
@@ -134,7 +131,6 @@ public class TaskService {
         }
 
         if (taskReq.getAssigneeId() != null) {
-            // Verify assignee is a member of the task's project
             Long projectId = existingTask.getProject() != null ? existingTask.getProject().getId() : null;
             if (projectId != null && !projectMemberRepository.existsByUserEmailAndProjectId(taskReq.getAssigneeId(), projectId)) {
                 throw new RuntimeException("Assignee must be a member of this project");
