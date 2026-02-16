@@ -60,9 +60,26 @@ const authSlice = createSlice({
             localStorage.removeItem("activeProject");
         },
         updateAuthUser: (state, action) => {
-            if (action.payload.name) {
-                state.userName = action.payload.name;
-                sessionStorage.setItem("userName", action.payload.name);
+            if (action.payload) {
+                if (action.payload.name) {
+                    state.userName = action.payload.name;
+                    sessionStorage.setItem("userName", action.payload.name);
+                }
+                if (action.payload.email) {
+                    state.userEmail = action.payload.email;
+                    sessionStorage.setItem("userEmail", action.payload.email);
+                }
+                if (action.payload.hasProjects !== undefined) {
+                    state.hasProjects = action.payload.hasProjects;
+                }
+                if (action.payload.isVerified !== undefined) {
+                    state.isVerified = action.payload.isVerified;
+                    sessionStorage.setItem("isVerified", String(action.payload.isVerified));
+                }
+                 if (action.payload.lastProjectId) {
+                    state.lastProjectId = action.payload.lastProjectId;
+                    sessionStorage.setItem("lastProjectId", action.payload.lastProjectId);
+                }
             }
         },
         setSessionChecked: (state, action) => {

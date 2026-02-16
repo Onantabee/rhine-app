@@ -25,8 +25,6 @@ public class User implements UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String pwd;
 
-    private boolean isList;
-
     @Column(nullable = false)
     private boolean isVerified = false;
 
@@ -34,18 +32,17 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Task> tasks; // Tasks created by this user
+    private List<Task> tasks;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Task> assignedTasks; // Tasks assigned to this user
+    private List<Task> assignedTasks;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ProjectMember> projectMemberships = new ArrayList<>();
 
     public User() {
-        this.isList = false;
     }
 
     public String getName() {
@@ -71,14 +68,6 @@ public class User implements UserDetails {
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
-    }
-
-    public boolean isList() {
-        return isList;
-    }
-
-    public void setList(boolean list) {
-        isList = list;
     }
 
     public boolean isVerified() {

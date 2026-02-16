@@ -109,16 +109,6 @@ const VerifyEmail = () => {
                         </button>
                     </p>
                 </div>
-
-                <div className="mt-4 flex items-center justify-center">
-                    <button
-                        onClick={() => navigate("/login")}
-                        className="font-light text-md text-center text-gray-400 hover:text-gray-600 flex gap-2 items-center cursor-pointer"
-                    >
-                        <ArrowLeft size={16} />
-                        Back to Login
-                    </button>
-                </div>
             </div>
         </div>
     );

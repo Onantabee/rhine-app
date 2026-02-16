@@ -9,6 +9,8 @@ import {
   useChangePasswordMutation,
 } from "../store/api/usersApi";
 import { capitalizeWords } from "../utils/stringUtils";
+import { checkPasswordStrength } from "../utils/validationUtils";
+import { Check, X } from "lucide-react";
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -52,7 +54,14 @@ export default function Profile() {
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordDetails((prev) => ({ ...prev, [name]: value }));
-    clearFieldError(name);
+
+    if (name === 'newPassword') {
+      if (fieldErrors.newPassword && checkPasswordStrength(value).isValid) {
+        clearFieldError(name);
+      }
+    } else {
+      clearFieldError(name);
+    }
   };
 
   const clearFieldError = (field) => {
@@ -94,8 +103,8 @@ export default function Profile() {
     }
     if (!passwordDetails.newPassword) {
       errors.newPassword = "New password is required";
-    } else if (passwordDetails.newPassword.length < 6) {
-      errors.newPassword = "Password must be at least 6 characters";
+    } else if (!checkPasswordStrength(passwordDetails.newPassword).isValid) {
+      errors.newPassword = "Please meet all password requirements";
     }
     if (!passwordDetails.confirmPassword) {
       errors.confirmPassword = "Please confirm your new password";
@@ -111,8 +120,8 @@ export default function Profile() {
     try {
       const response = await changePassword({
         email: userEmail,
-        currentPassword: passwordDetails.oldPassword,
-        newPassword: passwordDetails.newPassword,
+        currentPassword: btoa(passwordDetails.oldPassword),
+        newPassword: btoa(passwordDetails.newPassword),
       }).unwrap();
 
       setPasswordDetails({
@@ -207,16 +216,38 @@ export default function Profile() {
               helperText={fieldErrors.oldPassword}
             />
 
-            <Input
-              label="New Password"
-              name="newPassword"
-              type="password"
-              fullWidth
-              value={passwordDetails.newPassword}
-              onChange={handlePasswordChange}
-              error={!!fieldErrors.newPassword}
-              helperText={fieldErrors.newPassword}
-            />
+            <div>
+              <Input
+                label="New Password"
+                name="newPassword"
+                type="password"
+                fullWidth
+                value={passwordDetails.newPassword}
+                onChange={handlePasswordChange}
+                error={!!fieldErrors.newPassword}
+                helperText={fieldErrors.newPassword}
+              />
+
+              <div className="space-y-1.5 mt-2 rounded-lg grid grid-cols-2">
+                {checkPasswordStrength(passwordDetails.newPassword).requirements.map((req, index) => (
+                  <div key={index} className={`flex items-center text-sm font-light transition-colors duration-200 ${req.valid
+                    ? "text-green-600"
+                    : fieldErrors.newPassword
+                      ? "text-red-500"
+                      : "text-gray-400"
+                    }`}>
+                    {req.valid ? (
+                      <Check size={14} className="mr-2 text-green-500" />
+                    ) : fieldErrors.newPassword ? (
+                      <X size={14} className="mr-2 text-red-500" />
+                    ) : (
+                      <Check size={14} className="mr-2 text-gray-400" />
+                    )}
+                    {req.label}
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <Input
               label="Confirm New Password"

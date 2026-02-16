@@ -5,6 +5,7 @@ import { ChevronDown, Plus } from "lucide-react";
 import { useGetProjectsQuery } from "../store/api/projectsApi";
 import { useUpdateLastProjectMutation } from "../store/api/usersApi";
 import { setActiveProject } from "../store/slices/projectSlice";
+import { closeMobileMenu } from "../store/slices/uiSlice";
 import { Button } from "./ui";
 import CreateProjectDialog from "./CreateProjectDialog";
 
@@ -37,6 +38,7 @@ const ProjectPicker = () => {
             })
         );
         updateLastProject(project.id).unwrap().catch(console.error);
+        dispatch(closeMobileMenu());
         setOpen(false);
         navigate(`/project/${project.id}`);
     };

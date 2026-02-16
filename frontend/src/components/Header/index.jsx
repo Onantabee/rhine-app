@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "../ui";
 import { logout as logoutAction, setSearchTerm } from "../../store/slices/authSlice";
@@ -16,6 +16,19 @@ import ProjectPicker from "../ProjectPicker";
 
 import { toggleMobileMenu, closeMobileMenu } from "../../store/slices/uiSlice";
 
+const shouldShowMobileMenu = (pathname) => {
+    // Explicitly excluded pages
+    if (pathname.includes("/verify-email")) return false;
+    if (pathname.includes("/create-project")) return false;
+
+    // Allowed pages (Home, Profile, Project details)
+    if (pathname === "/" || pathname === "/profile") return true;
+    if (pathname.startsWith("/project/")) return true;
+
+    // Hide on 404s and other unlisted routes
+    return false;
+};
+
 const Header = ({ setIsSignup }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -23,6 +36,8 @@ const Header = ({ setIsSignup }) => {
     const [logoutServer] = useLogoutMutation();
 
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const isVerified = useSelector((state) => state.auth.isVerified);
+    const hasProjects = useSelector((state) => state.auth.hasProjects);
     const userName = useSelector((state) => state.auth.userName);
     const searchTerm = useSelector((state) => state.auth.searchTerm);
     const activeProject = useSelector((state) => state.project.activeProject);
@@ -59,13 +74,14 @@ const Header = ({ setIsSignup }) => {
             console.error("Logout failed on server:", error);
         }
         // Always clean up client state
-        dispatch(logoutAction());
-        dispatch(clearActiveProject());
+        // Clear storage manually to avoid Redux state update triggering "Not Found" flash
+        sessionStorage.clear();
+        localStorage.removeItem("activeProject");
         dispatch(closeMobileMenu());
         setLogoutDialogOpen(false);
-        // Force navigate to home and reload to ensure clean state
-        navigate("/");
-        window.location.reload();
+
+        // Force hard navigation to home to ensuring a clean state
+        window.location.href = "/";
     };
 
     const handleLogoutCancel = () => {
@@ -112,19 +128,23 @@ const Header = ({ setIsSignup }) => {
         <>
             <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 py-3 sm:px-8">
                 <nav className="flex items-center h-full">
-                    <div className="w-full justify-center items-center hidden md:flex space-x-4 gap-4 h-full">
-                        {/* <div>
-                            <h1
-                                className="text-2xl text-[#7733ff] font-semibold cursor-pointer"
-                                onClick={() =>
-                                    activeProject
-                                        ? navigate(`/project/${activeProject.id}`)
-                                        : navigate("/")
-                                }
-                            >
-                                Rhine
-                            </h1>
-                        </div> */}
+                    <div className="w-full justify-center items-center hidden md:flex gap-4 h-full">
+                        {!isVerified || !hasProjects ? (
+                            <div>
+                                <h1
+                                    className="text-2xl text-[#7733ff] font-semibold cursor-pointer"
+                                    onClick={() =>
+                                        activeProject
+                                            ? navigate(`/project/${activeProject.id}`)
+                                            : navigate("/")
+                                    }
+                                >
+                                    Rhine
+                                </h1>
+                            </div>
+                        ) : (
+                            <ProjectPicker />
+                        )}
 
                         {!isLoggedIn ? (
                             <div className="w-full flex justify-end gap-3">
@@ -149,7 +169,6 @@ const Header = ({ setIsSignup }) => {
                             </div>
                         ) : (
                             <div className="flex w-full justify-between items-center gap-4">
-                                <ProjectPicker />
 
                                 <div className="w-full flex justify-center items-center">
                                     {isTaskListPage && (
@@ -177,13 +196,38 @@ const Header = ({ setIsSignup }) => {
                                 </div> */}
                             </div>
                         )}
+                        {!shouldShowMobileMenu(location.pathname) && isLoggedIn && (
+                            <Button variant="danger" onClick={handleLogoutClick} size='md'>
+                                Logout
+                            </Button>
+                        )}
                     </div>
 
                     <div className="md:hidden w-full justify-between items-center flex gap-4">
-                        <h1 className="text-xl font-bold text-[#7733ff] w-fit">Rhine</h1>
-                        <button onClick={handleDrawerToggle} className="p-2 text-gray-600 hover:text-gray-800 cursor-pointer">
-                            <Menu size={24} />
-                        </button>
+                        {isLoggedIn && isVerified ? <ProjectPicker /> : (
+                            <div>
+                                <h1
+                                    className="text-2xl text-[#7733ff] font-semibold cursor-pointer"
+                                    onClick={() =>
+                                        activeProject
+                                            ? navigate(`/project/${activeProject.id}`)
+                                            : navigate("/")
+                                    }
+                                >
+                                    Rhine
+                                </h1>
+                            </div>
+                        )}
+                        {!shouldShowMobileMenu(location.pathname) && isLoggedIn && (
+                            <Button variant="danger" onClick={handleLogoutClick}>
+                                Logout
+                            </Button>
+                        )}
+                        {shouldShowMobileMenu(location.pathname) && (
+                            <button onClick={handleDrawerToggle} className="p-2 text-gray-600 hover:text-gray-800 cursor-pointer">
+                                <Menu size={24} />
+                            </button>
+                        )}
                     </div>
                 </nav>
             </header>
@@ -198,6 +242,7 @@ const Header = ({ setIsSignup }) => {
                 onSignup={handleSignupClick}
                 onEditProfile={handleEditProfileClick}
                 onLogout={handleLogoutClick}
+                isVerified={isVerified}
             />
 
             <EditProfileDrawer

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Collections;
 import java.util.List;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/users")
@@ -79,7 +80,10 @@ public class UserController {
     public ResponseEntity<Map<String, String>> changePassword(
             @PathVariable String email,
             @RequestBody PasswordChangeReq request) {
-        String data = userService.changePassword(email, request.getCurrentPassword(), request.getNewPassword());
+        String currentPassword = new String(Base64.getDecoder().decode(request.getCurrentPassword()));
+        String newPassword = new String(Base64.getDecoder().decode(request.getNewPassword()));
+        
+        String data = userService.changePassword(email, currentPassword, newPassword);
         return ResponseEntity.ok(Collections.singletonMap("message", data));
     }
 

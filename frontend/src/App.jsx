@@ -117,10 +117,13 @@ function App() {
                 }
               />
             </Route>
+            {/* </Route> */}
+            {/* Global catch-all for any other 404s */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
       </Router>
-    </SnackbarProvider>
+    </SnackbarProvider >
   );
 }
 

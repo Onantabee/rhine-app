@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
+
 @RestController
 @RequestMapping("/users")
 @Tag(
@@ -47,12 +49,13 @@ public class UserSignupController {
     )
     @PostMapping(path = "/register")
     public LoginResponse register(@RequestBody UserRegReq request, HttpServletRequest httpServletRequest) {
-        User user = userRegistrationService.createUser(request);
+        String decodedPassword = new String(Base64.getDecoder().decode(request.getPwd()));
+        UserRegReq decodedRequest = new UserRegReq(request.getName(), request.getEmail(), decodedPassword);
+        User user = userRegistrationService.createUser(decodedRequest);
 
-        // Auto-login after registration to enable "Soft Login"
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPwd())
+                    new UsernamePasswordAuthenticationToken(decodedRequest.getEmail(), decodedRequest.getPwd())
             );
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             securityContext.setAuthentication(authentication);
@@ -61,8 +64,6 @@ public class UserSignupController {
             HttpSession session = httpServletRequest.getSession(true);
             session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
         } catch (Exception e) {
-            // Log error but don't fail registration if auto-login fails
-            // In a real scenario, we might want to handle this better
             e.printStackTrace();
         }
 
@@ -73,15 +74,8 @@ public class UserSignupController {
     public LoginResponse verify(@RequestParam String email, @RequestParam String code) {
         boolean isValid = otpService.validateOtp(email, code);
         if (isValid) {
-            // Mark user as verified
-            // Ideally we'd move this to a service method, but for now:
-             com.tskmgmnt.rhine.entity.User user = userRegistrationService.getUserByEmail(email); // Need to expose this or use repo
-             // Actually, validating OTP should probably trigger the verified update in service.
-             // Let's assume otpService.validateOtp just returns boolean.
-             // I need to update the user entity. 
-             // Refactoring: I'll add verifyUser to UserRegistrationService.
-             userRegistrationService.verifyUser(email);
-             return new LoginResponse("Verification successful", email, null, false, true);
+            userRegistrationService.verifyUser(email);
+            return new LoginResponse("Verification successful", email, null, false, true);
         } else {
             throw new IllegalArgumentException("Invalid or expired OTP");
         }
