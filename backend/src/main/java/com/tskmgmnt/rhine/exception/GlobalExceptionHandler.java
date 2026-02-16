@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
         log.error("An unexpected error occurred at " + request.getRequestURI(), exc);
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        error.setMessage("An unexpected error occurred. Please contact support.");
+        error.setMessage("An unexpected error occurred: " + exc.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
