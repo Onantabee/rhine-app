@@ -1,4 +1,5 @@
-import React from "react";
+import { useState, useRef, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import { MoreVerticalIcon } from "lucide-react";
 import { differenceInSeconds, formatDistanceToNowStrict } from "date-fns";
 
@@ -19,6 +20,19 @@ const CommentItem = ({
 }) => {
     const isOwnComment = comment.authorEmail === currentUserEmail;
     const canEdit = differenceInSeconds(now, new Date(comment.createdAt)) <= 300 && isCommentingAllowed;
+
+    const triggerRef = useRef(null);
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+    useLayoutEffect(() => {
+        if (isDropdownOpen && triggerRef.current) {
+            const rect = triggerRef.current.getBoundingClientRect();
+            setDropdownPosition({
+                top: rect.bottom + window.scrollY,
+                left: rect.right + window.scrollX - 144,
+            });
+        }
+    }, [isDropdownOpen]);
 
     return (
         <div className="relative overflow-visible">
@@ -60,6 +74,7 @@ const CommentItem = ({
                     {isOwnComment && (
                         <div className="relative top-0 opacity-0 right-0 group-hover:opacity-100">
                             <button
+                                ref={triggerRef}
                                 onClick={() => onToggleDropdown(comment.id)}
                                 className="cursor-pointer p-1 text-gray-400 hover:text-[#7733ff]"
                             >
@@ -69,23 +84,26 @@ const CommentItem = ({
                     )}
                 </div>
             </div>
-            {isDropdownOpen && (
+            {isDropdownOpen && createPortal(
                 <div
                     ref={dropdownRef}
-                    className="absolute py-1 gap-1 right-0 mt-0 w-36 bg-white border border-gray-200 z-50"
+                    style={{
+                        top: dropdownPosition.top,
+                        left: dropdownPosition.left,
+                    }}
+                    className="absolute py-1 gap-1 w-36 bg-white border border-gray-200 z-50 shadow-lg rounded-md"
                 >
                     <div className="absolute -top-[7px] right-[17px] w-3 h-3 rotate-45 bg-white border-t border-l border-gray-200 z-[-1]" />
                     {canEdit ? (
-                        <p className="uppercase block px-4 py-2 text-sm italic text-gray-400 w-full text-left">
-                            disabled
-                        </p>
-                    ) : (
                         <button
                             onClick={() => onEdit(comment)}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left cursor-pointer"
                         >
                             Edit
                         </button>
+
+                    ) : (
+                        null
                     )}
                     {isCommentingAllowed && (
                         <button
@@ -95,7 +113,8 @@ const CommentItem = ({
                             Delete
                         </button>
                     )}
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );

@@ -1,6 +1,7 @@
 import React from "react";
 import { X, LogOut, PenSquare } from "lucide-react";
 import UserAvatar from "./UserAvatar";
+import ProjectPicker from "../ProjectPicker";
 
 /**
  * MobileDrawer component - Mobile navigation drawer
@@ -15,6 +16,7 @@ const MobileDrawer = ({
     onSignup,
     onEditProfile,
     onLogout,
+    isVerified
 }) => {
     return (
         <>
@@ -31,7 +33,21 @@ const MobileDrawer = ({
                 className={`fixed top-0 right-0 h-full w-full md:w-[480px] bg-white border-l border-gray-200 z-50 p-4 ${open ? "translate-x-0" : "translate-x-full"
                     }`}
             >
-                <div className="flex justify-end pr-2">
+                <div className="flex justify-between pr-2">
+                    {isLoggedIn && isVerified ? <ProjectPicker /> : (
+                        <div>
+                            <h1
+                                className="text-2xl text-[#7733ff] font-semibold cursor-pointer"
+                                onClick={() =>
+                                    activeProject
+                                        ? navigate(`/project/${activeProject.id}`)
+                                        : navigate("/")
+                                }
+                            >
+                                Rhine
+                            </h1>
+                        </div>
+                    )}
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 cursor-pointer">
                         <X size={24} />
                     </button>
@@ -64,23 +80,6 @@ const MobileDrawer = ({
                         </div>
 
                         <div className="w-full h-px bg-gray-200 my-4" />
-
-                        <div className="w-full flex flex-col gap-2">
-                            <button
-                                onClick={onEditProfile}
-                                className="flex items-center gap-3 w-full px-3 py-3 text-gray-600 border border-gray-200 hover:bg-gray-50 cursor-pointer"
-                            >
-                                <PenSquare size={18} />
-                                <span>Edit Profile</span>
-                            </button>
-                            <button
-                                onClick={onLogout}
-                                className="flex items-center gap-3 w-full px-3 py-3 text-white bg-red-500 hover:bg-red-600 cursor-pointer"
-                            >
-                                <LogOut size={18} />
-                                <span>Logout</span>
-                            </button>
-                        </div>
                     </div>
                 )}
             </div>

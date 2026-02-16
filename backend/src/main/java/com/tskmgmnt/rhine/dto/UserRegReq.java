@@ -1,8 +1,6 @@
 package com.tskmgmnt.rhine.dto;
 
-import com.tskmgmnt.rhine.enums.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 
 import java.util.Objects;
 
@@ -16,20 +14,22 @@ public class UserRegReq {
     @Schema(description = "User's password", example = "securePassword123!")
     private final String pwd;
 
-    @Schema(description = "User's role", example = "USER", allowableValues = {"USER", "ADMIN"})
-    private final UserRole userRole;
-
+    public UserRegReq(String name, String email, String pwd) {
+        this.name = name;
+        this.email = email;
+        this.pwd = pwd;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         UserRegReq that = (UserRegReq) o;
-        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(pwd, that.pwd) && userRole == that.userRole;
+        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(pwd, that.pwd);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, pwd, userRole);
+        return Objects.hash(email, pwd);
     }
 
     @Override
@@ -38,30 +38,10 @@ public class UserRegReq {
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", pwd='***'" +
-                ", userRole=" + userRole +
                 '}';
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public UserRole getUserRole() {
-        return userRole;
-    }
-
-    public UserRegReq(String name, String email, String pwd, UserRole userRole) {
-        this.name = name;
-        this.email = email;
-        this.pwd = pwd;
-        this.userRole = userRole;
-    }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getPwd() { return pwd; }
 }

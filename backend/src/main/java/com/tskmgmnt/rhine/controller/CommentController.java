@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/comment")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/comments")
 @Tag(
         name = "CRUD REST APIs for In-Task Messaging",
         description = "CRUD REST APIs - Publish Comment By Task Id, Get Comments By Task Id, " +

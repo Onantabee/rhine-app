@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
+
 @RestController
 @RequestMapping("/users")
 @Tag(
@@ -61,12 +63,10 @@ public class UserLoginController {
     @PostMapping(path = "/login")
     public LoginResponse login(@RequestBody UserLogReq loginRequest, HttpServletRequest request) {
         String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
+        String password = new String(Base64.getDecoder().decode(loginRequest.getPassword()));
 
-        // Verify credentials and get user data
         LoginResponse response = userLoginService.loginUser(email, password);
 
-        // Create authenticated security context and bind to session
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
@@ -75,7 +75,6 @@ public class UserLoginController {
         securityContext.setAuthentication(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // Create/bind HTTP session
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
 

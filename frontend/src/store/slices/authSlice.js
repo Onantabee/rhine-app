@@ -1,94 +1,99 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-    isLoggedIn: false,
-    userEmail: null,
-    userName: null,
-    userRole: null,
-    searchTerm: '',
-    sessionChecked: false, // whether /users/me has been called at least once
+const getSessionState = () => {
+    try {
+        return {
+            isLoggedIn: sessionStorage.getItem("isLoggedIn") === "true",
+            userEmail: sessionStorage.getItem("userEmail") || "",
+            userName: sessionStorage.getItem("userName") || "",
+            lastProjectId: sessionStorage.getItem("lastProjectId") || null,
+            isVerified: sessionStorage.getItem("isVerified") === "true",
+        };
+    } catch {
+        return { isLoggedIn: false, userEmail: "", userName: "", lastProjectId: null };
+    }
 };
 
-// Load initial state from sessionStorage (used as a fast cache for UI, server session is the source of truth)
-const loadInitialState = () => {
-    const storedUser = sessionStorage.getItem('user');
-    if (storedUser) {
-        try {
-            const parsed = JSON.parse(storedUser);
-            return {
-                isLoggedIn: parsed.isLoggedIn || false,
-                userEmail: parsed.email || null,
-                userName: parsed.name || null,
-                userRole: parsed.userRole || null,
-                searchTerm: '',
-                sessionChecked: false, // always re-validate server session on load
-            };
-        } catch (error) {
-            console.error('Failed to parse user from sessionStorage:', error);
-            return initialState;
-        }
-    }
-    return initialState;
+const persisted = getSessionState();
+
+const initialState = {
+    isLoggedIn: persisted.isLoggedIn,
+    userEmail: persisted.userEmail,
+    userName: persisted.userName,
+    lastProjectId: persisted.lastProjectId,
+    searchTerm: "",
+    sessionChecked: false,
+    hasProjects: false,
+    isVerified: persisted.isVerified,
 };
 
 const authSlice = createSlice({
-    name: 'auth',
-    initialState: loadInitialState(),
+    name: "auth",
+    initialState,
     reducers: {
         login: (state, action) => {
             state.isLoggedIn = true;
             state.userEmail = action.payload.email;
-            state.userName = action.payload.name || null;
-            state.userRole = action.payload.userRole || null;
+            state.userName = action.payload.name;
+            state.hasProjects = action.payload.hasProjects ?? false;
+            state.lastProjectId = action.payload.lastProjectId || null;
+            state.isVerified = action.payload.isVerified ?? false;
             state.sessionChecked = true;
-
-            // Sync to sessionStorage
-            sessionStorage.setItem('user', JSON.stringify({
-                isLoggedIn: true,
-                email: action.payload.email,
-                name: action.payload.name,
-                userRole: action.payload.userRole,
-            }));
+            sessionStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("userEmail", action.payload.email);
+            sessionStorage.setItem("userName", action.payload.name);
+            sessionStorage.setItem("isVerified", String(action.payload.isVerified ?? false));
+            if (action.payload.lastProjectId) {
+                sessionStorage.setItem("lastProjectId", action.payload.lastProjectId);
+            }
         },
-
         logout: (state) => {
             state.isLoggedIn = false;
-            state.userEmail = null;
-            state.userName = null;
-            state.userRole = null;
-            state.searchTerm = '';
+            state.userEmail = "";
+            state.userName = "";
+            state.hasProjects = false;
+            state.lastProjectId = null;
+            state.isVerified = false;
+            state.searchTerm = "";
             state.sessionChecked = true;
-
-            // Clear sessionStorage
-            sessionStorage.removeItem('user');
+            sessionStorage.clear();
+            localStorage.removeItem("activeProject");
         },
-
-        updateUser: (state, action) => {
-            if (action.payload.name !== undefined) {
-                state.userName = action.payload.name;
+        updateAuthUser: (state, action) => {
+            if (action.payload) {
+                if (action.payload.name) {
+                    state.userName = action.payload.name;
+                    sessionStorage.setItem("userName", action.payload.name);
+                }
+                if (action.payload.email) {
+                    state.userEmail = action.payload.email;
+                    sessionStorage.setItem("userEmail", action.payload.email);
+                }
+                if (action.payload.hasProjects !== undefined) {
+                    state.hasProjects = action.payload.hasProjects;
+                }
+                if (action.payload.isVerified !== undefined) {
+                    state.isVerified = action.payload.isVerified;
+                    sessionStorage.setItem("isVerified", String(action.payload.isVerified));
+                }
+                 if (action.payload.lastProjectId) {
+                    state.lastProjectId = action.payload.lastProjectId;
+                    sessionStorage.setItem("lastProjectId", action.payload.lastProjectId);
+                }
             }
-            if (action.payload.userRole !== undefined) {
-                state.userRole = action.payload.userRole;
-            }
-
-            // Sync to sessionStorage
-            const storedUser = JSON.parse(sessionStorage.getItem('user') || '{}');
-            sessionStorage.setItem('user', JSON.stringify({
-                ...storedUser,
-                name: state.userName,
-                userRole: state.userRole,
-            }));
         },
-
-        setSessionChecked: (state) => {
-            state.sessionChecked = true;
+        setSessionChecked: (state, action) => {
+            state.sessionChecked = action.payload !== undefined ? action.payload : true;
         },
-
         setSearchTerm: (state, action) => {
             state.searchTerm = action.payload;
+        },
+        setHasProjects: (state, action) => {
+            state.hasProjects = action.payload;
         },
     },
 });
 
-export const { login, logout, updateUser, setSessionChecked, setSearchTerm } = authSlice.actions;
+export const { login, logout, updateAuthUser, setSessionChecked, setSearchTerm, setHasProjects } =
+    authSlice.actions;
 export default authSlice.reducer;

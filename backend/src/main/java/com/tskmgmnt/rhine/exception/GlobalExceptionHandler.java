@@ -32,12 +32,41 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(org.springframework.web.servlet.resource.NoResourceFoundException exc) {
+        // Log at debug level to avoid noise for favicon.ico etc
+        log.debug("Resource not found: {}", exc.getMessage());
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(org.springframework.web.HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupportedException(org.springframework.web.HttpRequestMethodNotSupportedException exc) {
+        log.warn("Method not supported: {}", exc.getMessage());
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.METHOD_NOT_ALLOWED.value());
+        error.setMessage(exc.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(org.springframework.security.core.userdetails.UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(org.springframework.security.core.userdetails.UsernameNotFoundException exc) {
+        log.warn("User not found: {}", exc.getMessage());
+        ErrorResponse error = new ErrorResponse();
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setMessage(exc.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralException(Exception exc) {
-        log.error("An unexpected error occurred", exc);
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception exc, jakarta.servlet.http.HttpServletRequest request) {
+        log.error("An unexpected error occurred at " + request.getRequestURI(), exc);
         ErrorResponse error = new ErrorResponse();
         error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         error.setMessage("An unexpected error occurred. Please contact support.");
+        // meaningful message for dev
+        // error.setMessage(exc.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

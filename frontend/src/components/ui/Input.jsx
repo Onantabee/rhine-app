@@ -80,7 +80,7 @@ const Input = forwardRef(
                 </div>
                 {(error || helperText) && (
                     <p
-                        className={`text-sm px-1 ${error ? 'text-red-500' : 'text-gray-500'
+                        className={`text-sm px-1 ${error ? 'text-red-500' : 'text-orange-500'
                             }`}
                     >
                         {error ? (helperText || 'This field is invalid') : helperText}

@@ -2,22 +2,21 @@ package com.tskmgmnt.rhine.service;
 
 import com.tskmgmnt.rhine.dto.UserRegReq;
 import com.tskmgmnt.rhine.entity.User;
-import com.tskmgmnt.rhine.enums.UserRole;
 import com.tskmgmnt.rhine.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserRegistrationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OtpService otpService;
 
-    public UserRegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserRegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder, OtpService otpService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.otpService = otpService;
     }
 
     public User createUser(UserRegReq userRegReq) {
@@ -29,19 +28,20 @@ public class UserRegistrationService {
         user.setName(userRegReq.getName());
         user.setEmail(userRegReq.getEmail());
         user.setPwd(passwordEncoder.encode(userRegReq.getPwd()));
-        user.setUserRole(UserRole.EMPLOYEE); // by default
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        otpService.generateOtp(savedUser.getEmail());
+        return savedUser;
     }
 
-    public User updateUserRole(String email, UserRole role){
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            User existingUser = user.get();
-            existingUser.setUserRole(role);
-            return userRepository.save(existingUser);
-        } else {
-            throw new IllegalArgumentException("User with email " + email + " not found");
-        }
-}
+    public void verifyUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setVerified(true);
+        userRepository.save(user);
+    }
+    
+    public User getUserByEmail(String email) {
+         return userRepository.findByEmail(email).orElse(null);
+    }
 }

@@ -37,7 +37,7 @@ const TaskList = ({
   onClick,
   searchTerm,
 }) => {
-  const { title, priority, dueDate, taskStatus } = task;
+  const { title, priority, dueDate, taskStatus, projectId } = task;
   const dueDateStatus = getDueDateStatus(dueDate, taskStatus);
   const shouldGrayOut = dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED";
 
@@ -48,9 +48,12 @@ const TaskList = ({
     skip: !assignee,
   });
 
-  const { data: taskNewState } = useGetTaskNewStateQuery(task.id, {
-    skip: isAdmin,
-  });
+  const { data: taskNewState } = useGetTaskNewStateQuery(
+    { projectId, taskId: task.id },
+    {
+      skip: isAdmin || !projectId,
+    }
+  );
   const taskIsNew = taskNewState?.isNew || false;
 
   const { data: unreadCountByRecipient = 0 } = useCountUnreadCommentsQuery(
@@ -128,7 +131,10 @@ const TaskList = ({
 
       <td className="p-3.5 text-center">
         <span
-          className={`px-3 py-1 text-sm font-medium whitespace-nowrap text-gray-600`}
+          className={`px-3 py-1 text-sm font-medium italic border rounded-[5px] whitespace-nowrap ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
+            ? dueDateStatusConfig[dueDateStatus].className
+            : "text-gray-600 border-none"
+            }`}
         >
           {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
         </span>

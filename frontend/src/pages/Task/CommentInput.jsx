@@ -21,8 +21,8 @@ const CommentInput = ({
     }
 
     return (
-        <div className="sticky bottom-0 md:sticky md:bottom-0 shrink-0 w-full max-w-3xl mx-auto pb-7 p-2 ">
-            <div className={`w-full ${editingComment ? "bg-gray-600" : "bg-none"} rounded-b-[11px] rounded-t-[8px]`}>
+        <div className="sticky bottom-0 md:sticky md:bottom-0 shrink-0 w-full max-w-3xl mx-auto p-2 ">
+            <div className={`w-full ${editingComment ? "bg-gray-600" : "bg-none"}`}>
                 {editingComment && (
                     <div className="flex justify-between items-center p-2 px-4">
                         <p className="text-gray-300">Editing comment...</p>
@@ -34,7 +34,7 @@ const CommentInput = ({
                         </button>
                     </div>
                 )}
-                <div className="flex gap-2 items-end bg-gray-100 p-2 border border-gray-200 rounded-[10px]">
+                <div className="flex gap-2 items-end bg-gray-100 p-2 border border-gray-200">
                     <div
                         contentEditable="true"
                         ref={inputRef}

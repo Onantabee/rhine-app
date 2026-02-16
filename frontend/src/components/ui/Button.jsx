@@ -19,7 +19,7 @@ const Button = React.forwardRef(
         ref
     ) => {
         const baseStyles =
-            'font-medium flex items-center justify-center gap-2 outline-none focus:outline-none cursor-pointer';
+            'font-medium flex items-center truncate justify-center gap-2 outline-none focus:outline-none cursor-pointer';
 
         const sizeStyles = {
             sm: 'px-3 py-1.5 text-sm',

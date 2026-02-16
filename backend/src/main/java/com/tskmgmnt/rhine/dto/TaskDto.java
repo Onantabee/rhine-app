@@ -41,6 +41,9 @@ public class TaskDto {
     @Schema(description = "Timestamp when the task was last assigned", example = "2023-10-28T10:00:00Z")
     private Instant lastAssignedAt;
 
+    @Schema(description = "ID of the project this task belongs to", example = "1")
+    private Long projectId;
+
     public TaskDto(Long id, String title, String description, Instant dueDate, String priority, TaskStatus taskStatus, String createdById, String assigneeId, Instant createdAt, Instant lastAssignedAt) {
         this.id = id;
         this.title = title;
@@ -148,5 +151,13 @@ public class TaskDto {
 
     public void setLastAssignedAt(Instant lastAssignedAt) {
         this.lastAssignedAt = lastAssignedAt;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

@@ -29,11 +29,12 @@ import {
 
 export default function Task() {
     const { state } = useLocation();
-    const { taskId } = useParams();
+    const { taskId, projectId } = useParams();
     const navigate = useNavigate();
     const userEmail = useSelector((state) => state.auth.userEmail);
+    const activeProject = useSelector((state) => state.project.activeProject);
 
-    const isAdmin = state?.isAdmin || false;
+    const isAdmin = activeProject?.role === "PROJECT_ADMIN";
     const [taskStatus, setTaskStatus] = useState(state?.task?.taskStatus || "PENDING");
     const [newComment, setNewComment] = useState("");
     const [now, setNow] = useState(new Date());
@@ -47,8 +48,8 @@ export default function Task() {
 
     const { data: user } = useGetUserByEmailQuery(userEmail, { skip: !userEmail });
     const { data: task, isLoading: isLoadingTask } = useGetTaskByIdQuery(
-        taskId || state?.task?.id,
-        { skip: !taskId && !state?.task?.id }
+        { projectId, taskId: taskId || state?.task?.id },
+        { skip: !projectId || (!taskId && !state?.task?.id) }
     );
     const { data: comments = [] } = useGetCommentsByTaskQuery(
         taskId || state?.task?.id,
@@ -97,9 +98,9 @@ export default function Task() {
                 taskId: task.id,
                 recipientEmail: user.email,
             });
-            updateTaskNewState({ id: task.id, isNew: false });
+            updateTaskNewState({ projectId, id: task.id, isNew: false });
         }
-    }, [task?.id, user?.email, markCommentsAsRead, updateTaskNewState]);
+    }, [task?.id, user?.email, markCommentsAsRead, updateTaskNewState, projectId, comments]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -211,6 +212,7 @@ export default function Task() {
 
         try {
             await updateTaskStatus({
+                projectId,
                 id: task.id,
                 taskStatus: newStatus,
             }).unwrap();
@@ -238,15 +240,15 @@ export default function Task() {
     if (isLoadingTask || !task) {
         return (
             <div className="flex justify-center items-center h-64">
-                <p className="text-gray-400">Loading task...</p>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7733ff]" />
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col min-h-full h-[calc(100dvh-84px)] overflow-y-auto md:overflow-hidden text-gray-800 md:px-5">
-            <div className="pb-4">
-                <button className="flex items-center gap-3 text-[#7733ff] hover:text-[#5500ff] cursor-pointer" onClick={() => navigate(-1)}>
+        <div className="flex flex-col text-gray-800 h-full gap-4">
+            <div>
+                <button className="flex items-center gap-3 text-[#7733ff] hover:text-[#5500ff] cursor-pointer" onClick={() => navigate(`/project/${projectId}`)}>
                     <ArrowLeft />
                     Back
                 </button>

@@ -1,16 +1,27 @@
-import React, { useState, useRef, useEffect } from "react";
+import  { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "../ui";
-import { logout as logoutAction, setSearchTerm } from "../../store/slices/authSlice";
+import { setSearchTerm } from "../../store/slices/authSlice";
 import { useLogoutMutation } from "../../store/api/authApi";
 
 import MobileDrawer from "./MobileDrawer";
 import EditProfileDrawer from "./EditProfileDrawer";
-import UserAvatar from "./UserAvatar";
 import SearchBar from "./SearchBar";
-import ProfileDropdown from "./ProfileDropdown";
+import ProjectPicker from "../ProjectPicker";
+
+import { toggleMobileMenu, closeMobileMenu } from "../../store/slices/uiSlice";
+
+const shouldShowMobileMenu = (pathname) => {
+    if (pathname.includes("/verify-email")) return false;
+    if (pathname.includes("/create-project")) return false;
+
+    if (pathname === "/" || pathname === "/profile") return true;
+    if (pathname.startsWith("/project/")) return true;
+
+    return false;
+};
 
 const Header = ({ setIsSignup }) => {
     const dispatch = useDispatch();
@@ -19,28 +30,30 @@ const Header = ({ setIsSignup }) => {
     const [logoutServer] = useLogoutMutation();
 
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const isVerified = useSelector((state) => state.auth.isVerified);
+    const hasProjects = useSelector((state) => state.auth.hasProjects);
     const userName = useSelector((state) => state.auth.userName);
-    const userRole = useSelector((state) => state.auth.userRole);
     const searchTerm = useSelector((state) => state.auth.searchTerm);
-    const isAdmin = userRole === "ADMIN";
+    const activeProject = useSelector((state) => state.project.activeProject);
+    const mobileMenuOpen = useSelector((state) => state.ui.mobileMenuOpen);
+    const isAdmin = activeProject?.role === "PROJECT_ADMIN";
 
-    const [mobileOpen, setMobileOpen] = useState(false);
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
     const [editProfileOpen, setEditProfileOpen] = useState(false);
 
     const profileRef = useRef(null);
 
-    const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+    const handleDrawerToggle = () => dispatch(toggleMobileMenu());
 
     const handleLoginClick = () => {
         setIsSignup(false);
-        handleDrawerToggle();
+        dispatch(closeMobileMenu());
     };
 
     const handleSignupClick = () => {
         setIsSignup(true);
-        handleDrawerToggle();
+        dispatch(closeMobileMenu());
     };
 
     const handleLogoutClick = () => {
@@ -52,13 +65,14 @@ const Header = ({ setIsSignup }) => {
         try {
             await logoutServer().unwrap();
         } catch (error) {
-            console.error("Logout failed:", error);
+            console.error("Logout failed on server:", error);
         }
-        dispatch(logoutAction());
-        setMobileOpen(false);
+        sessionStorage.clear();
+        localStorage.removeItem("activeProject");
+        dispatch(closeMobileMenu());
         setLogoutDialogOpen(false);
-        navigate("/");
-        setIsSignup(false);
+
+        window.location.href = "/";
     };
 
     const handleLogoutCancel = () => {
@@ -98,14 +112,30 @@ const Header = ({ setIsSignup }) => {
         };
     }, []);
 
+    // Show search only on the project task list page
+    const isTaskListPage = /^\/project\/\d+\/?$/.test(location.pathname);
+
     return (
         <>
-            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 sm:px-8 md:px-12 lg:px-16 mb-5">
-                <nav className="py-3">
-                    <div className="w-full justify-center max-w-[1240px] mx-auto items-center hidden md:flex space-x-4 gap-4">
-                        <div>
-                            <h1 className="text-2xl text-[#7733ff] font-semibold">Rhine</h1>
-                        </div>
+            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 py-3 sm:px-8">
+                <nav className="flex items-center h-full">
+                    <div className="w-full justify-center items-center hidden md:flex gap-4 h-full">
+                        {!isVerified || !hasProjects ? (
+                            <div>
+                                <h1
+                                    className="text-2xl text-[#7733ff] font-semibold cursor-pointer"
+                                    onClick={() =>
+                                        activeProject
+                                            ? navigate(`/project/${activeProject.id}`)
+                                            : navigate("/")
+                                    }
+                                >
+                                    Rhine
+                                </h1>
+                            </div>
+                        ) : (
+                            <ProjectPicker />
+                        )}
 
                         {!isLoggedIn ? (
                             <div className="w-full flex justify-end gap-3">
@@ -130,8 +160,9 @@ const Header = ({ setIsSignup }) => {
                             </div>
                         ) : (
                             <div className="flex w-full justify-between items-center gap-4">
+
                                 <div className="w-full flex justify-center items-center">
-                                    {location.pathname === "/home" && (
+                                    {isTaskListPage && (
                                         <SearchBar
                                             value={searchTerm}
                                             onChange={handleSearchChange}
@@ -140,43 +171,55 @@ const Header = ({ setIsSignup }) => {
                                     )}
                                 </div>
 
-                                <div className="relative" ref={profileRef}>
-                                    <UserAvatar
-                                        userName={userName}
-                                        size="sm"
-                                        onClick={toggleProfileDropdown}
-                                    />
-                                    <ProfileDropdown
-                                        open={profileDropdownOpen}
-                                        userName={userName}
-                                        isAdmin={isAdmin}
-                                        onEditProfile={handleEditProfileClick}
-                                        onLogout={handleLogoutClick}
-                                    />
-                                </div>
                             </div>
+                        )}
+                        {!shouldShowMobileMenu(location.pathname) && isLoggedIn && (
+                            <Button variant="danger" onClick={handleLogoutClick} size='md'>
+                                Logout
+                            </Button>
                         )}
                     </div>
 
                     <div className="md:hidden w-full justify-between items-center flex gap-4">
-                        <h1 className="text-xl font-bold text-[#7733ff] w-fit">Rhine</h1>
-                        <button onClick={handleDrawerToggle} className="p-2 text-gray-600 hover:text-gray-800 cursor-pointer">
-                            <Menu size={24} />
-                        </button>
+                        {isLoggedIn && isVerified ? <ProjectPicker /> : (
+                            <div>
+                                <h1
+                                    className="text-2xl text-[#7733ff] font-semibold cursor-pointer"
+                                    onClick={() =>
+                                        activeProject
+                                            ? navigate(`/project/${activeProject.id}`)
+                                            : navigate("/")
+                                    }
+                                >
+                                    Rhine
+                                </h1>
+                            </div>
+                        )}
+                        {!shouldShowMobileMenu(location.pathname) && isLoggedIn && (
+                            <Button variant="danger" onClick={handleLogoutClick}>
+                                Logout
+                            </Button>
+                        )}
+                        {shouldShowMobileMenu(location.pathname) && (
+                            <button onClick={handleDrawerToggle} className="p-2 text-gray-600 hover:text-gray-800 cursor-pointer">
+                                <Menu size={24} />
+                            </button>
+                        )}
                     </div>
                 </nav>
             </header>
 
             <MobileDrawer
-                open={mobileOpen}
+                open={mobileMenuOpen && !isLoggedIn}
                 isLoggedIn={isLoggedIn}
                 userName={userName}
                 isAdmin={isAdmin}
-                onClose={handleDrawerToggle}
+                onClose={() => dispatch(closeMobileMenu())}
                 onLogin={handleLoginClick}
                 onSignup={handleSignupClick}
                 onEditProfile={handleEditProfileClick}
                 onLogout={handleLogoutClick}
+                isVerified={isVerified}
             />
 
             <EditProfileDrawer

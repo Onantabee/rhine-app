@@ -1,27 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../components/ui";
 import { useSnackbar } from "../context/SnackbarContext";
-import { Plus } from "lucide-react";
+import { Plus, Grid, List, X } from "lucide-react";
 import TaskCard from "../components/TaskCard.jsx";
 import TaskDialog from "../components/TaskDialog.jsx";
-import { Link, useNavigate } from "react-router-dom";
-import { Grid, List } from "lucide-react";
-
 import TaskList, { TaskListHeader } from "../components/TaskList.jsx";
 import { useGetTasksQuery, useDeleteTaskMutation } from "../store/api/tasksApi";
-import { useGetUserByEmailQuery, useGetNonAdminUsersQuery } from "../store/api/usersApi";
+import { useGetProjectMembersQuery } from "../store/api/projectsApi";
+import { useGetUserByEmailQuery } from "../store/api/usersApi";
+import { setActiveProject } from "../store/slices/projectSlice";
 import { setSearchTerm } from "../store/slices/authSlice";
+import { useGetProjectByIdQuery } from "../store/api/projectsApi";
 
 export default function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { projectId } = useParams();
   const userEmail = useSelector((state) => state.auth.userEmail);
   const searchTerm = useSelector((state) => state.auth.searchTerm);
+  const activeProject = useSelector((state) => state.project.activeProject);
+
+  const isAdmin = activeProject?.role === "PROJECT_ADMIN";
 
   const { showSnackbar } = useSnackbar();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [deleteTask] = useDeleteTaskMutation();
   const [isCardView, setIsCardView] = useState(() => {
     const savedView = localStorage.getItem("taskViewPreference");
     return savedView !== null ? JSON.parse(savedView) : true;
@@ -34,30 +41,56 @@ export default function Home() {
   const { data: user } = useGetUserByEmailQuery(userEmail, {
     skip: !userEmail,
   });
-  const { data: tasks = [], isLoading: isLoadingTasks } = useGetTasksQuery();
-
-  const sortedTasks = [...tasks].sort((a, b) => {
-    if (user?.userRole === "ADMIN") {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    } else {
-      const dateA = a.lastAssignedAt ? new Date(a.lastAssignedAt) : new Date(a.createdAt);
-      const dateB = b.lastAssignedAt ? new Date(b.lastAssignedAt) : new Date(b.createdAt);
-      return dateB - dateA;
-    }
+  const { data: tasks = [], isLoading: isLoadingTasks } = useGetTasksQuery(projectId, {
+    skip: !projectId,
+  });
+  const { data: project } = useGetProjectByIdQuery(projectId, {
+    skip: !projectId,
   });
 
-  const isAdmin = user?.userRole === "ADMIN";
+  // Update active project state when navigating directly to a project URL
+  useEffect(() => {
+    if (project && (!activeProject || activeProject.id !== project.id)) {
+      dispatch(
+        setActiveProject({
+          id: project.id,
+          name: project.name,
+          role: project.currentUserRole,
+        })
+      );
+    }
+  }, [project, activeProject, dispatch]);
+
+  const sortedTasks = [...tasks].sort((a, b) => {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  const query = new URLSearchParams(location.search);
+  const assigneeEmailFilter = query.get("assigneeEmail");
 
   const filterTasks = (tasks) => {
-    if (!searchTerm) return tasks;
-    return tasks.filter((task) =>
-      task.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    let filtered = tasks;
+
+    if (searchTerm) {
+      filtered = filtered.filter((task) =>
+        task.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (assigneeEmailFilter) {
+      filtered = filtered.filter((task) => task.assigneeId === assigneeEmailFilter);
+    }
+
+    if (!isAdmin && user) {
+      filtered = filtered.filter((task) => task.assigneeId === user.email);
+    }
+
+    return filtered;
   };
 
   const handleDeleteTask = async (id) => {
     try {
-      await deleteTask(id).unwrap();
+      await deleteTask({ projectId, id }).unwrap();
       showSnackbar("Task deleted successfully!", "success");
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -65,13 +98,7 @@ export default function Home() {
     }
   };
 
-  const getUserTasks = () => {
-    const filtered = filterTasks(sortedTasks);
-    return filtered.filter(
-      (task) =>
-        user?.email === task.createdById || user?.email === task.assigneeId
-    );
-  };
+  const filteredTasks = filterTasks(sortedTasks);
 
   const handleOpenDialog = (task = null) => {
     setSelectedTask(task);
@@ -83,12 +110,10 @@ export default function Home() {
     setSelectedTask(null);
   };
 
-  const userTasks = getUserTasks();
-
   if (!user) {
     return (
       <div className="flex justify-center items-center h-64">
-        <p className="text-gray-400">Loading...</p>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7733ff]" />
       </div>
     );
   }
@@ -96,14 +121,26 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col">
-        <div
-          className={`${isAdmin ? "flex justify-between" : "inline"
-            } border-b border-gray-200 py-3 gap-2`}
-        >
+        <div className="flex justify-between border-b border-gray-200 pb-3 gap-2">
           <div className="flex gap-3 items-center">
             <h1 className="text-3xl text-gray-600">Tasks</h1>
-            {userTasks.length > 0 && (
-              <p className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">{userTasks.length}</p>
+            {filteredTasks.length > 0 && (
+              <p className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">
+                {filteredTasks.length}
+              </p>
+            )}
+            {assigneeEmailFilter && (
+              <div className="flex items-center gap-2 ml-4">
+                <span className="text-sm text-gray-500 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                  Filtering by: {assigneeEmailFilter}
+                </span>
+                <button
+                  onClick={() => navigate(`/project/${projectId}`)}
+                  className="text-xs text-red-500 hover:text-red-800 underline cursor-pointer hover:bg-gray-300 p-1.5 rounded-full"
+                >
+                  <X size={16} />
+                </button>
+              </div>
             )}
           </div>
           {isAdmin && (
@@ -121,6 +158,7 @@ export default function Home() {
         <div className="flex flex-row gap-2 border-b border-gray-200 py-3">
           <Button
             onClick={() => setIsCardView(true)}
+            size="md"
             variant={isCardView ? "primary" : "outlined"}
             className="flex items-center gap-2"
           >
@@ -129,6 +167,7 @@ export default function Home() {
           </Button>
           <Button
             onClick={() => setIsCardView(false)}
+            size="md"
             variant={!isCardView ? "primary" : "outlined"}
             className="flex items-center gap-2"
           >
@@ -140,51 +179,33 @@ export default function Home() {
 
       {isLoadingTasks ? (
         <div className="flex justify-center py-10">
-          <p className="text-gray-400">Loading tasks...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7733ff]" />
         </div>
       ) : isCardView ? (
         <div>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-            {userTasks.map((task) => (
-              <div key={task.id}>
-                {!isAdmin ? (
-                  <Link
-                    to={`/task/${task.id}`}
-                    state={{ task, isAdmin, user }}
-                  >
-                    <TaskCard
-                      task={task}
-                      onEdit={() => handleOpenDialog(task)}
-                      onDelete={() => handleDeleteTask(task.id)}
-                      loggedInUser={user}
-                      isAdmin={isAdmin}
-                      assignee={task.assigneeId}
-                      createdBy={task.createdById}
-                      searchTerm={searchTerm}
-                    />
-                  </Link>
-                ) : (
-                  <TaskCard
-                    task={task}
-                    onEdit={() => handleOpenDialog(task)}
-                    onDelete={() => handleDeleteTask(task.id)}
-                    onView={() =>
-                      navigate(`/task/${task.id}`, {
-                        state: { task, isAdmin, user },
-                      })
-                    }
-                    loggedInUser={user}
-                    isAdmin={isAdmin}
-                    assignee={task.assigneeId}
-                    createdBy={task.createdById}
-                    searchTerm={searchTerm}
-                  />
-                )}
+            {filteredTasks.map((task) => (
+              <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
+                <TaskCard
+                  task={task}
+                  onEdit={() => handleOpenDialog(task)}
+                  onDelete={() => handleDeleteTask(task.id)}
+                  onView={() =>
+                    navigate(`/project/${projectId}/task/${task.id}`, {
+                      state: { task, isAdmin, user },
+                    })
+                  }
+                  loggedInUser={user}
+                  isAdmin={isAdmin}
+                  assignee={task.assigneeId}
+                  createdBy={task.createdById}
+                  searchTerm={searchTerm}
+                />
               </div>
             ))}
           </div>
 
-          {userTasks.length === 0 && (
+          {filteredTasks.length === 0 && (
             <p className="text-gray-400">No tasks available</p>
           )}
         </div>
@@ -193,18 +214,22 @@ export default function Home() {
           <table className="w-full min-w-[700px] sm:min-w-[1000px] border-collapse border border-gray-200">
             <TaskListHeader isAdmin={isAdmin} />
             <tbody>
-              {userTasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <TaskList
                   key={task.id}
                   task={task}
                   onEdit={() => handleOpenDialog(task)}
                   onDelete={() => handleDeleteTask(task.id)}
                   onView={() =>
-                    navigate(`/task/${task.id}`, {
+                    navigate(`/project/${projectId}/task/${task.id}`, {
                       state: { task, isAdmin, user },
                     })
                   }
-                  onClick={!isAdmin ? () => navigate(`/task/${task.id}`, { state: { task, isAdmin, user } }) : undefined}
+                  onClick={() =>
+                    navigate(`/project/${projectId}/task/${task.id}`, {
+                      state: { task, isAdmin, user },
+                    })
+                  }
                   loggedInUser={user}
                   isAdmin={isAdmin}
                   assignee={task.assigneeId}
@@ -214,7 +239,7 @@ export default function Home() {
               ))}
             </tbody>
           </table>
-          {userTasks.length === 0 && (
+          {filteredTasks.length === 0 && (
             <p className="text-gray-400 p-4">No tasks available</p>
           )}
         </div>
@@ -224,6 +249,7 @@ export default function Home() {
         open={openDialog}
         onClose={handleCloseDialog}
         task={selectedTask}
+        projectId={projectId}
       />
     </div>
   );
