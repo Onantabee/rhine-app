@@ -1,31 +1,25 @@
-import React, { useState, useRef, useEffect } from "react";
+import  { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Menu, LogOut } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "../ui";
-import { logout as logoutAction, setSearchTerm } from "../../store/slices/authSlice";
-import { clearActiveProject } from "../../store/slices/projectSlice";
+import { setSearchTerm } from "../../store/slices/authSlice";
 import { useLogoutMutation } from "../../store/api/authApi";
 
 import MobileDrawer from "./MobileDrawer";
 import EditProfileDrawer from "./EditProfileDrawer";
-import UserAvatar from "./UserAvatar";
 import SearchBar from "./SearchBar";
-import ProfileDropdown from "./ProfileDropdown";
 import ProjectPicker from "../ProjectPicker";
 
 import { toggleMobileMenu, closeMobileMenu } from "../../store/slices/uiSlice";
 
 const shouldShowMobileMenu = (pathname) => {
-    // Explicitly excluded pages
     if (pathname.includes("/verify-email")) return false;
     if (pathname.includes("/create-project")) return false;
 
-    // Allowed pages (Home, Profile, Project details)
     if (pathname === "/" || pathname === "/profile") return true;
     if (pathname.startsWith("/project/")) return true;
 
-    // Hide on 404s and other unlisted routes
     return false;
 };
 
@@ -73,14 +67,11 @@ const Header = ({ setIsSignup }) => {
         } catch (error) {
             console.error("Logout failed on server:", error);
         }
-        // Always clean up client state
-        // Clear storage manually to avoid Redux state update triggering "Not Found" flash
         sessionStorage.clear();
         localStorage.removeItem("activeProject");
         dispatch(closeMobileMenu());
         setLogoutDialogOpen(false);
 
-        // Force hard navigation to home to ensuring a clean state
         window.location.href = "/";
     };
 
@@ -180,20 +171,6 @@ const Header = ({ setIsSignup }) => {
                                     )}
                                 </div>
 
-                                {/* <div className="relative" ref={profileRef}>
-                                    <UserAvatar
-                                        userName={userName}
-                                        size="sm"
-                                        onClick={toggleProfileDropdown}
-                                    />
-                                    <ProfileDropdown
-                                        open={profileDropdownOpen}
-                                        userName={userName}
-                                        isAdmin={isAdmin}
-                                        onEditProfile={handleEditProfileClick}
-                                        onLogout={handleLogoutClick}
-                                    />
-                                </div> */}
                             </div>
                         )}
                         {!shouldShowMobileMenu(location.pathname) && isLoggedIn && (
