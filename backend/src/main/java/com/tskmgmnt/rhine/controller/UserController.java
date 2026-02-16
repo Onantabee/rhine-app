@@ -22,8 +22,8 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/users")
 @Tag(
-        name = "CRUD REST APIs for User Account",
-        description = "CRUD REST APIs - Create Account, Update Account, Get Account, Get All Account"
+        name = "User Management",
+        description = "User profile and account management"
 )
 public class UserController {
     private final UserService userService;

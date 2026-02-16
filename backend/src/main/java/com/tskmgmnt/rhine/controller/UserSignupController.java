@@ -21,8 +21,8 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/users")
 @Tag(
-        name = "CRUD REST APIs for User Registration",
-        description = "CRUD REST APIs - Create Account"
+        name = "Onboarding",
+        description = "User registration and account creation"
 )
 public class UserSignupController {
 

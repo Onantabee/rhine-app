@@ -18,8 +18,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/comments")
 @Tag(
-        name = "CRUD REST APIs for In-Task Messaging",
-        description = "CRUD REST APIs - Publish Comment By Task Id, Get Comments By Task Id, " +
+        name = "Comments",
+        description = "Publish Comment By Task Id, Get Comments By Task Id, " +
                 "Get Comments By Recipient Id, Get Unread Comment Count, " +
                 "Update Comment Read State By Recipient Id, Update All Comment Read State"
 )

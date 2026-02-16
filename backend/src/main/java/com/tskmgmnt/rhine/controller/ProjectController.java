@@ -16,8 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/projects")
 @Tag(
-        name = "Project Management APIs",
-        description = "APIs for managing projects, memberships, and roles"
+        name = "Projects",
+        description = "manage projects, memberships, and roles"
 )
 public class ProjectController {
 

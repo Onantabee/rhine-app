@@ -14,8 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/projects/{projectId}/tasks")
 @Tag(
-        name = "CRUD REST APIs for Task Management",
-        description = "CRUD REST APIs - Create Task, Update Task, Get Task, Get All Tasks, Delete Task, Update Task Status"
+        name = "Tasks",
+        description = ""
 )
 public class TaskController {
 

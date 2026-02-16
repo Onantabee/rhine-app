@@ -23,8 +23,8 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/users")
 @Tag(
-        name = "CRUD REST APIs for User Authentication And Login",
-        description = "CRUD REST APIs - User Login"
+        name = "Identity",
+        description = "User Login"
 )
 public class UserLoginController {
     private final UserLoginService userLoginService;
