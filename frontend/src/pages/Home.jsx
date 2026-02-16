@@ -81,6 +81,10 @@ export default function Home() {
       filtered = filtered.filter((task) => task.assigneeId === assigneeEmailFilter);
     }
 
+    if (!isAdmin && user) {
+      filtered = filtered.filter((task) => task.assigneeId === user.email);
+    }
+
     return filtered;
   };
 
@@ -154,6 +158,7 @@ export default function Home() {
         <div className="flex flex-row gap-2 border-b border-gray-200 py-3">
           <Button
             onClick={() => setIsCardView(true)}
+            size="md"
             variant={isCardView ? "primary" : "outlined"}
             className="flex items-center gap-2"
           >
@@ -162,6 +167,7 @@ export default function Home() {
           </Button>
           <Button
             onClick={() => setIsCardView(false)}
+            size="md"
             variant={!isCardView ? "primary" : "outlined"}
             className="flex items-center gap-2"
           >

@@ -152,10 +152,16 @@ const TaskDialog = ({
     { value: "CANCELLED", label: "Cancelled" },
   ];
 
-  const assigneeOptions = projectMembers.map((member) => ({
-    value: member.email,
-    label: member.name,
-  }));
+  const assigneeOptions = projectMembers
+    .filter((member) => {
+      const isPending = member.name.toLowerCase().includes("(pending)");
+      const isCreator = member.email === (task ? task.createdById : userEmail);
+      return !isPending && !isCreator;
+    })
+    .map((member) => ({
+      value: member.email,
+      label: member.name,
+    }));
 
   return (
     <Dialog open={open} onClose={onClose} title={task ? "Update Task" : "Add Task"} size="lg">

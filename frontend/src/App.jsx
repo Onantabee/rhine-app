@@ -55,7 +55,6 @@ function App() {
   const getDefaultRedirect = () => {
     if (activeProject) return `/project/${activeProject.id}`;
     if (lastProjectId) return `/project/${lastProjectId}`;
-    if (hasProjects) return "/create-project"; // Will load projects & pick one
     return "/create-project";
   };
 
@@ -80,14 +79,16 @@ function App() {
                 )
               }
             />
+
             <Route
               path="/create-project"
               element={
                 <ProtectedRoute>
-                  {isVerified ? <CreateProject /> : <Navigate to="/verify-email" replace />}
+                  {isVerified && !hasProjects ? <CreateProject /> : <NotFound />}
                 </ProtectedRoute>
               }
             />
+
             <Route
               path="/project/:projectId"
               element={

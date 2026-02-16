@@ -137,28 +137,30 @@ export default function Profile() {
 
   return (
     <div className="max-w-2xl flex flex-col gap-8">
-      <div>
-        <h1 className="text-3xl text-gray-600 mb-6 pb-2 border-b border-gray-200">
-          Account Settings
-        </h1>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-3">
+          <h1 className="text-3xl text-gray-600 pb-3 border-b border-gray-200">
+            Account Settings
+          </h1>
 
-        <div className="flex gap-8 border-b border-gray-200 mb-6">
-          {[
-            { id: "personal", label: "Personal Information" },
-            { id: "password", label: "Change Password" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 text-md font-medium transition-colors relative cursor-pointer ${activeTab === tab.id
-                ? "text-[#7733ff] border-b-2 border-[#7733ff]"
-                : "text-gray-500 hover:text-gray-700"
-                }`}
-              style={{ marginBottom: "-1px" }}
-            >
-              {tab.label}
-            </button>
-          ))}
+          <div className="flex gap-8 border-b border-gray-200">
+            {[
+              { id: "personal", label: "Personal Information" },
+              { id: "password", label: "Change Password" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`pb-3 text-md font-medium transition-colors relative cursor-pointer ${activeTab === tab.id
+                  ? "text-[#7733ff] border-b-2 border-[#7733ff]"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
+                style={{ marginBottom: "-1px" }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {activeTab === "personal" && (
@@ -182,6 +184,7 @@ export default function Profile() {
             />
             <Button
               variant="primary"
+              size="lg"
               onClick={handleUpdateProfile}
               loading={isUpdating}
               className="w-fit"
@@ -226,7 +229,8 @@ export default function Profile() {
               helperText={fieldErrors.confirmPassword}
             />
             <Button
-              variant="outlined"
+              variant="primary"
+              size="lg"
               onClick={handleChangePassword}
               loading={isChangingPassword}
               className="w-fit"

@@ -110,7 +110,7 @@ const Header = ({ setIsSignup }) => {
 
     return (
         <>
-            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 sm:px-8 h-[70px]">
+            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 py-3 sm:px-8">
                 <nav className="flex items-center h-full">
                     <div className="w-full justify-center items-center hidden md:flex space-x-4 gap-4 h-full">
                         {/* <div>

@@ -246,8 +246,8 @@ export default function Task() {
     }
 
     return (
-        <div className="flex flex-col text-gray-800 md:px-5 h-full">
-            <div className="pb-4">
+        <div className="flex flex-col text-gray-800 h-full gap-4">
+            <div>
                 <button className="flex items-center gap-3 text-[#7733ff] hover:text-[#5500ff] cursor-pointer" onClick={() => navigate(`/project/${projectId}`)}>
                     <ArrowLeft />
                     Back

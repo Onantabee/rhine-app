@@ -73,8 +73,8 @@ const TeamMembers = () => {
 
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-gray-200">
-                <div className="flex justify-between pb-3 gap-2">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+                <div className="flex justify-between gap-2">
                     <h1 className="text-3xl text-gray-600 truncate">Team Members</h1>
                     <span className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">
                         {members.length}
@@ -83,6 +83,7 @@ const TeamMembers = () => {
                 {isAdmin && (
                     <Button
                         variant="primary"
+                        size="md"
                         onClick={() => setInviteDialogOpen(true)}
                     >
                         <UserPlus size={16} />
