@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Base64;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/users")
 @Tag(
         name = "Onboarding",
         description = "User registration and account creation"

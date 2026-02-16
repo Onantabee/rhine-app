@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Base64;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/users")
 @Tag(
         name = "Identity",
         description = "User Login"

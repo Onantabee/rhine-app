@@ -3,16 +3,16 @@ import { baseApi } from './baseApi';
 const usersApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllUsers: builder.query({
-            query: () => '/users',
+            query: () => 'api/users',
             providesTags: ['User'],
         }),
         getUserByEmail: builder.query({
-            query: (email) => `/users/${email}`,
+            query: (email) => `api/users/${email}`,
             providesTags: (result, error, email) => [{ type: 'User', id: email }],
         }),
         updateUser: builder.mutation({
             query: ({ email, ...data }) => ({
-                url: `/users/update/${email}`,
+                url: `api/users/update/${email}`,
                 method: 'PUT',
                 body: data,
             }),
@@ -22,14 +22,14 @@ const usersApi = baseApi.injectEndpoints({
         }),
         changePassword: builder.mutation({
             query: ({ email, currentPassword, newPassword }) => ({
-                url: `/users/change-password/${email}`,
+                url: `api/users/change-password/${email}`,
                 method: 'PUT',
                 body: { currentPassword, newPassword },
             }),
         }),
         updateLastProject: builder.mutation({
             query: (projectId) => ({
-                url: `/users/update-last-project/${projectId}`,
+                url: `api/users/update-last-project/${projectId}`,
                 method: "PUT",
             }),
             invalidatesTags: ['User'],

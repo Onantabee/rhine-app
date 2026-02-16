@@ -4,7 +4,7 @@ const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         register: builder.mutation({
             query: (data) => ({
-                url: '/users/register',
+                url: 'api/users/register',
                 method: 'POST',
                 body: data,
             }),
@@ -12,30 +12,30 @@ const authApi = baseApi.injectEndpoints({
         }),
         login: builder.mutation({
             query: (data) => ({
-                url: '/users/login',
+                url: 'api/users/login',
                 method: 'POST',
                 body: data,
             }),
         }),
         getCurrentUser: builder.query({
-            query: () => '/users/me',
+            query: () => 'api/users/me',
             providesTags: ['User'],
         }),
         logout: builder.mutation({
             query: () => ({
-                url: '/users/logout',
+                url: 'api/users/logout',
                 method: 'POST',
             }),
         }),
         verifyEmail: builder.mutation({
             query: (data) => ({
-                url: `/users/verify?email=${encodeURIComponent(data.email)}&code=${encodeURIComponent(data.code)}`,
+                url: `api/users/verify?email=${encodeURIComponent(data.email)}&code=${encodeURIComponent(data.code)}`,
                 method: 'POST',
             }),
         }),
         resendOtp: builder.mutation({
             query: (data) => ({
-                url: `/users/resend-otp?email=${encodeURIComponent(data.email)}`,
+                url: `api/users/resend-otp?email=${encodeURIComponent(data.email)}`,
                 method: 'POST',
             }),
         }),

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Base64;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/users")
 @Tag(
         name = "User Management",
         description = "User profile and account management"
