@@ -7,3 +7,4 @@ export { default as Dialog } from './Dialog';
 export { default as Chip } from './Chip';
 export { default as DatePicker } from './DatePicker';
 export { default as Snackbar } from './Snackbar';
+export { default as LoadingSpinner } from './LoadingSpinner';

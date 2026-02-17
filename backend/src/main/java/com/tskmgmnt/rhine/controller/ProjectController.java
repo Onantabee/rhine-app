@@ -7,6 +7,7 @@ import com.tskmgmnt.rhine.dto.ProjectMemberDto;
 import com.tskmgmnt.rhine.enums.ProjectRole;
 import com.tskmgmnt.rhine.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
-@Tag(
-        name = "Projects",
-        description = "manage projects, memberships, and roles"
-)
+@Tag(name = "Projects")
+@SecurityRequirement(name = "bearerAuth")
 public class ProjectController {
 
     private final ProjectService projectService;

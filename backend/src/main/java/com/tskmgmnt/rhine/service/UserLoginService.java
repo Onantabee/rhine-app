@@ -28,6 +28,6 @@ public class UserLoginService {
             throw new IllegalStateException("Invalid email or password");
         }
         boolean hasProjects = !projectMemberRepository.findByUserEmail(email).isEmpty();
-        return new LoginResponse("Login successful", user.getEmail(), user.getName(), hasProjects, user.getLastProjectId(), user.isVerified());
+        return new LoginResponse("Login successful", user.getEmail(), user.getName(), hasProjects, user.getLastProjectId(), user.isVerified(), null);
     }
 }

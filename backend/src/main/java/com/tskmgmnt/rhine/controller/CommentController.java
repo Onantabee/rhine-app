@@ -7,6 +7,7 @@ import com.tskmgmnt.rhine.entity.Comment;
 import com.tskmgmnt.rhine.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,12 +18,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/comments")
-@Tag(
-        name = "Comments",
-        description = "Publish Comment By Task Id, Get Comments By Task Id, " +
-                "Get Comments By Recipient Id, Get Unread Comment Count, " +
-                "Update Comment Read State By Recipient Id, Update All Comment Read State"
-)
+@Tag(name = "Comments")
+@SecurityRequirement(name = "bearerAuth")
 public class CommentController {
 
     private final CommentService commentService;

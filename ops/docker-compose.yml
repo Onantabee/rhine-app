@@ -10,12 +10,14 @@ services:
       - ../backend:/workspace
       - /workspace/target
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/rhine_db?createDatabaseIfNotExist=true
-      - SPRING_DATASOURCE_USERNAME=rhine_user
-      - SPRING_DATASOURCE_PASSWORD=rhine_password
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO}
       - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
       - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
     restart: on-failure
     depends_on:
       db:
@@ -24,7 +26,7 @@ services:
       - rhine-network
     develop:
       watch:
-        - action: rebuild
+        - action: sync
           path: ../backend/src
           target: /workspace/src
         - action: rebuild
@@ -58,10 +60,10 @@ services:
   db:
     image: mysql:8.0
     environment:
-      - MYSQL_DATABASE=rhine_db
-      - MYSQL_USER=rhine_user
-      - MYSQL_PASSWORD=rhine_password
-      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - RHINE_PASSWORD=${RHINE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
@@ -69,7 +71,7 @@ services:
     networks:
       - rhine-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "rhine_user", "-prhine_password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${RHINE_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 10

@@ -8,6 +8,7 @@ import com.tskmgmnt.rhine.service.ProjectService;
 import com.tskmgmnt.rhine.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,10 +22,8 @@ import java.util.Base64;
 
 @RestController
 @RequestMapping("api/users")
-@Tag(
-        name = "User Management",
-        description = "User profile and account management"
-)
+@Tag(name = "Users")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final UserService userService;
     private final ProjectService projectService;
@@ -53,7 +52,8 @@ public class UserController {
                 userRes.getName(),
                 hasProjects,
                 userRes.getLastProjectId(),
-                userRes.isVerified()
+                userRes.isVerified(),
+                null
         );
     }
 
@@ -87,14 +87,10 @@ public class UserController {
         return ResponseEntity.ok(Collections.singletonMap("message", data));
     }
 
-    @Operation(summary = "Logout user")
+    @Operation(summary = "Logout user", tags = {"Authentication"})
     @PostMapping("/logout")
     public ResponseEntity<String> logout(jakarta.servlet.http.HttpServletRequest request) {
         SecurityContextHolder.clearContext();
-        jakarta.servlet.http.HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
         return ResponseEntity.ok("Logged out successfully");
     }
 

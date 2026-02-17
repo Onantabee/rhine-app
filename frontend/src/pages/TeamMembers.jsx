@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Users, UserPlus, Trash2, Shield, UserCheck, AlertCircle } from "lucide-react";
-import { Button, Input, Dialog } from "../components/ui";
+import { Button, Input, Dialog, LoadingSpinner } from "../components/ui";
 import {
     useGetProjectMembersQuery,
     useInviteMemberMutation,
@@ -65,7 +65,7 @@ const TeamMembers = () => {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center py-20">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7733ff]" />
+                <LoadingSpinner size="lg" />
             </div>
         );
     }

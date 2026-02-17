@@ -3,14 +3,15 @@ import { createSlice } from "@reduxjs/toolkit";
 const getSessionState = () => {
     try {
         return {
-            isLoggedIn: sessionStorage.getItem("isLoggedIn") === "true",
-            userEmail: sessionStorage.getItem("userEmail") || "",
-            userName: sessionStorage.getItem("userName") || "",
-            lastProjectId: sessionStorage.getItem("lastProjectId") || null,
-            isVerified: sessionStorage.getItem("isVerified") === "true",
+            isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
+            userEmail: localStorage.getItem("userEmail") || "",
+            userName: localStorage.getItem("userName") || "",
+            lastProjectId: localStorage.getItem("lastProjectId") || null,
+            isVerified: localStorage.getItem("isVerified") === "true",
+            token: localStorage.getItem("token") || "",
         };
     } catch {
-        return { isLoggedIn: false, userEmail: "", userName: "", lastProjectId: null };
+        return { isLoggedIn: false, userEmail: "", userName: "", lastProjectId: null, token: "" };
     }
 };
 
@@ -25,6 +26,7 @@ const initialState = {
     sessionChecked: false,
     hasProjects: false,
     isVerified: persisted.isVerified,
+    token: persisted.token,
 };
 
 const authSlice = createSlice({
@@ -38,13 +40,17 @@ const authSlice = createSlice({
             state.hasProjects = action.payload.hasProjects ?? false;
             state.lastProjectId = action.payload.lastProjectId || null;
             state.isVerified = action.payload.isVerified ?? false;
+            if (action.payload.token) {
+                state.token = action.payload.token;
+                localStorage.setItem("token", action.payload.token);
+            }
             state.sessionChecked = true;
-            sessionStorage.setItem("isLoggedIn", "true");
-            sessionStorage.setItem("userEmail", action.payload.email);
-            sessionStorage.setItem("userName", action.payload.name);
-            sessionStorage.setItem("isVerified", String(action.payload.isVerified ?? false));
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("userEmail", action.payload.email);
+            localStorage.setItem("userName", action.payload.name);
+            localStorage.setItem("isVerified", String(action.payload.isVerified ?? false));
             if (action.payload.lastProjectId) {
-                sessionStorage.setItem("lastProjectId", action.payload.lastProjectId);
+                localStorage.setItem("lastProjectId", action.payload.lastProjectId);
             }
         },
         logout: (state) => {
@@ -54,31 +60,41 @@ const authSlice = createSlice({
             state.hasProjects = false;
             state.lastProjectId = null;
             state.isVerified = false;
+            state.token = "";
             state.searchTerm = "";
             state.sessionChecked = true;
-            sessionStorage.clear();
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("userEmail");
+            localStorage.removeItem("userName");
+            localStorage.removeItem("isVerified");
+            localStorage.removeItem("token");
+            localStorage.removeItem("lastProjectId");
             localStorage.removeItem("activeProject");
         },
         updateAuthUser: (state, action) => {
             if (action.payload) {
                 if (action.payload.name) {
                     state.userName = action.payload.name;
-                    sessionStorage.setItem("userName", action.payload.name);
+                    localStorage.setItem("userName", action.payload.name);
                 }
                 if (action.payload.email) {
                     state.userEmail = action.payload.email;
-                    sessionStorage.setItem("userEmail", action.payload.email);
+                    localStorage.setItem("userEmail", action.payload.email);
                 }
                 if (action.payload.hasProjects !== undefined) {
                     state.hasProjects = action.payload.hasProjects;
                 }
                 if (action.payload.isVerified !== undefined) {
                     state.isVerified = action.payload.isVerified;
-                    sessionStorage.setItem("isVerified", String(action.payload.isVerified));
+                    localStorage.setItem("isVerified", String(action.payload.isVerified));
                 }
                  if (action.payload.lastProjectId) {
                     state.lastProjectId = action.payload.lastProjectId;
-                    sessionStorage.setItem("lastProjectId", action.payload.lastProjectId);
+                    localStorage.setItem("lastProjectId", action.payload.lastProjectId);
+                }
+                if (action.payload.token) {
+                    state.token = action.payload.token;
+                    localStorage.setItem("token", action.payload.token);
                 }
             }
         },

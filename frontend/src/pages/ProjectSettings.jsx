@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Settings, Trash2 } from "lucide-react";
-import { Button, Input, Dialog } from "../components/ui";
+import { Button, Input, Dialog, LoadingSpinner } from "../components/ui";
 import {
     useGetProjectByIdQuery,
     useUpdateProjectMutation,
@@ -63,7 +63,7 @@ const ProjectSettings = () => {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center py-20">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7733ff]" />
+                <LoadingSpinner size="lg" />
             </div>
         );
     }

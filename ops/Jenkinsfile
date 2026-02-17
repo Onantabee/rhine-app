@@ -6,6 +6,8 @@ pipeline {
         DOCKER_REGISTRY = 'onantabee' 
         KUBECONFIG_CREDENTIALS = 'kubeconfig'
         DOCKER_HOST= 'unix:///var/run/docker.sock'
+        MYSQL_DATABASE = 'rhine_db'
+        MYSQL_USER = 'rhine_user'
     }
 
     tools {
@@ -131,35 +133,46 @@ pipeline {
         stage('Deploy Backend & DB') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
+                    withCredentials([
+                        file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG'),
+                        string(credentialsId: 'mysql-root-password', variable: 'MYSQL_ROOT_PASSWORD'),
+                        string(credentialsId: 'rhine-password', variable: 'RHINE_PASSWORD')
+                    ]) {
                         sh "sed -i 's|\${DOCKER_REGISTRY}|${env.DOCKER_REGISTRY}|g' ops/k8s/backend-deployment.yaml"
                         sh "sed -i 's|\${BUILD_ID}|${env.BUILD_ID}|g' ops/k8s/backend-deployment.yaml"
                         
-                        // Check if secret exists, if not create it automatically
                         sh """
                             if kubectl get secret mysql-secret > /dev/null 2>&1; then
                                 echo "***************************************************************** + mysql-secret already exists + *****************************************************************"
                             else
                                 echo "***************************************************************** + Creating mysql-secret with default credentials + *****************************************************************"
                                 kubectl create secret generic mysql-secret \\
-                                  --from-literal=mysql-root-password=Shangrilla#123 \\
-                                  --from-literal=mysql-database=taskdb \\
-                                  --from-literal=mysql-user=root \\
-                                  --from-literal=mysql-password=Shangrilla#123
+                                  --from-literal=mysql-root-password=${MYSQL_ROOT_PASSWORD} \\
+                                  --from-literal=mysql-database=${MYSQL_DATABASE} \\
+                                  --from-literal=mysql-user=${MYSQL_USER} \\
+                                  --from-literal=rhine-password=${RHINE_PASSWORD}
                             fi
                         """ 
 
-                        withCredentials([usernamePassword(credentialsId: 'rhine-email-creds', usernameVariable: 'MAIL_USER', passwordVariable: 'MAIL_PASSWORD')]) {
+                        withCredentials([
+                            usernamePassword(credentialsId: 'rhine-email-creds', usernameVariable: 'MAIL_USER', passwordVariable: 'MAIL_PASSWORD'),
+                            string(credentialsId: 'rhine-jwt-secret', variable: 'JWT_SECRET')
+                        ]) {
                              sh """
                                 if kubectl get secret rhine-secrets > /dev/null 2>&1; then
                                     echo "***************************************************************** + rhine-secrets already exists + *****************************************************************"
                                     # Update the secret with the latest credentials from Jenkins
-                                    kubectl create secret generic rhine-secrets --from-literal=mail-username=\${MAIL_USER} --from-literal=mail-password=\${MAIL_PASSWORD} --dry-run=client -o yaml | kubectl apply -f -
+                                    kubectl create secret generic rhine-secrets \\
+                                        --from-literal=mail-username=\${MAIL_USER} \\
+                                        --from-literal=mail-password=\${MAIL_PASSWORD} \\
+                                        --from-literal=jwt-secret-key=\${JWT_SECRET} \\
+                                        --dry-run=client -o yaml | kubectl apply -f -
                                 else
                                     echo "***************************************************************** + Creating rhine-secrets + *****************************************************************"
                                     kubectl create secret generic rhine-secrets \\
                                       --from-literal=mail-username=\${MAIL_USER} \\
-                                      --from-literal=mail-password=\${MAIL_PASSWORD}
+                                      --from-literal=mail-password=\${MAIL_PASSWORD} \\
+                                      --from-literal=jwt-secret-key=\${JWT_SECRET}
                                 fi
                             """
                         } 

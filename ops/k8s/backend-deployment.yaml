@@ -33,7 +33,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
-                  key: mysql-password
+                  key: rhine-password
             - name: SPRING_MAIL_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -44,6 +44,25 @@ spec:
                 secretKeyRef:
                   name: rhine-secrets
                   key: mail-password
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rhine-secrets
+                  key: jwt-secret-key
+            - name: JWT_EXPIRATION
+              value: "86400000"
+          livenessProbe:
+            httpGet:
+              path: /api/users/me
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/users/me
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 5
 
 ---
 apiVersion: v1

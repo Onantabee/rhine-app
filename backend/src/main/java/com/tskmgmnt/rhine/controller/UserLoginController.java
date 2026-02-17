@@ -16,28 +16,32 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
 
 @RestController
 @RequestMapping("api/users")
-@Tag(
-        name = "Identity",
-        description = "User Login"
-)
+@Tag(name = "Authentication")
+
 public class UserLoginController {
+    private static final Logger logger = LoggerFactory.getLogger(UserLoginController.class);
     private final UserLoginService userLoginService;
     private final AuthenticationManager authenticationManager;
+    private final com.tskmgmnt.rhine.service.JwtService jwtService;
 
-    public UserLoginController(UserLoginService userLoginService, AuthenticationManager authenticationManager) {
+    public UserLoginController(UserLoginService userLoginService, AuthenticationManager authenticationManager, com.tskmgmnt.rhine.service.JwtService jwtService) {
         this.userLoginService = userLoginService;
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @Operation(
             summary = "Authenticate user",
-            description = "Authenticates a user with their email and password and creates a server-side session",
+            description = "Authenticates a user with their email and password and returns a JWT token",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -65,18 +69,18 @@ public class UserLoginController {
         String email = loginRequest.getEmail();
         String password = new String(Base64.getDecoder().decode(loginRequest.getPassword()));
 
-        LoginResponse response = userLoginService.loginUser(email, password);
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
 
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(authentication);
-        SecurityContextHolder.setContext(securityContext);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        HttpSession session = request.getSession(true);
-        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        LoginResponse response = userLoginService.loginUser(email, password);
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            String jwtToken = jwtService.generateToken((UserDetails) principal);
+            response.setToken(jwtToken);
+        }
 
         return response;
     }

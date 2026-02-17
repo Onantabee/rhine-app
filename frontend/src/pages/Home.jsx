@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Button } from "../components/ui";
+import { Button, LoadingSpinner } from "../components/ui";
 import { useSnackbar } from "../context/SnackbarContext";
 import { Plus, Grid, List, X } from "lucide-react";
 import TaskCard from "../components/TaskCard.jsx";
@@ -112,7 +112,7 @@ export default function Home() {
   if (!user) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7733ff]" />
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -178,7 +178,7 @@ export default function Home() {
 
       {isLoadingTasks ? (
         <div className="flex justify-center py-10">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7733ff]" />
+          <LoadingSpinner size="lg" />
         </div>
       ) : isCardView ? (
         <div>

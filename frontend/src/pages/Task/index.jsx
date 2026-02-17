@@ -16,6 +16,7 @@ import {
     useMarkCommentsAsReadMutation,
 } from "../../store/api/commentsApi";
 import { useGetUserByEmailQuery } from "../../store/api/usersApi";
+import { LoadingSpinner } from "../../components/ui";
 
 import TaskDetails from "./TaskDetails";
 import CommentsList from "./CommentsList";
@@ -240,7 +241,7 @@ export default function Task() {
     if (isLoadingTask || !task) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7733ff]" />
+                <LoadingSpinner size="lg" />
             </div>
         );
     }
