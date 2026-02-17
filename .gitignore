@@ -60,4 +60,4 @@ build/
 ### VS Code ###
 .vscode/
 
-ops/.env.local
+ops/.env
