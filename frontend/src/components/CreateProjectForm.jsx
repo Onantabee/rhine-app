@@ -33,11 +33,10 @@ const CreateProjectForm = ({ onSuccess, onCancel, showCancel = false }) => {
             );
             dispatch(setHasProjects(true));
             toast.success("Project created!");
+            navigate(`/project/${project.id}`);
 
             if (onSuccess) {
                 onSuccess(project);
-            } else {
-                navigate(`/project/${project.id}`);
             }
         } catch (error) {
             toast.error(error?.data?.message || "Failed to create project");

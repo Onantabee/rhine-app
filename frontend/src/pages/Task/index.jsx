@@ -99,9 +99,12 @@ export default function Task() {
                 taskId: task.id,
                 recipientEmail: user.email,
             });
-            updateTaskNewState({ projectId, id: task.id, isNew: false });
+
+            if (!isAdmin && task.assigneeId === user.email) {
+                updateTaskNewState({ projectId, id: task.id, isNew: false });
+            }
         }
-    }, [task?.id, user?.email, markCommentsAsRead, updateTaskNewState, projectId, comments]);
+    }, [task?.id, user?.email, isAdmin, task?.assigneeId, markCommentsAsRead, updateTaskNewState, projectId, comments]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {

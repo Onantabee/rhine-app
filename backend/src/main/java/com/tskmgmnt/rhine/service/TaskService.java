@@ -172,9 +172,14 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Task not Found!"));
         task.setIsNew(taskReq.getIsNew());
         Task updatedTaskState = taskRepository.save(task);
+        
+        TaskDto response = new TaskDto();
+        response.setId(updatedTaskState.getId());
+        response.setIsNew(updatedTaskState.getIsNew());
+        
         messagingTemplate.convertAndSend("/topic/task-new-state",
-                new NotificationDto<>("TASK_NEW_STATE", mapToTaskResponse(updatedTaskState)));
-        return mapToTaskResponse(updatedTaskState);
+                new NotificationDto<>("TASK_NEW_STATE", response));
+        return response;
     }
 
     public TaskDto getIsNewState(Long id) {

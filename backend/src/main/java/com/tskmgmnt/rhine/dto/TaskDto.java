@@ -1,10 +1,12 @@
 package com.tskmgmnt.rhine.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tskmgmnt.rhine.enums.TaskStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskDto {
 
     @Schema(description = "Unique identifier of the task", example = "1")

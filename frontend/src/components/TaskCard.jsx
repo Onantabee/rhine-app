@@ -24,7 +24,7 @@ const TaskCard = ({
   createdBy,
   searchTerm,
 }) => {
-  const { title, priority, dueDate, taskStatus } = task;
+  const { title, priority, dueDate, taskStatus, projectId } = task;
   const [deleteTaskDialogOpen, setDeleteTaskDialogOpen] = useState(false);
   const [dueDateStatus, setDueDateStatus] = useState(null);
 
@@ -45,9 +45,12 @@ const TaskCard = ({
     }
   );
 
-  const { data: taskNewState } = useGetTaskNewStateQuery(task.id, {
-    skip: isAdmin,
-  });
+  const { data: taskNewState } = useGetTaskNewStateQuery(
+    { projectId, taskId: task.id },
+    {
+      skip: isAdmin || !projectId,
+    }
+  );
   const taskIsNew = taskNewState?.isNew || false;
 
   useEffect(() => {
