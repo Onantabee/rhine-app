@@ -3,16 +3,16 @@ package com.tskmgmnt.rhine.controller;
 import com.tskmgmnt.rhine.dto.LoginResponse;
 import com.tskmgmnt.rhine.dto.UserRegReq;
 import com.tskmgmnt.rhine.entity.User;
-import com.tskmgmnt.rhine.service.UserRegistrationService;
+import com.tskmgmnt.rhine.service.UserSignupService;
+import com.tskmgmnt.rhine.service.OtpService;
+import com.tskmgmnt.rhine.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.slf4j.Logger;
@@ -27,12 +27,12 @@ import java.util.Base64;
 public class UserSignupController {
     private static final Logger logger = LoggerFactory.getLogger(UserSignupController.class);
 
-    private final UserRegistrationService userRegistrationService;
-    private final com.tskmgmnt.rhine.service.OtpService otpService;
+    private final UserSignupService userRegistrationService;
+    private final OtpService otpService;
     private final AuthenticationManager authenticationManager;
-    private final com.tskmgmnt.rhine.service.JwtService jwtService;
+    private final JwtService jwtService;
 
-    public UserSignupController(UserRegistrationService userRegistrationService, com.tskmgmnt.rhine.service.OtpService otpService, AuthenticationManager authenticationManager, com.tskmgmnt.rhine.service.JwtService jwtService) {
+    public UserSignupController(UserSignupService userRegistrationService, OtpService otpService, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userRegistrationService = userRegistrationService;
         this.otpService = otpService;
         this.authenticationManager = authenticationManager;
@@ -66,7 +66,7 @@ public class UserSignupController {
                 token = jwtService.generateToken((UserDetails) principal);
             }
         } catch (Exception e) {
-            logger.error("Authentication failed for user: " + decodedRequest.getEmail(), e);
+            logger.error("Authentication failed for user: {}", decodedRequest.getEmail(), e);
         }
 
         return new LoginResponse("Registration successful. Please verify your email.", user.getEmail(), user.getName(), false, false, token);

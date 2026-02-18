@@ -2,19 +2,17 @@ package com.tskmgmnt.rhine.controller;
 
 import com.tskmgmnt.rhine.dto.UserLogReq;
 import com.tskmgmnt.rhine.dto.LoginResponse;
+import com.tskmgmnt.rhine.service.JwtService;
 import com.tskmgmnt.rhine.service.UserLoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.slf4j.Logger;
@@ -31,9 +29,9 @@ public class UserLoginController {
     private static final Logger logger = LoggerFactory.getLogger(UserLoginController.class);
     private final UserLoginService userLoginService;
     private final AuthenticationManager authenticationManager;
-    private final com.tskmgmnt.rhine.service.JwtService jwtService;
+    private final JwtService jwtService;
 
-    public UserLoginController(UserLoginService userLoginService, AuthenticationManager authenticationManager, com.tskmgmnt.rhine.service.JwtService jwtService) {
+    public UserLoginController(UserLoginService userLoginService, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userLoginService = userLoginService;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
