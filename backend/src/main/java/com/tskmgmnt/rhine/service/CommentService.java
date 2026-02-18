@@ -11,11 +11,13 @@ import com.tskmgmnt.rhine.repository.TaskRepository;
 import com.tskmgmnt.rhine.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CommentService {
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -82,8 +84,8 @@ public class CommentService {
         for (String email : notifyEmails) {
             long count = countUnreadCommentsByRecipient(email, taskId);
             messagingTemplate.convertAndSend(
-                    "/topic/unread-count/" + email + "/" + taskId,
-                    Map.of("count", count)
+                    "/topic/unread-updates",
+                    Map.of("taskId", taskId, "count", count, "recipientEmail", email)
             );
         }
 
@@ -130,7 +132,24 @@ public class CommentService {
     public Comment deleteCommentById(Long id) {
         Comment commentToDelete = commentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
+        
+        Long taskId = commentToDelete.getTask().getId();
+        String recipientEmail = commentToDelete.getRecipient() != null ? 
+                commentToDelete.getRecipient().getEmail() : null;
+
         commentRepository.delete(commentToDelete);
+
+        messagingTemplate.convertAndSend("/topic/comment-deletion",
+                Map.of("commentId", id, "taskId", taskId));
+
+        if (recipientEmail != null) {
+            long newCount = countUnreadCommentsByRecipient(recipientEmail, taskId);
+            messagingTemplate.convertAndSend(
+                    "/topic/unread-updates",
+                    Map.of("taskId", taskId, "count", newCount, "recipientEmail", recipientEmail)
+            );
+        }
+
         return commentToDelete;
     }
 }

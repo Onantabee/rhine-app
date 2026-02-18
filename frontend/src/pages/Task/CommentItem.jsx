@@ -32,20 +32,13 @@ const CommentItem = ({
     }, [isDropdownOpen]);
 
     return (
-        <div className="relative overflow-visible">
-            <div
-                className={`py-2 pl-2 flex group items-center gap-2 ${isOwnComment ? "bg-[#7733ff]/5 hover:bg-[#7733ff]/10" : "bg-gray-50"
-                    }`}
-            >
-                <div
-                    className={`h-10 w-[4px] rounded ${isOwnComment ? "bg-[#7733ff]/30 group-hover:bg-[#7733ff]" : "bg-gray-300"
-                        }`}
-                />
+        <div className="relative overflow-visible border-b border-gray-200 last:border-b-0">
+            <div className={`py-2 pl-2 flex group items-center gap-2 ${isOwnComment ? "bg-gray-100/30 hover:bg-gray-100/50" : ""}`}>
                 <div className="flex justify-between w-full items-center">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span
-                                className={`text-xs uppercase ${isOwnComment
+                                className={`text-sm capitalize ${isOwnComment
                                     ? "text-gray-500 group-hover:text-[#7733ff]"
                                     : "text-gray-500"
                                     }`}

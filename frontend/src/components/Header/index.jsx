@@ -1,4 +1,4 @@
-import  { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -116,7 +116,7 @@ const Header = ({ setIsSignup }) => {
 
     return (
         <>
-            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 py-3 sm:px-8">
+            <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-5 py-3 sm:px-8 h-full max-h-[70px]">
                 <nav className="flex items-center h-full">
                     <div className="w-full justify-center items-center hidden md:flex gap-4 h-full">
                         {!isVerified || !hasProjects ? (

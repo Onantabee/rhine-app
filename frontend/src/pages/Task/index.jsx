@@ -128,7 +128,7 @@ export default function Task() {
     }, [comments]);
 
     const getAuthorName = (authorEmail) => {
-        if (authorEmail === user?.email) return "Me";
+        if (authorEmail === user?.email) return "You";
         if (authorEmail === creatorUser?.email) return creatorUser?.name;
         if (authorEmail === assigneeUser?.email) return assigneeUser?.name;
         return authorEmail;
@@ -141,7 +141,7 @@ export default function Task() {
             await updateComment({
                 commentId: editingComment.id,
                 content: newComment.trim(),
-                taskId: task.id,
+                taskId,
             }).unwrap();
         } catch (error) {
             console.error("Error updating comment:", error);
@@ -158,7 +158,7 @@ export default function Task() {
         if (!user || !newComment.trim()) return;
 
         const commentPayload = {
-            taskId: task.id,
+            taskId,
             authorEmail: user.email,
             content: newComment.trim(),
             recipientEmail: isAdmin ? task.assigneeId : task.createdById,
@@ -188,7 +188,7 @@ export default function Task() {
 
     const handleDeleteClick = async (commentId) => {
         try {
-            await deleteComment(commentId).unwrap();
+            await deleteComment({ commentId, taskId }).unwrap();
             setOpenDropdownId(null);
             if (editingComment?.id === commentId) {
                 setEditingComment(null);
@@ -257,7 +257,7 @@ export default function Task() {
                     Back
                 </button>
             </div>
-            <div className="md:p-2 w-full max-w-full flex flex-col md:flex-row gap-6 flex-1 min-h-0">
+            <div className="w-full max-w-full flex flex-col md:flex-row gap-6 flex-1 min-h-0">
                 <TaskDetails
                     task={task}
                     taskStatus={taskStatus}

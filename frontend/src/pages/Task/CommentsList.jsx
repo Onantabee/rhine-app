@@ -23,7 +23,7 @@ const CommentsList = ({
             <h2 className="text-lg font-semibold text-gray-700 shrink-0">Comments</h2>
             <div
                 ref={containerRef}
-                className="flex flex-col space-y-2 px-3 overflow-y-auto h-full"
+                className="flex flex-col px-3 overflow-y-auto h-full"
             >
                 {comments.length === 0 ? (
                     <div className="flex items-center justify-center flex-1 h-full">

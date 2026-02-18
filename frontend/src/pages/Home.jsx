@@ -148,7 +148,7 @@ export default function Home() {
               onClick={() => handleOpenDialog()}
               className="bg-red-500 hover:bg-red-600 text-white relative"
             >
-              <Plus size={18} />
+              <Plus size={20} />
               Add Task
             </Button>
           )}
@@ -161,7 +161,7 @@ export default function Home() {
             variant={isCardView ? "primary" : "outlined"}
             className="flex items-center gap-2"
           >
-            <Grid size={16} />
+            <Grid size={20} />
             Card View
           </Button>
           <Button
@@ -170,7 +170,7 @@ export default function Home() {
             variant={!isCardView ? "primary" : "outlined"}
             className="flex items-center gap-2"
           >
-            <List size={16} />
+            <List size={20} />
             List View
           </Button>
         </div>

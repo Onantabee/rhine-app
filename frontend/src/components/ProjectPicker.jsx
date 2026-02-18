@@ -53,7 +53,7 @@ const ProjectPicker = () => {
             <div className="relative" ref={ref}>
                 <button
                     onClick={() => setOpen(!open)}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors text-sm font-medium text-gray-700 cursor-pointer"
+                    className="flex items-center gap-2 py-1.5 rounded-lg transition-colors text-sm font-medium text-gray-700 cursor-pointer"
                 >
                     <span className="max-w-[150px] truncate text-xl">
                         {activeProject?.name || "Select Project"}
@@ -82,7 +82,7 @@ const ProjectPicker = () => {
                                             <span className="truncate w-full text-left text-lg">
                                                 {project.name}
                                             </span>
-                                            <span className="text-xs font-light text-gray-400">
+                                            <span className={`text-xs font-light ${activeProject?.id === project.id ? 'text-[#7733ff]' : 'text-gray-600'}`}>
                                                 {project.currentUserRole === 'PROJECT_ADMIN' && 'Owner'}
                                             </span>
                                         </div>

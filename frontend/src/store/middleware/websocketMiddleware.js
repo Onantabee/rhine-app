@@ -33,7 +33,7 @@ function initializeWebSocket(store) {
                     const { taskId, recipientEmail } = JSON.parse(message.body);
                     store.dispatch(
                         commentsApi.util.invalidateTags([
-                            { type: 'UnreadCount', id: `${taskId}-${recipientEmail}` },
+                            { type: 'UnreadCount', id: `${String(taskId)}-${recipientEmail}` },
                         ])
                     );
                 } catch (error) {
@@ -45,7 +45,7 @@ function initializeWebSocket(store) {
                 try {
                     const newComment = JSON.parse(message.body);
                     store.dispatch(
-                        commentsApi.util.invalidateTags([{ type: 'Comment', id: newComment.taskId }])
+                        commentsApi.util.invalidateTags([{ type: 'Comment', id: String(newComment.taskId) }])
                     );
                 } catch (error) {
                     console.error('[WebSocket] Error parsing comment:', error);
@@ -56,10 +56,21 @@ function initializeWebSocket(store) {
                 try {
                     const updatedComment = JSON.parse(message.body);
                     store.dispatch(
-                        commentsApi.util.invalidateTags([{ type: 'Comment', id: updatedComment.taskId }])
+                        commentsApi.util.invalidateTags([{ type: 'Comment', id: String(updatedComment.taskId) }])
                     );
                 } catch (error) {
                     console.error('[WebSocket] Error parsing comment update:', error);
+                }
+            });
+
+            stompClient.subscribe('/topic/comment-deletion', (message) => {
+                try {
+                    const data = JSON.parse(message.body);
+                    store.dispatch(
+                        commentsApi.util.invalidateTags([{ type: 'Comment', id: String(data.taskId) }])
+                    );
+                } catch (error) {
+                    console.error('[WebSocket] Error parsing comment deletion:', error);
                 }
             });
 

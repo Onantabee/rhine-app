@@ -11,6 +11,12 @@ import com.tskmgmnt.rhine.enums.ProjectRole;
 import com.tskmgmnt.rhine.repository.ProjectMemberRepository;
 import com.tskmgmnt.rhine.repository.ProjectRepository;
 import com.tskmgmnt.rhine.repository.UserRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
 
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
@@ -134,17 +142,19 @@ public class ProjectService {
     }
 
     private void sendInviteEmail(String to, String projectName, ProjectRole role, String token) {
+        String inviteLink = "http://localhost:5173/accept-invite?token=" + token;
+        logger.info("Invite email sent to {} with link: {}", to, inviteLink);
         try {
-            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
+            SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("onantabasseyvee@gmail.com");
             message.setTo(to);
             message.setSubject("You've been invited to join " + projectName);
-            String inviteLink = "http://localhost:5173/accept-invite?token=" + token;
             message.setText("Hello,\n\nYou have been invited to join the project '" + projectName + "' as a " + role + ".\n\nPlease click the link below to accept the invitation:\n" + inviteLink);
             mailSender.send(message);
-            System.out.println("Invite email sent to " + to + " with link: " + inviteLink);
+            logger.info("Invite email sent to {} with link: {}", to, inviteLink);
         } catch (Exception e) {
-            System.err.println("Failed to send invite email: " + e.getMessage());
+            logger.error("Failed to send Invite email to {}: {}", to, e.getMessage());
+
         }
     }
 

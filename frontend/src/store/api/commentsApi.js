@@ -86,7 +86,7 @@ export const commentsApi = baseApi.injectEndpoints({
                 method: 'PUT',
                 body: { content },
             }),
-            invalidatesTags: (result, error, { commentId }) => ['Comment'],
+            invalidatesTags: (result, error, { taskId }) => [{ type: 'Comment', id: taskId }],
             async onQueryStarted({ commentId, content, taskId }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     commentsApi.util.updateQueryData('getCommentsByTask', taskId, (draft) => {
@@ -105,11 +105,11 @@ export const commentsApi = baseApi.injectEndpoints({
         }),
 
         deleteComment: builder.mutation({
-            query: (commentId) => ({
-                url: `api/comments/${commentId}`,
+            query: ({ commentId }) => ({
+                url: `/api/comments/${commentId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Comment'],
+            invalidatesTags: (result, error, { taskId }) => [{ type: 'Comment', id: taskId }],
             async onQueryStarted({ commentId, taskId }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     commentsApi.util.updateQueryData('getCommentsByTask', taskId, (draft) => {
