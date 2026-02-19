@@ -100,9 +100,10 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                 <div className="fixed inset-0 z-[9999] flex flex-col" style={{ top: 0, left: 0 }}>
                     <div className="fixed inset-0 bg-transparent" onClick={closeMenu} />
                     <div
-                        className="absolute z-[10000] w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-200 ring-opacity-5 focus:outline-none"
+                        className="absolute z-[10000] w-48 bg-white py-1 ring-1 ring-gray-400 ring-opacity-5 focus:outline-none"
                         style={{ top: menuPosition.top, left: menuPosition.left }}
                     >
+                        <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white border-t border-l border-gray-400 z-[-1]" />
                         <button
                             onClick={handleViewTasks}
                             className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
