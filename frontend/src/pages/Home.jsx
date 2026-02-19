@@ -163,7 +163,7 @@ export default function Home() {
               </table>
             </div>
             {filteredTasks.length === 0 && (
-              <p className="text-gray-400 p-4">No tasks available</p>
+              <p className="text-gray-400 p-4 dark:bg-[#1a1a1a]">No tasks available</p>
             )}
           </div>
         </div>

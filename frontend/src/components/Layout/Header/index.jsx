@@ -126,14 +126,19 @@ const Header = ({ setIsSignup }) => {
                                 Logout
                             </Button>
                         )}
-                        {shouldShowMobileMenu(location.pathname) && (
-                            <button onClick={handleDrawerToggle} className="p-2 text-gray-600 dark:text-[#bfbfbf] hover:text-gray-800 cursor-pointer">
-                                <Menu size={24} />
-                            </button>
-                        )}
+                        <div className="flex gap-3 items-center">
+                            <ThemeToggle />
+                            {shouldShowMobileMenu(location.pathname) && (
+                                <button onClick={handleDrawerToggle} className="p-2 text-gray-600 dark:text-[#bfbfbf] hover:text-gray-800 dark:hover:text-gray-300 cursor-pointer">
+                                    <Menu size={24} />
+                                </button>
+                            )}
+                        </div>
                     </div>
 
-                    <ThemeToggle />
+                    <div className="flex gap-3 items-center hidden md:flex">
+                        <ThemeToggle />
+                    </div>
                 </nav>
             </header>
 
