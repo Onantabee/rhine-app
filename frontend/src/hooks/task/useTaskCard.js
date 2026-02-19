@@ -1,7 +1,8 @@
-import { useGetUserByEmailQuery } from "../store/api/usersApi";
-import { useGetTaskNewStateQuery } from "../store/api/tasksApi";
-import { useCountUnreadCommentsQuery } from "../store/api/commentsApi";
-import { getDueDateStatus } from "../utils/taskUtils";
+
+import { useCountUnreadCommentsQuery } from "../../store/api/commentsApi";
+import { useGetTaskNewStateQuery } from "../../store/api/tasksApi";
+import { useGetUserByEmailQuery } from "../../store/api/usersApi";
+import { getDueDateStatus } from "../../utils/taskUtils";
 
 export const useTaskCard = ({
   task,

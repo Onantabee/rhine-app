@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useRemoveMemberMutation } from "../../store/api/projectsApi";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 export const useTeamTable = ({ members, userEmail, onRemove }) => {
     const navigate = useNavigate();

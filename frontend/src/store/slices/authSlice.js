@@ -23,6 +23,7 @@ const initialState = {
     userName: persisted.userName,
     lastProjectId: persisted.lastProjectId,
     searchTerm: "",
+    assigneeEmailFilter: "",
     sessionChecked: false,
     hasProjects: false,
     isVerified: persisted.isVerified,
@@ -107,9 +108,12 @@ const authSlice = createSlice({
         setHasProjects: (state, action) => {
             state.hasProjects = action.payload;
         },
+        setAssigneeEmailFilter: (state, action) => {
+            state.assigneeEmailFilter = action.payload;
+        },
     },
 });
 
-export const { login, logout, updateAuthUser, setSessionChecked, setSearchTerm, setHasProjects } =
+export const { login, logout, updateAuthUser, setSessionChecked, setSearchTerm, setHasProjects, setAssigneeEmailFilter } =
     authSlice.actions;
 export default authSlice.reducer;

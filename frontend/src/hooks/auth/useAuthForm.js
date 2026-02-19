@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useSnackbar } from "../context/SnackbarContext";
-import { useRegisterMutation, useLoginMutation } from "../store/api/authApi";
-import { login as loginAction } from "../store/slices/authSlice";
-import { capitalizeWords } from "../utils/stringUtils";
-import { checkPasswordStrength } from "../utils/validationUtils";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { useLoginMutation, useRegisterMutation } from "../../store/api/authApi";
+import { login } from "../../store/slices/authSlice";
+import { capitalizeWords } from "../../utils/stringUtils";
+import { checkPasswordStrength } from "../../utils/validationUtils";
 
 export const useAuthForm = (isSignup) => {
     const [name, setName] = useState("");
@@ -76,7 +76,7 @@ export const useAuthForm = (isSignup) => {
 
             console.log("Signup successful!", userData);
 
-            dispatch(loginAction({
+            dispatch(login({
                 ...userData,
                 isVerified: false
             }));
@@ -107,7 +107,7 @@ export const useAuthForm = (isSignup) => {
             }).unwrap();
 
             console.log("Login successful!", userData);
-            dispatch(loginAction(userData));
+            dispatch(login(userData));
             setEmail("");
             setPassword("");
             navigate("/");

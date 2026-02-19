@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { setSearchTerm, logout } from "../store/slices/authSlice";
-import { useLogoutMutation } from "../store/api/authApi";
-import { toggleMobileMenu, closeMobileMenu } from "../store/slices/uiSlice";
+import { setSearchTerm, logout } from "../../store/slices/authSlice";
+import { useLogoutMutation } from "../../store/api/authApi";
+import { toggleMobileMenu, closeMobileMenu } from "../../store/slices/uiSlice";
 
 export const useHeader = ({ setIsSignup }) => {
     const dispatch = useDispatch();

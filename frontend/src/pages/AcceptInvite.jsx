@@ -1,5 +1,5 @@
 import { Button, LoadingSpinner } from "../components/ui";
-import { useAcceptInvite } from '../hooks/useAcceptInvite';
+import { useAcceptInvite } from "../hooks/auth/useAcceptInvite";
 
 const AcceptInvite = () => {
     const {

@@ -1,4 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addNotification } from "../../store/slices/uiSlice";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 

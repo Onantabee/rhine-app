@@ -1,5 +1,5 @@
 import { Dialog, Button, Input, TextField, Select, DatePicker } from "../ui";
-import { useTaskDialog } from "../../hooks/useTaskDialog";
+import { useTaskDialog } from "../../hooks/task/useTaskDialog";
 
 const TaskDialog = ({
   open,

@@ -5,7 +5,7 @@ import MobileDrawer from "./MobileDrawer";
 import SearchBar from "./SearchBar";
 import ProjectPicker from "../../Project/ProjectPicker";
 
-import { useHeader } from "../../../hooks/useHeader";
+import { useHeader } from "../../../hooks/layout/useHeader";
 
 const Header = ({ setIsSignup }) => {
     const {

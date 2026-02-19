@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { MoreVerticalIcon } from "lucide-react";
 import { differenceInSeconds, formatDistanceToNowStrict } from "date-fns";
-import { useCommentItem } from "../../hooks/useCommentItem";
+import { useCommentItem } from "../../hooks/task/useCommentItem";
 
 const CommentItem = ({
     comment,

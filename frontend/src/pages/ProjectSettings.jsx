@@ -1,6 +1,6 @@
 import { Settings, Trash2 } from "lucide-react";
 import { Button, Input, Dialog, LoadingSpinner } from "../components/ui";
-import { useProjectSettings } from "../hooks/useProjectSettings";
+import { useProjectSettings } from "../hooks/project/useProjectSettings";
 
 const ProjectSettings = () => {
     const {

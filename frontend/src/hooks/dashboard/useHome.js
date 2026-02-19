@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { useSnackbar } from "../context/SnackbarContext";
-import { useGetTasksQuery, useDeleteTaskMutation } from "../store/api/tasksApi";
-import { useGetProjectByIdQuery } from "../store/api/projectsApi";
-import { useGetUserByEmailQuery } from "../store/api/usersApi";
-import { setActiveProject } from "../store/slices/projectSlice";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { useGetTasksQuery, useDeleteTaskMutation } from "../../store/api/tasksApi";
+import { useGetProjectByIdQuery } from "../../store/api/projectsApi";
+import { useGetUserByEmailQuery } from "../../store/api/usersApi";
+import { setActiveProject } from "../../store/slices/projectSlice";
+import { setSearchTerm, setAssigneeEmailFilter } from "../../store/slices/authSlice";
 
 export const useHome = () => {
     const dispatch = useDispatch();

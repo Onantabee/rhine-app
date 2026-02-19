@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useGetProjectsQuery } from "../store/api/projectsApi";
-import { useUpdateLastProjectMutation } from "../store/api/usersApi";
-import { setActiveProject } from "../store/slices/projectSlice";
-import { closeMobileMenu } from "../store/slices/uiSlice";
+import {
+    useGetProjectsQuery,
+} from "../../store/api/projectsApi";
+import { useUpdateLastProjectMutation } from "../../store/api/usersApi";
+import { setActiveProject } from "../../store/slices/projectSlice";
+import { closeMobileMenu } from "../../store/slices/uiSlice";
 
 export const useProjectPicker = () => {
     const dispatch = useDispatch();

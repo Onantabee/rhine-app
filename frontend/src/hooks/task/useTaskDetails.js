@@ -4,17 +4,16 @@ import { useSelector } from "react-redux";
 import {
     useGetTaskByIdQuery,
     useUpdateTaskStatusMutation,
-    useUpdateTaskNewStateMutation,
-} from "../store/api/tasksApi";
+} from "../../store/api/tasksApi";
 import {
     useGetCommentsByTaskQuery,
     useAddCommentMutation,
     useUpdateCommentMutation,
     useDeleteCommentMutation,
-    useMarkCommentsAsReadMutation,
-} from "../store/api/commentsApi";
-import { useGetUserByEmailQuery } from "../store/api/usersApi";
-import { getDueDateStatus } from "../utils/taskUtils";
+} from "../../store/api/commentsApi";
+import { useGetUserByEmailQuery } from "../../store/api/usersApi";
+import { getDueDateStatus } from "../../utils/taskUtils";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 export const useTaskDetails = () => {
     const { state } = useLocation();

@@ -1,7 +1,7 @@
 import { ChevronDown, Plus } from "lucide-react";
 import { Button } from "../ui";
 import CreateProjectDialog from "./CreateProjectDialog";
-import { useProjectPicker } from "../../hooks/useProjectPicker";
+import { useProjectPicker } from "../../hooks/project/useProjectPicker";
 
 const ProjectPicker = () => {
     const {

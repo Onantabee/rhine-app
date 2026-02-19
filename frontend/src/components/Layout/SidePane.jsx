@@ -1,6 +1,6 @@
 import { LayoutDashboard, Users, Settings, User, LogOut } from "lucide-react";
 import { Button, Dialog } from "../ui";
-import { useSidePane } from "../../hooks/useSidePane";
+import { useSidePane } from "../../hooks/layout/useSidePane";
 
 const SidePane = ({ onLinkClick }) => {
     const {

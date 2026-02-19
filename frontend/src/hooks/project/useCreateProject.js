@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useCreateProjectMutation } from "../store/api/projectsApi";
-import { setActiveProject } from "../store/slices/projectSlice";
-import { setHasProjects } from "../store/slices/authSlice";
+import { useCreateProjectMutation } from "../../store/api/projectsApi";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { setActiveProject } from "../../store/slices/projectSlice";
+import { setHasProjects } from "../../store/slices/authSlice";
 import { toast } from "sonner";
 
 export const useCreateProject = ({ onSuccess } = {}) => {

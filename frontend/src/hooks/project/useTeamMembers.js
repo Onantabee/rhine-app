@@ -5,8 +5,8 @@ import {
     useGetProjectMembersQuery,
     useInviteMemberMutation,
     useRemoveMemberMutation,
-} from "../store/api/projectsApi";
-import { useSnackbar } from "../context/SnackbarContext";
+} from "../../store/api/projectsApi";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 export const useTeamMembers = () => {
     const { projectId } = useParams();

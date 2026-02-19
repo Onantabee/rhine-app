@@ -8,7 +8,7 @@ import CommentInput from "./CommentInput";
 import NotFound from "../NotFound";
 
 import { getCardBackground, getCardBorder } from "../../utils/taskUtils";
-import { useTaskDetails } from "../../hooks/useTaskDetails";
+import { useTaskDetails } from "../../hooks/task/useTaskDetails";
 
 export default function Task() {
     const {

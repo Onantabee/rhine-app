@@ -4,7 +4,7 @@ import { Plus, Grid, List, X } from "lucide-react";
 import TaskCard from "../components/Task/TaskCard.jsx";
 import TaskDialog from "../components/Task/TaskDialog.jsx";
 import TaskList, { TaskListHeader } from "../components/Task/TaskList.jsx";
-import { useHome } from "../hooks/useHome.js";
+import { useHome } from "../hooks/dashboard/useHome.js";
 
 export default function Home() {
   const {

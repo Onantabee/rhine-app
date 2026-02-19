@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useAcceptInviteMutation } from '../store/api/projectsApi';
-import { setHasProjects } from '../store/slices/authSlice';
-import { useSnackbar } from '../context/SnackbarContext';
+import { useAcceptInviteMutation } from '../../store/api/projectsApi';
+import { setHasProjects } from '../../store/slices/authSlice';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 export const useAcceptInvite = () => {
     const dispatch = useDispatch();

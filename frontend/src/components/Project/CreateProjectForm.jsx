@@ -1,5 +1,5 @@
 import { Button, Input } from "../ui";
-import { useCreateProject } from "../../hooks/useCreateProject";
+import { useCreateProject } from "../../hooks/project/useCreateProject";
 
 const CreateProjectForm = ({ onSuccess, onCancel, showCancel = false }) => {
     const {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Check, X } from "lucide-react";
 import { Button, Input } from "../ui";
-import { useAuthForm } from "../../hooks/useAuthForm";
+import { useAuthForm } from "../../hooks/auth/useAuthForm";
 import { checkPasswordStrength } from "../../utils/validationUtils";
 
 const Form = ({ isSignup }) => {

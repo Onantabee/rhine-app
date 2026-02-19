@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { Trash2, AlertCircle, CheckCircle, MoreVertical, Eye } from "lucide-react";
 import { highlightSearchMatch } from "../../utils/taskUtils";
-import { useTeamTable } from "../../hooks/useTeamTable";
+import { useTeamTable } from "../../hooks/project/useTeamTable";
 
 export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm }) => {
     const {

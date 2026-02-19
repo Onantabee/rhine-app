@@ -1,6 +1,6 @@
 import { Button, Input, Dialog, LoadingSpinner } from "../components/ui";
 import { TeamTable } from "../components/Project/TeamTable";
-import { useTeamMembers } from "../hooks/useTeamMembers";
+import { useTeamMembers } from "../hooks/project/useTeamMembers";
 import { AlertCircle, UserPlus } from "lucide-react";
 
 const TeamMembers = () => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Input } from "../components/ui";
-import { useVerifyEmail } from "../hooks/useVerifyEmail";
+import { useVerifyEmail } from "../hooks/auth/useVerifyEmail";
 
 const VerifyEmail = () => {
     const {

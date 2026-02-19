@@ -7,7 +7,7 @@ import {
   dueDateStatusConfig,
   highlightSearchMatch,
 } from "../../utils/taskUtils";
-import { useTaskCard } from "../../hooks/useTaskCard";
+import { useTaskCard } from "../../hooks/task/useTaskCard";
 
 const TaskCard = ({
   task,

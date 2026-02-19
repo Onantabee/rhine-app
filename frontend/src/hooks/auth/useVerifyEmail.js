@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useSnackbar } from "../context/SnackbarContext";
-import { useVerifyEmailMutation, useResendOtpMutation } from "../store/api/authApi";
-import { login } from "../store/slices/authSlice";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { useVerifyEmailMutation, useResendOtpMutation } from "../../store/api/authApi";
+import { login } from "../../store/slices/authSlice";
 
 export const useVerifyEmail = () => {
     const location = useLocation();

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { logout as logoutAction } from "../store/slices/authSlice";
-import { clearActiveProject } from "../store/slices/projectSlice";
-import { useLogoutMutation } from "../store/api/authApi";
+import { logout as logoutAction } from "../../store/slices/authSlice";
+import { clearActiveProject } from "../../store/slices/projectSlice";
+import { useLogoutMutation } from "../../store/api/authApi";
 
 export const useSidePane = ({ onLinkClick }) => {
     const params = useParams();

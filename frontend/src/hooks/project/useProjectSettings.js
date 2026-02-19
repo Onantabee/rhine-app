@@ -6,9 +6,9 @@ import {
     useGetProjectByIdQuery,
     useUpdateProjectMutation,
     useDeleteProjectMutation,
-} from "../store/api/projectsApi";
-import { setActiveProject, clearActiveProject } from "../store/slices/projectSlice";
-import { setHasProjects } from "../store/slices/authSlice";
+} from "../../store/api/projectsApi";
+import { clearActiveProject } from "../../store/slices/projectSlice";
+import { useSnackbar } from "../../context/SnackbarContext";
 import { toast } from "sonner";
 
 export const useProjectSettings = () => {
