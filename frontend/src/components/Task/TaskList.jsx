@@ -13,8 +13,8 @@ import {
 } from "../../utils/taskUtils";
 
 export const TaskListHeader = ({ isAdmin }) => (
-  <thead className="bg-gray-50">
-    <tr className="sticky top-0 z-10 bg-gray-50 border border-gray-200">
+  <thead className="bg-gray-50 border-0">
+    <tr className="sticky top-0 z-10 bg-gray-50 border-b border-gray-200">
       <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Title</th>
       <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Status</th>
       <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Priority</th>
@@ -70,7 +70,7 @@ const TaskList = ({
     <>
       <tr
         onClick={onClick}
-        className="relative bg-white border-b border-gray-200 hover:bg-gray-50 group cursor-pointer"
+        className="relative bg-white hover:bg-gray-50 group cursor-pointer"
       >
         <td className="p-3.5 relative flex items-center justify-between gap-2">
           <h3

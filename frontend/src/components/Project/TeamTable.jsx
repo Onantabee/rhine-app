@@ -26,9 +26,9 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
     const closeMenu = () => setActionMenuOpen(null);
 
     return (
-        <div className="bg-white border border-gray-200 h-fit flex flex-col min-h-0">
-            <div className="overflow-auto flex-1">
-                <table className="w-full text-left border-collapse">
+        <div className="bg-white h-fit flex flex-col min-h-0">
+            <div className="overflow-auto flex-1 border border-gray-200">
+                <table className="w-full text-left">
                     <thead className="bg-gray-50">
                         <tr className="border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
                             <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4">Name</th>

@@ -156,7 +156,7 @@ export default function Home() {
           )}
         </div>
 
-        <div className="flex flex-row gap-2 border-b border-gray-200 py-3">
+        <div className="flex flex-row gap-2 py-3">
           <Button
             onClick={() => setIsCardView(true)}
             size="md"
@@ -212,38 +212,42 @@ export default function Home() {
           )}
         </div>
       ) : (
-        <div className="overflow-auto w-full h-full min-h-0 p-6 pt-0">
-          <table className="w-full min-w-[700px] sm:min-w-[1000px] border-collapse border border-gray-200">
-            <TaskListHeader isAdmin={isAdmin} />
-            <tbody>
-              {filteredTasks.map((task) => (
-                <TaskList
-                  key={task.id}
-                  task={task}
-                  onEdit={() => handleOpenDialog(task)}
-                  onDelete={() => setTaskToDelete(task.id)}
-                  onView={() =>
-                    navigate(`/project/${projectId}/task/${task.id}`, {
-                      state: { task, isAdmin, user },
-                    })
-                  }
-                  onClick={() =>
-                    navigate(`/project/${projectId}/task/${task.id}`, {
-                      state: { task, isAdmin, user },
-                    })
-                  }
-                  loggedInUser={user}
-                  isAdmin={isAdmin}
-                  assignee={task.assigneeId}
-                  createdBy={task.createdById}
-                  searchTerm={searchTerm}
-                />
-              ))}
-            </tbody>
-          </table>
-          {filteredTasks.length === 0 && (
-            <p className="text-gray-400 p-4">No tasks available</p>
-          )}
+        <div className="h-full min-h-0 p-6 pt-0 flex flex-col">
+          <div className="bg-white flex flex-col min-h-0 border border-gray-200">
+            <div className="overflow-auto w-full h-fit">
+              <table className="w-full min-w-[1000px] border-none text-left">
+                <TaskListHeader isAdmin={isAdmin} />
+                <tbody>
+                  {filteredTasks.map((task) => (
+                    <TaskList
+                      key={task.id}
+                      task={task}
+                      onEdit={() => handleOpenDialog(task)}
+                      onDelete={() => setTaskToDelete(task.id)}
+                      onView={() =>
+                        navigate(`/project/${projectId}/task/${task.id}`, {
+                          state: { task, isAdmin, user },
+                        })
+                      }
+                      onClick={() =>
+                        navigate(`/project/${projectId}/task/${task.id}`, {
+                          state: { task, isAdmin, user },
+                        })
+                      }
+                      loggedInUser={user}
+                      isAdmin={isAdmin}
+                      assignee={task.assigneeId}
+                      createdBy={task.createdById}
+                      searchTerm={searchTerm}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {filteredTasks.length === 0 && (
+              <p className="text-gray-400 p-4">No tasks available</p>
+            )}
+          </div>
         </div>
       )}
 
