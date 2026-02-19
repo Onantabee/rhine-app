@@ -31,7 +31,7 @@ const Button = React.forwardRef(
 
         const variantStyles = {
             primary:
-                'bg-primary text-white hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed',
+                'bg-primary text-white hover:bg-primary-hover disabled:bg-gray-300 dark:disabled:bg-[#333333] disabled:text-gray-500 dark:disabled:text-[#a6a6a6] disabled:cursor-not-allowed',
             secondary:
                 'bg-gray-100 dark:bg-[#262626] text-gray-700 dark:text-[#cccccc] hover:bg-gray-200 dark:hover:bg-[#333333] disabled:opacity-50 disabled:cursor-not-allowed',
             outlined:
@@ -39,7 +39,7 @@ const Button = React.forwardRef(
             ghost:
                 'bg-transparent text-gray-600 dark:text-[#bfbfbf] hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed',
             danger:
-                'bg-red-500 text-white dark:text-[#cccccc] hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed',
+                'bg-red-500 text-white dark:text-white hover:bg-red-600 dark:hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed',
         };
 
         const widthStyle = fullWidth ? 'w-full' : '';

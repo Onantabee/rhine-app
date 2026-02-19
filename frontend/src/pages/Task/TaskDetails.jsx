@@ -71,7 +71,7 @@ const TaskDetails = ({
                             {taskStatus}
                         </span>
                     ) : taskStatus === "CANCELLED" ? (
-                        <span className="text-sm font-medium py-2 px-4 border-none bg-gray-100 text-gray-500">
+                        <span className="text-sm font-medium rounded-[5px] py-1 px-4 border border-gray-300 bg-gray-400/20 dark:border-gray-400/50 dark:bg-[#404040] text-gray-500 dark:text-gray-400">
                             CANCELLED
                         </span>
                     ) : (
@@ -102,7 +102,7 @@ const TaskDetails = ({
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "COMPLETED"
                                         ? "bg-green-50 text-green-700 border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-300/50"
                                         : taskStatus === "CANCELLED"
-                                            ? "bg-gray-100 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700/50"
+                                            ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
                                             : dueDateStatus && dueDateStatusConfig[dueDateStatus]
                                                 ? dueDateStatusConfig[dueDateStatus].className
                                                 : "bg-gray-50 dark:bg-[#262626] border-gray-200 dark:border-[#404040] text-gray-600 dark:text-[#bfbfbf]"
@@ -117,8 +117,8 @@ const TaskDetails = ({
                             value: (
                                 <span
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "CANCELLED"
-                                        ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
-                                        : "bg-blue-50 border-blue-300 text-blue-700"
+                                        ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
+                                        : "bg-blue-50 dark:bg-blue-500/10 border-blue-300 text-blue-700 dark:text-blue-200"
                                         }`}
                                 >
                                     {creatorName || "Loading..."}
@@ -130,9 +130,9 @@ const TaskDetails = ({
                             value: (
                                 <span
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "CANCELLED"
-                                        ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
+                                        ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
                                         : !task.assigneeId
-                                            ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
+                                            ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
                                             : "bg-primary/10 border-primary/30 text-primary"
                                         }`}
                                 >

@@ -23,7 +23,7 @@ export const getDueDateStatus = (dueDate, currentStatus) => {
 export const dueDateStatusConfig = {
     OVERDUE: {
         text: "Overdue",
-        className: "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500 dark:bg-gray-800/50 dark:text-gray-400",
+        className: "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500 dark:bg-[#404040]/50 dark:text-gray-400",
     },
     DUE_TODAY: {
         text: "Due",
@@ -102,15 +102,15 @@ export const statusColors = {
     PENDING: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-300/50",
     ONGOING: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-300/50",
     COMPLETED: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 dark:border-green-300/50",
-    CANCELLED: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-300/50",
-    OVERDUE: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-300/50",
+    CANCELLED: "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50",
+    OVERDUE: "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50",
 };
 
 export const priorityColors = {
     High: "bg-red-100 text-red-800 border border-red-300 dark:bg-red-900/30 dark:text-red-300 dark:border-red-300/50",
     Medium: "bg-orange-100 text-orange-800 border border-orange-300 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-300/50",
     Low: "bg-green-100 text-green-800 border border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-300/50",
-    OVERDUE: "bg-gray-100 text-gray-500 border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700/50",
+    OVERDUE: "text-gray-500 border border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50",
 };
 
 export const highlightSearchMatch = (text, searchTerm) => {

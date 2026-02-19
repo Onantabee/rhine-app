@@ -90,7 +90,7 @@ const TaskList = ({
             {!isAdmin && taskIsNew && (
               <button
                 onClick={onView}
-                className={`rounded-full h-6 px-3 bg-[#14B8A6] text-white text-xs flex justify-center items-center cursor-pointer z-10`}
+                className={`rounded-full h-6 px-3 bg-[#14B8A6] dark:bg-[#0f8a7b] text-white text-xs flex justify-center items-center cursor-pointer z-10`}
               >
                 New
               </button>
@@ -114,12 +114,12 @@ const TaskList = ({
           {isAdmin ? (
             <div className="flex items-center gap-2">
               {assignee ? (
-                <div className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex justify-center items-center text-sm">
+                <div className={`w-8 h-8 rounded-full border flex justify-center items-center text-sm ${taskStatus === "CANCELLED" ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50" : "border-primary/30 bg-primary/10 text-primary"}`}>
                   {employeeUser?.name?.charAt(0) || "U"}
                 </div>
               ) : (
                 <div className="w-8 h-8 rounded-full border border-gray-200 dark:border-[#404040] bg-gray-100 text-gray-500 flex justify-center items-center text-sm">
-                  <span className="text-xs">?</span>
+                  <span className="text-sm">?</span>
                 </div>
               )}
               <span className="text-gray-600 dark:text-[#bfbfbf] text-sm truncate">
@@ -128,24 +128,28 @@ const TaskList = ({
             </div>
           ) : (
             <span className={`px-3 py-1 rounded-[5px] border text-sm font-medium truncate max-w-[115px] ${taskStatus === "CANCELLED"
-              ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
-              : "bg-blue-50 border-blue-300 text-blue-700"
+              ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
+              : "bg-blue-50 dark:bg-blue-500/10 border-blue-300 text-blue-700 dark:text-blue-200"
               }`}>
               {adminUser?.name || "Loading..."}
             </span>
           )}
         </td>
 
-        <td className="p-3.5 text-center">
-          <span
-            className={`px-3 py-1 text-sm font-medium italic border rounded-[5px] whitespace-nowrap ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
-              ? dueDateStatusConfig[dueDateStatus].className
-              : "text-gray-600 dark:text-[#bfbfbf] border-none"
-              }`}
-          >
-            {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
-          </span>
-        </td>
+        {taskStatus !== "CANCELLED" ? (
+          <td className="p-3.5 text-center">
+            <span
+              className={`px-3 py-1 text-sm font-medium italic border rounded-[5px] whitespace-nowrap ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
+                ? dueDateStatusConfig[dueDateStatus].className
+                : "text-gray-600 dark:text-[#bfbfbf] border-none"
+                }`}
+            >
+              {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
+            </span>
+          </td>
+        ) : (
+          <td className="p-3.5 text-center text-gray-600 dark:text-[#bfbfbf] italic uppercase text-xs">Doesn't matter now, does it?</td>
+        )}
 
         {isAdmin && (
           <td className="p-3.5">

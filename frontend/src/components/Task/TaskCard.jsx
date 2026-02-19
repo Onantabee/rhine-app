@@ -56,7 +56,7 @@ const TaskCard = ({
       {!isAdmin && taskIsNew && (
         <button
           onClick={onView}
-          className={`absolute rounded-full  h-6 px-3 bg-[#14B8A6] text-white text-xs flex justify-center items-center ${unreadCountByRecipient > 0 ? "right-8" : "-right-2"
+          className={`absolute rounded-full  h-6 px-3 bg-[#14B8A6] dark:bg-[#0f8a7b] text-white text-xs flex justify-center items-center ${unreadCountByRecipient > 0 ? "right-8" : "-right-2"
             } -top-2 cursor-pointer z-10`}
         >
           New
@@ -110,7 +110,7 @@ const TaskCard = ({
                 {taskStatus === "COMPLETED" || taskStatus === "CANCELLED" ? (
                   <div
                     className={`px-3 py-1.5 font-semibold border text-sm rounded-[5px] ${taskStatus === "CANCELLED"
-                      ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
+                      ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
                       : "bg-primary/10 border-primary/30 text-primary"
                       }`}
                   >
@@ -128,8 +128,8 @@ const TaskCard = ({
               <span className="text-gray-400 text-xs mb-1">Creator</span>
               <span
                 className={`px-3 py-1 rounded-[5px] border text-sm font-medium truncate max-w-[115px] ${taskStatus === "CANCELLED"
-                  ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
-                  : "bg-blue-50 border-blue-300 text-blue-700"
+                  ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
+                  : "bg-blue-50 dark:bg-blue-500/10 border-blue-300 text-blue-700 dark:text-blue-200"
                   }`}
               >
                 {adminUser?.name ? `${adminUser.name.split(" ")[0]} ${adminUser.name.split(" ")[1] ? adminUser.name.split(" ")[1].charAt(0) + "." : ""}`.trim() : "Loading..."}

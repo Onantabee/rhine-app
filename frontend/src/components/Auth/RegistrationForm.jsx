@@ -59,7 +59,7 @@ const Form = ({ isSignup }) => {
 
               <div>
                 <Input
-                  type="email"
+                  type="text"
                   placeholder=" eg. onanta@seychellés.com"
                   label="Email"
                   value={email}

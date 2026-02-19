@@ -34,8 +34,11 @@ export const useAuthForm = (isSignup) => {
 
         if (email.trim() === "") {
             errors.email = "Email is required";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-            errors.email = "Enter a valid email address";
+        } else {
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email.trim())) {
+                errors.email = "Enter a valid email address";
+            }
         }
 
         if (password === "") {

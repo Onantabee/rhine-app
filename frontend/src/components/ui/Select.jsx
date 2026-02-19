@@ -55,7 +55,7 @@ const Select = forwardRef(
         const focusStyles = isOpen
             ? "border-primary"
             : "hover:border-gray-400";
-        const errorStyles = error ? "border-red-500" : "";
+        const errorStyles = error ? "border-red-500 dark:border-red-500" : "";
         const disabledStyles = disabled
             ? "opacity-50 cursor-not-allowed bg-gray-50"
             : "";
