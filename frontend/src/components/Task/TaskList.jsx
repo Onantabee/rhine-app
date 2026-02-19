@@ -118,7 +118,7 @@ const TaskList = ({
                   {employeeUser?.name?.charAt(0) || "U"}
                 </div>
               ) : (
-                <div className="w-8 h-8 rounded-full border border-gray-200 dark:border-[#404040] bg-gray-100 text-gray-500 flex justify-center items-center text-sm">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full border text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040]/50 dark:text-gray-400 dark:border-gray-400/50">
                   <span className="text-sm">?</span>
                 </div>
               )}

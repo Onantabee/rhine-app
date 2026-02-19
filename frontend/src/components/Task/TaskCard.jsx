@@ -102,7 +102,7 @@ const TaskCard = ({
         <div className="flex items-center gap-2 mb-3">
           {isAdmin ? (
             !assignee ? (
-              <div className="px-3 py-1.5 font-semibold border text-sm rounded-[5px] bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500">
+              <div className="px-3 py-1 font-medium border text-sm rounded-[5px] text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040]/50 dark:text-gray-400 dark:border-gray-400/50">
                 Unassigned
               </div>
             ) : (

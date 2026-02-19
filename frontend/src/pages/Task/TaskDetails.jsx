@@ -130,9 +130,9 @@ const TaskDetails = ({
                             value: (
                                 <span
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "CANCELLED"
-                                        ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
+                                        ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040]/50 dark:text-gray-400 dark:border-gray-400/50"
                                         : !task.assigneeId
-                                            ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
+                                            ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040]/50 dark:text-gray-400 dark:border-gray-400/50"
                                             : "bg-primary/10 border-primary/30 text-primary"
                                         }`}
                                 >
