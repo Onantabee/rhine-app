@@ -48,12 +48,12 @@ export default function Home() {
             )}
             {assigneeEmailFilter && (
               <div className="flex items-center gap-2 ml-4">
-                <span className="text-sm text-gray-500 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10">
                   Filtering by: {assigneeEmailFilter}
                 </span>
                 <button
                   onClick={() => navigate(`/project/${projectId}`)}
-                  className="text-xs text-red-500 hover:text-red-800 underline cursor-pointer hover:bg-gray-300 p-1.5 rounded-full"
+                  className="text-xs text-red-500 hover:text-red-800 underline cursor-pointer hover:bg-gray-300 p-1.5 rounded-full dark:hover:bg-[#262626] dark:hover:text-red-400"
                 >
                   <X size={16} />
                 </button>
@@ -101,30 +101,32 @@ export default function Home() {
       ) : isCardView ? (
         <div className="overflow-y-auto w-full h-full min-h-0">
 
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-6 pt-3">
-            {filteredTasks.map((task) => (
-              <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
-                <TaskCard
-                  task={task}
-                  onEdit={() => handleOpenDialog(task)}
-                  onDelete={() => setTaskToDelete(task.id)}
-                  onView={() =>
-                    navigate(`/project/${projectId}/task/${task.id}`, {
-                      state: { task, isAdmin, user },
-                    })
-                  }
-                  loggedInUser={user}
-                  isAdmin={isAdmin}
-                  assignee={task.assigneeId}
-                  createdBy={task.createdById}
-                  searchTerm={searchTerm}
-                />
-              </div>
-            ))}
-          </div>
 
-          {filteredTasks.length === 0 && (
+
+          {filteredTasks.length === 0 ? (
             <p className="text-gray-400 px-6 py-2">No tasks available</p>
+          ) : (
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-6 pt-3">
+              {filteredTasks.map((task) => (
+                <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
+                  <TaskCard
+                    task={task}
+                    onEdit={() => handleOpenDialog(task)}
+                    onDelete={() => setTaskToDelete(task.id)}
+                    onView={() =>
+                      navigate(`/project/${projectId}/task/${task.id}`, {
+                        state: { task, isAdmin, user },
+                      })
+                    }
+                    loggedInUser={user}
+                    isAdmin={isAdmin}
+                    assignee={task.assigneeId}
+                    createdBy={task.createdById}
+                    searchTerm={searchTerm}
+                  />
+                </div>
+              ))}
+            </div>
           )}
         </div>
       ) : (

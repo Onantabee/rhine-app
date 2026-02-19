@@ -39,8 +39,12 @@ const Dialog = ({
                 className="fixed inset-0 bg-black/30 dark:bg-black/50 z-40"
             />
 
-            <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <div
+                className="fixed inset-0 flex items-center justify-center z-50 p-4"
+                onClick={onClose}
+            >
                 <div
+                    onClick={(e) => e.stopPropagation()}
                     className={`w-full ${sizeStyles[size]} bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] ${className}`}
                     {...props}
                 >

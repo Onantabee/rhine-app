@@ -3,6 +3,7 @@ import { ArrowUp, Check, X } from "lucide-react";
 
 const CommentInput = ({
     isCommentingAllowed,
+    taskStatus,
     newComment,
     editingComment,
     onCommentChange,
@@ -10,10 +11,10 @@ const CommentInput = ({
     onCancelEdit,
     inputRef,
 }) => {
-    if (!isCommentingAllowed) {
+    if (taskStatus === "CANCELLED") {
         return (
-            <div className="sticky bottom-0 md:sticky md:bottom-0 shrink-0 w-full max-w-3xl mx-auto bg-white pb-7 p-2">
-                <div className="text-center text-gray-400 py-4">
+            <div className="sticky bottom-0 md:sticky md:bottom-0 shrink-0 w-full max-w-3xl mx-auto bg-white dark:bg-[#1a1a1a] pb-7 p-2">
+                <div className="text-center text-gray-400 dark:text-[#bfbfbf] text-lg">
                     Commenting is disabled for cancelled tasks
                 </div>
             </div>
@@ -46,7 +47,7 @@ const CommentInput = ({
                             }
                         }}
                         data-placeholder={!newComment ? "Add a comment..." : ""}
-                        className="w-full p-2 text-gray-800 resize-none overflow-y-auto outline-none relative before:absolute before:left-2 before:top-2 before:text-gray-400 before:pointer-events-none before:content-[attr(data-placeholder)] break-all whitespace-pre-wrap"
+                        className="w-full p-2 text-gray-800 dark:text-[#cccccc] resize-none overflow-y-auto outline-none relative before:absolute before:left-2 before:top-2 before:text-gray-400 before:pointer-events-none before:content-[attr(data-placeholder)] break-all whitespace-pre-wrap"
                         style={{
                             maxHeight: `${5 * 24}px`,
                             backgroundColor: "transparent",

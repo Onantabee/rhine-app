@@ -12,12 +12,12 @@ const SearchBar = ({ value, onChange, onClear, placeholder = "Search tasks…" }
                 onChange={onChange}
             />
             <div
-                className={`p-1 cursor-pointer flex items-center justify-center ${value && "hover:bg-gray-100 group"
+                className={`p-1 cursor-pointer flex items-center justify-center rounded-full ${value && "hover:bg-gray-100 dark:hover:bg-[#262626] group"
                     }`}
                 onClick={value ? onClear : undefined}
             >
                 {value ? (
-                    <X className="text-red-500" size={25} />
+                    <X className="text-red-500 dark:group-hover:text-red-400" size={25} />
                 ) : (
                     <Search color="var(--color-primary)" size={25} />
                 )}

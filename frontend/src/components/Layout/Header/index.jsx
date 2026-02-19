@@ -39,7 +39,7 @@ const Header = ({ setIsSignup }) => {
     return (
         <>
             <header className="sticky top-0 z-30 bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-[#404040] px-5 py-3 sm:px-8 h-full max-h-[70px]">
-                <nav className="flex items-center h-full">
+                <nav className="flex items-center h-full gap-4">
                     <div className="w-full justify-center items-center hidden md:flex gap-4 h-full">
                         {!isVerified || !hasProjects ? (
                             <div>

@@ -33,13 +33,13 @@ const Button = React.forwardRef(
             primary:
                 'bg-primary text-white hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed',
             secondary:
-                'bg-gray-100 text-gray-700 dark:text-[#cccccc] hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed',
+                'bg-gray-100 dark:bg-[#262626] text-gray-700 dark:text-[#cccccc] hover:bg-gray-200 dark:hover:bg-[#333333] disabled:opacity-50 disabled:cursor-not-allowed',
             outlined:
                 'bg-transparent text-primary border border-primary hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed',
             ghost:
                 'bg-transparent text-gray-600 dark:text-[#bfbfbf] hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed',
             danger:
-                'bg-red-500 text-white hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed',
+                'bg-red-500 text-white dark:text-[#cccccc] hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed',
         };
 
         const widthStyle = fullWidth ? 'w-full' : '';

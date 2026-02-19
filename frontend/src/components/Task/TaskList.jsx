@@ -13,14 +13,14 @@ import {
 } from "../../utils/taskUtils";
 
 export const TaskListHeader = ({ isAdmin }) => (
-  <thead className="bg-gray-50 border-0">
-    <tr className="sticky top-0 z-10 bg-gray-50 border-b border-gray-200 dark:border-[#404040]">
-      <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Title</th>
-      <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Status</th>
-      <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Priority</th>
-      <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">{isAdmin ? "Assignee" : "Created By"}</th>
-      <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Due Date</th>
-      {isAdmin && <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Actions</th>}
+  <thead className="bg-gray-50 dark:bg-[#262626] border-0">
+    <tr className="sticky top-0 z-10 bg-gray-50 dark:bg-[#262626] border-b border-gray-200 dark:border-[#404040]">
+      <th className="text-left text-xs font-semibold text-gray-500 dark:text-[#bfbfbf] uppercase tracking-wider p-3.5">Title</th>
+      <th className="text-center text-xs font-semibold text-gray-500 dark:text-[#bfbfbf] uppercase tracking-wider p-3.5">Status</th>
+      <th className="text-center text-xs font-semibold text-gray-500 dark:text-[#bfbfbf] uppercase tracking-wider p-3.5">Priority</th>
+      <th className="text-left text-xs font-semibold text-gray-500 dark:text-[#bfbfbf] uppercase tracking-wider p-3.5">{isAdmin ? "Assignee" : "Created By"}</th>
+      <th className="text-center text-xs font-semibold text-gray-500 dark:text-[#bfbfbf] uppercase tracking-wider p-3.5">Due Date</th>
+      {isAdmin && <th className="text-center text-xs font-semibold text-gray-500 dark:text-[#bfbfbf] uppercase tracking-wider p-3.5">Actions</th>}
     </tr>
   </thead>
 );
@@ -70,7 +70,7 @@ const TaskList = ({
     <>
       <tr
         onClick={onClick}
-        className="relative bg-white hover:bg-gray-50 group cursor-pointer"
+        className="relative bg-white dark:bg-[#1a1a1a] hover:bg-gray-50 dark:hover:bg-[#262626] group cursor-pointer"
       >
         <td className="p-3.5 relative flex items-center justify-between gap-2">
           <h3
@@ -156,14 +156,14 @@ const TaskList = ({
               >
                 <Eye size={18} />
               </button>
-              <hr className="h-6 w-[2px] border-none bg-gray-200 mx-2" />
+              <hr className="h-6 w-[2px] border-none bg-gray-200 dark:bg-[#404040] mx-2" />
               <button
                 onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
                 className="p-1 text-gray-400 group-hover:text-primary cursor-pointer"
               >
                 <Pencil size={18} />
               </button>
-              <hr className="h-6 w-[2px] border-none bg-gray-200 mx-2" />
+              <hr className="h-6 w-[2px] border-none bg-gray-200 dark:bg-[#404040] mx-2" />
               <button
                 onClick={(e) => { e.stopPropagation(); onDelete(); }}
                 className="p-1 text-red-400 group-hover:text-red-600 cursor-pointer"

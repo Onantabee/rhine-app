@@ -24,7 +24,7 @@ const AcceptInvite = () => {
 
     return (
         <div className="flex items-center justify-center h-screen">
-            <div className="text-center bg-white p-5 max-w-md border border-gray-200 dark:border-[#404040] w-full">
+            <div className="text-center bg-white dark:bg-[#1a1a1a] p-5 py-12 max-w-md border border-gray-200 dark:border-[#404040] w-full">
                 {isLoading && (
                     <div className="flex flex-col items-center gap-6">
                         <LoadingSpinner size="lg" />
@@ -42,7 +42,7 @@ const AcceptInvite = () => {
                 {isError && (
                     <div className="flex flex-col items-center gap-6">
                         <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Invitation Failed</h2>
-                        <p className="text-red-600 font-light text-md text-center">{error?.data?.message || 'Unable to accept invitation. It may be invalid or expired.'}</p>
+                        <p className="text-red-400 font-light text-md text-center">{error?.data?.message || 'Unable to accept invitation. It may be invalid or expired.'}</p>
                         <Button onClick={() => navigate('/')} className="w-fit">
                             Go to Home
                         </Button>

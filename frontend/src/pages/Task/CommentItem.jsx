@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { MoreVerticalIcon } from "lucide-react";
+import { MoreVerticalIcon, Pencil, Trash2 } from "lucide-react";
 import { differenceInSeconds, formatDistanceToNowStrict } from "date-fns";
 import { useCommentItem } from "../../hooks/task/useCommentItem";
 
@@ -78,14 +78,15 @@ const CommentItem = ({
                         top: dropdownPosition.top,
                         left: dropdownPosition.left,
                     }}
-                    className="absolute py-1 gap-1 w-36 bg-white border border-gray-400 z-50"
+                    className="absolute py-1 gap-1 w-36 bg-white dark:bg-[#1a1a1a] border border-gray-400 dark:border-[#404040] z-50"
                 >
-                    <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white border-t border-l border-gray-400 z-[-1]" />
+                    <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-t border-l border-gray-400 dark:border-[#404040] z-[-1]" />
                     {canEdit ? (
                         <button
                             onClick={() => onEdit(comment)}
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 w-full text-left cursor-pointer"
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626] w-full text-left cursor-pointer"
                         >
+                            <Pencil className="mr-3 h-4 w-4" />
                             Edit
                         </button>
 
@@ -95,8 +96,9 @@ const CommentItem = ({
                     {isCommentingAllowed && (
                         <button
                             onClick={() => onDelete(comment.id)}
-                            className="block px-4 py-2 text-sm text-red-500 hover:bg-gray-50 w-full text-left cursor-pointer"
+                            className="flex items-center px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500 dark:hover:text-white w-full text-left cursor-pointer"
                         >
+                            <Trash2 className="mr-3 h-4 w-4" />
                             Delete
                         </button>
                     )}

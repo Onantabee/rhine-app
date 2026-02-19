@@ -1,6 +1,6 @@
 import React from "react";
 import { Select } from "../../components/ui";
-import { formatDueDateText, statusColors, priorityColors } from "../../utils/taskUtils";
+import { formatDueDateText, statusColors, priorityColors, dueDateStatusConfig } from "../../utils/taskUtils";
 
 const TaskDetails = ({
     task,
@@ -26,8 +26,8 @@ const TaskDetails = ({
             <div>
                 <h1
                     className={`text-4xl font-bold break-all whitespace-pre-wrap ${taskStatus === "CANCELLED"
-                        ? "text-gray-400 line-through italic"
-                        : "text-gray-900"
+                        ? "text-gray-400 dark:text-[#bfbfbf] line-through italic"
+                        : "text-gray-900 dark:text-[#cccccc]"
                         }`}
                 >
                     {task.title}
@@ -50,7 +50,7 @@ const TaskDetails = ({
                 <div className="text-sm text-gray-500 flex items-center justify-center">
                     <span>Priority:&nbsp;</span>
                     <p
-                        className={`text-sm border border-gray-200 dark:border-[#404040] font-medium rounded-[5px] py-1 px-4 border-none ${dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED"
+                        className={`text-sm font-medium rounded-[5px] py-1 px-4 ${dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED"
                             ? priorityColors.OVERDUE
                             : priorityColors[task.priority]
                             }`}
@@ -100,18 +100,12 @@ const TaskDetails = ({
                             value: (
                                 <span
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "COMPLETED"
-                                        ? "bg-green-50 text-green-700 border-green-300"
+                                        ? "bg-green-50 text-green-700 border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-300/50"
                                         : taskStatus === "CANCELLED"
-                                            ? "bg-gray-100 text-gray-500 border-gray-200 dark:border-[#404040]"
-                                            : dueDateStatus === "OVERDUE"
-                                                ? "bg-gray-100 text-gray-500 italic border-gray-200 dark:border-[#404040]"
-                                                : dueDateStatus === "DUE_TODAY"
-                                                    ? "bg-red-50 text-red-600 italic border-red-300"
-                                                    : dueDateStatus === "DUE_TOMORROW"
-                                                        ? "bg-orange-50 text-orange-600 italic border-orange-300"
-                                                        : dueDateStatus === "DUE_IN_2_DAYS"
-                                                            ? "bg-yellow-50 text-yellow-700 italic border-yellow-300"
-                                                            : "bg-gray-50 text-gray-600 dark:text-[#bfbfbf] border-gray-200 dark:border-[#404040]"
+                                            ? "bg-gray-100 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700/50"
+                                            : dueDateStatus && dueDateStatusConfig[dueDateStatus]
+                                                ? dueDateStatusConfig[dueDateStatus].className
+                                                : "bg-gray-50 dark:bg-[#262626] border-gray-200 dark:border-[#404040] text-gray-600 dark:text-[#bfbfbf]"
                                         }`}
                                 >
                                     {formatDueDateText(task.dueDate, taskStatus, dueDateStatus)}

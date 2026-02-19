@@ -218,7 +218,9 @@ export const useTaskDetails = () => {
     };
 
     const handleCommentChange = (e) => {
-        setNewComment(e.target.innerText);
+        const text = e.target.innerText;
+        // Fix for contentEditable artifact where clearing text leaves a newline
+        setNewComment(text === "\n" ? "" : text);
         e.target.style.height = "auto";
         e.target.style.height = `${Math.min(e.target.scrollHeight, 5 * 24)}px`;
     };

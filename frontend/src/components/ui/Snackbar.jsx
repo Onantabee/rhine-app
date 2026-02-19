@@ -22,19 +22,19 @@ const Snackbar = ({
     const variantConfig = {
         success: {
             icon: <CheckCircle size={20} />,
-            styles: 'bg-green-50 border-green-300 text-green-800',
+            styles: 'bg-green-50 dark:bg-green-900 border-green-300 dark:border-green-700 text-green-800 dark:text-green-200',
         },
         error: {
             icon: <XCircle size={20} />,
-            styles: 'bg-red-50 border-red-300 text-red-800',
+            styles: 'bg-red-50 dark:bg-red-900 border-red-300 dark:border-red-700 text-red-800 dark:text-red-200',
         },
         warning: {
             icon: <AlertTriangle size={20} />,
-            styles: 'bg-orange-50 border-orange-300 text-orange-800',
+            styles: 'bg-orange-50 dark:bg-orange-900 border-orange-300 dark:border-orange-700 text-orange-800 dark:text-orange-200',
         },
         info: {
             icon: <Info size={20} />,
-            styles: 'bg-blue-50 border-blue-300 text-blue-800',
+            styles: 'bg-blue-50 dark:bg-blue-900 border-blue-300 dark:border-blue-700 text-blue-800 dark:text-blue-200',
         },
     };
 

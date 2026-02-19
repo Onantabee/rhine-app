@@ -4,10 +4,12 @@ import { Pencil, Trash2, Eye } from "lucide-react";
 import {
   formatDueDateText,
   getCardBackground,
+  getCardBorder,
   dueDateStatusConfig,
   highlightSearchMatch,
 } from "../../utils/taskUtils";
 import { useTaskCard } from "../../hooks/task/useTaskCard";
+import { useTheme } from "../../hooks/useTheme";
 
 const TaskCard = ({
   task,
@@ -38,6 +40,8 @@ const TaskCard = ({
     createdBy,
   });
 
+  const { theme } = useTheme();
+
   return (
     <div className="relative">
       {unreadCountByRecipient > 0 && (
@@ -63,19 +67,8 @@ const TaskCard = ({
         padding="default"
         className=""
         style={{
-          backgroundColor: getCardBackground(taskStatus, dueDateStatus),
-          borderColor:
-            taskStatus === "COMPLETED"
-              ? "rgba(34, 197, 94, 0.3)"
-              : taskStatus === "CANCELLED"
-                ? "rgba(209, 213, 219, 0.5)"
-                : dueDateStatus === "DUE_TODAY"
-                  ? "rgba(239, 68, 68, 0.3)"
-                  : dueDateStatus === "DUE_TOMORROW"
-                    ? "rgba(249, 115, 22, 0.3)"
-                    : dueDateStatus === "DUE_IN_2_DAYS"
-                      ? "rgba(234, 179, 8, 0.3)"
-                      : "#e5e7eb",
+          backgroundColor: getCardBackground(taskStatus, dueDateStatus, theme),
+          border: getCardBorder(taskStatus, dueDateStatus, theme),
         }}
       >
         <h3
@@ -126,7 +119,6 @@ const TaskCard = ({
                 ) : (
                   <div className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex justify-center items-center text-sm">
                     {firstName?.charAt(0) || "U"}
-                    {lastName?.charAt(0) || ""}
                   </div>
                 )}
               </div>
@@ -153,7 +145,7 @@ const TaskCard = ({
                 <span
                   className={`px-3 py-1 border text-sm font-medium italic rounded-[5px] ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
                     ? dueDateStatusConfig[dueDateStatus].className
-                    : "bg-gray-50 border-gray-200 dark:border-[#404040] text-gray-600 dark:text-[#bfbfbf]"
+                    : "bg-gray-50 dark:bg-[#262626] border-gray-200 dark:border-[#404040] text-gray-600 dark:text-[#bfbfbf] "
                     }`}
                 >
                   {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
@@ -174,14 +166,14 @@ const TaskCard = ({
                 >
                   <Eye size={18} />
                 </button>
-                <hr className="h-6 w-[2px] border-none bg-gray-200" />
+                <hr className="h-6 w-[2px] border-none bg-gray-200 dark:bg-[#404040]" />
                 <button
                   onClick={onEdit}
                   className="p-2 text-gray-400 hover:text-primary cursor-pointer"
                 >
                   <Pencil size={18} />
                 </button>
-                <hr className="h-6 w-[2px] border-none bg-gray-200" />
+                <hr className="h-6 w-[2px] border-none bg-gray-200 dark:bg-[#404040]" />
                 <button
                   onClick={onDelete}
                   className="p-2 text-red-400 hover:text-red-600 cursor-pointer"

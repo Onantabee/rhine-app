@@ -15,8 +15,8 @@
 @layer base {
   .dark {
     --color-primary: #9966ff;
-    --color-primary-hover: #661aff;
-    --color-primary-light: #7733ff1a;
+    --color-primary-hover: #884dff;
+    --color-primary-light: #9966ff1a;
     --color-bg-primary: #1a1a1a;
     --color-text-primary: #cccccc;
   }

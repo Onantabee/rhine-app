@@ -101,6 +101,7 @@ export default function Task() {
                     />
                     <CommentInput
                         isCommentingAllowed={isCommentingAllowed}
+                        taskStatus={taskStatus}
                         newComment={newComment}
                         editingComment={editingComment}
                         onCommentChange={handleCommentChange}
