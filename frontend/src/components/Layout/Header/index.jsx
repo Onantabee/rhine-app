@@ -4,6 +4,7 @@ import { Button, Dialog } from "../../ui";
 import MobileDrawer from "./MobileDrawer";
 import SearchBar from "./SearchBar";
 import ProjectPicker from "../../Project/ProjectPicker";
+import ThemeToggle from "../../ui/ThemeToggle";
 
 import { useHeader } from "../../../hooks/layout/useHeader";
 
@@ -102,6 +103,7 @@ const Header = ({ setIsSignup }) => {
                                 Logout
                             </Button>
                         )}
+                        <ThemeToggle />
                     </div>
 
                     <div className="md:hidden w-full justify-between items-center flex gap-4">

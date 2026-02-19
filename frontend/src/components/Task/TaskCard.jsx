@@ -75,7 +75,7 @@ const TaskCard = ({
                     ? "rgba(249, 115, 22, 0.3)"
                     : dueDateStatus === "DUE_IN_2_DAYS"
                       ? "rgba(234, 179, 8, 0.3)"
-                      : "#e5e7eb",
+                      : undefined,
         }}
       >
         <h3

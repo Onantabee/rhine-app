@@ -75,7 +75,7 @@ export const getCardBackground = (status, dueStatus) => {
         case "OVERDUE":
             return "rgba(243, 244, 246, 0.5)";
         default:
-            return "#ffffff";
+            return undefined;
     }
 };
 
@@ -91,7 +91,7 @@ export const getCardBorder = (status, dueStatus) => {
         case "DUE_IN_2_DAYS":
             return "1px solid rgba(234, 179, 8, 0.5)";
         default:
-            return "1px solid #e5e7eb";
+            return undefined;
     }
 };
 
