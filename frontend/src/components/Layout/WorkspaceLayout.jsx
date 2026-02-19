@@ -1,7 +1,7 @@
 import { Outlet, useLocation, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import SidePane from "./SidePane";
-import { closeMobileMenu } from "../store/slices/uiSlice";
+import { closeMobileMenu } from "../../store/slices/uiSlice";
 
 const WorkspaceLayout = () => {
     const dispatch = useDispatch();

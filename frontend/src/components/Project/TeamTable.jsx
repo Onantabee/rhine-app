@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { Trash2, Shield, UserCheck, MoreVertical, Eye, AlertCircle, Check, CheckCircleIcon, CheckCircle2Icon, CheckCircle2, CheckCheck, CheckCircle } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { highlightSearchMatch } from "../utils/taskUtils";
+import { highlightSearchMatch } from "../../utils/taskUtils";
 
 export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm }) => {
     const navigate = useNavigate();

@@ -2,16 +2,16 @@ import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button, Dialog } from "../ui";
-import { setSearchTerm, logout } from "../../store/slices/authSlice";
-import { useLogoutMutation } from "../../store/api/authApi";
+import { Button, Dialog } from "../../ui";
+import { setSearchTerm, logout } from "../../../store/slices/authSlice";
+import { useLogoutMutation } from "../../../store/api/authApi";
 
 import MobileDrawer from "./MobileDrawer";
 import EditProfileDrawer from "./EditProfileDrawer";
 import SearchBar from "./SearchBar";
-import ProjectPicker from "../ProjectPicker";
+import ProjectPicker from "../../Project/ProjectPicker";
 
-import { toggleMobileMenu, closeMobileMenu } from "../../store/slices/uiSlice";
+import { toggleMobileMenu, closeMobileMenu } from "../../../store/slices/uiSlice";
 
 const shouldShowMobileMenu = (pathname) => {
     if (pathname.includes("/verify-email")) return false;

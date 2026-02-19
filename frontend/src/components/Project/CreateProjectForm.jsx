@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Button, Input } from "./ui";
-import { useCreateProjectMutation } from "../store/api/projectsApi";
-import { setActiveProject } from "../store/slices/projectSlice";
-import { setHasProjects } from "../store/slices/authSlice";
+import { Button, Input } from "../ui";
+import { useCreateProjectMutation } from "../../store/api/projectsApi";
+import { setActiveProject } from "../../store/slices/projectSlice";
+import { setHasProjects } from "../../store/slices/authSlice";
 import { toast } from "sonner";
 
 const CreateProjectForm = ({ onSuccess, onCancel, showCancel = false }) => {

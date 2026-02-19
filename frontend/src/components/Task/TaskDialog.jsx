@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Dialog, Button, Input, TextField, Select, DatePicker } from "./ui";
-import { useSnackbar } from "../context/SnackbarContext";
+import { Dialog, Button, Input, TextField, Select, DatePicker } from "../ui";
+import { useSnackbar } from "../../context/SnackbarContext";
 import {
   useCreateTaskMutation,
   useUpdateTaskMutation,
-} from "../store/api/tasksApi";
-import { useGetProjectMembersQuery } from "../store/api/projectsApi";
+} from "../../store/api/tasksApi";
+import { useGetProjectMembersQuery } from "../../store/api/projectsApi";
 
 const TaskDialog = ({
   open,

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CreateProjectForm from "../components/CreateProjectForm";
+import CreateProjectForm from "../components/Project/CreateProjectForm";
 
 const CreateProject = () => {
     return (

@@ -1,7 +1,7 @@
 import React from "react";
 import { X, LogOut, PenSquare } from "lucide-react";
 import UserAvatar from "./UserAvatar";
-import ProjectPicker from "../ProjectPicker";
+import ProjectPicker from "../../Project/ProjectPicker";
 
 const MobileDrawer = ({
     open,

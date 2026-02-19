@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { updateAuthUser } from "../store/slices/authSlice";
-import { useSnackbar } from "../context/SnackbarContext";
-import { Button, Input } from "./ui";
+import { updateAuthUser } from "../../store/slices/authSlice";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { Button, Input } from "../ui";
 import {
   useGetUserByEmailQuery,
   useUpdateUserMutation,
   useChangePasswordMutation,
-} from "../store/api/usersApi";
-import { capitalizeWords } from "../utils/stringUtils";
-import { checkPasswordStrength } from "../utils/validationUtils";
+} from "../../store/api/usersApi";
+import { capitalizeWords } from "../../utils/stringUtils";
+import { checkPasswordStrength } from "../../utils/validationUtils";
 import { Check, X } from "lucide-react";
 
 export default function Profile() {

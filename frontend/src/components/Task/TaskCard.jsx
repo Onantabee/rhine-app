@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Card, Chip, Button } from "./ui";
+import { Card, Chip, Button } from "../ui";
 import { Pencil, Trash2, Eye } from "lucide-react";
-import { useGetUserByEmailQuery } from "../store/api/usersApi";
-import { useGetTaskNewStateQuery } from "../store/api/tasksApi";
-import { useCountUnreadCommentsQuery } from "../store/api/commentsApi";
+import { useGetUserByEmailQuery } from "../../store/api/usersApi";
+import { useGetTaskNewStateQuery } from "../../store/api/tasksApi";
+import { useCountUnreadCommentsQuery } from "../../store/api/commentsApi";
 import {
   getDueDateStatus,
   formatDueDateText,
   getCardBackground,
   dueDateStatusConfig,
   highlightSearchMatch,
-} from "../utils/taskUtils";
+} from "../../utils/taskUtils";
 
 const TaskCard = ({
   task,

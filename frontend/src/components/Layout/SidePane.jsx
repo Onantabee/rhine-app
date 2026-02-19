@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, Settings, User, LogOut } from "lucide-react";
-import { Button, Dialog } from "./ui";
-import { logout as logoutAction } from "../store/slices/authSlice";
-import { clearActiveProject } from "../store/slices/projectSlice";
-import { useLogoutMutation } from "../store/api/authApi";
+import { Button, Dialog } from "../ui";
+import { logout as logoutAction } from "../../store/slices/authSlice";
+import { clearActiveProject } from "../../store/slices/projectSlice";
+import { useLogoutMutation } from "../../store/api/authApi";
 
 const SidePane = ({ onLinkClick }) => {
     const params = useParams();

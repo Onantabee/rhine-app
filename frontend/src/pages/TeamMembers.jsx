@@ -8,7 +8,7 @@ import {
     useInviteMemberMutation,
     useRemoveMemberMutation,
 } from "../store/api/projectsApi";
-import { TeamTable } from "../components/TeamTable";
+import { TeamTable } from "../components/Project/TeamTable";
 import { useSnackbar } from "../context/SnackbarContext";
 
 const TeamMembers = () => {

@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import Profile from "../Profile";
+import Profile from "../../User/Profile";
 import UserAvatar from "./UserAvatar";
 
 const EditProfileDrawer = ({ open, userName, onClose }) => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog } from "./ui";
+import { Dialog } from "../ui";
 import CreateProjectForm from "./CreateProjectForm";
 
 const CreateProjectDialog = ({ open, onClose }) => {

@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Check, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Button, Input } from "./ui";
-import { useSnackbar } from "../context/SnackbarContext";
-import { useRegisterMutation, useLoginMutation } from "../store/api/authApi";
-import { login as loginAction } from "../store/slices/authSlice";
-import { capitalizeWords } from "../utils/stringUtils";
-import { checkPasswordStrength } from "../utils/validationUtils";
+import { Button, Input } from "../ui";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { useRegisterMutation, useLoginMutation } from "../../store/api/authApi";
+import { login as loginAction } from "../../store/slices/authSlice";
+import { capitalizeWords } from "../../utils/stringUtils";
+import { checkPasswordStrength } from "../../utils/validationUtils";
 
 const Form = ({ isSignup }) => {
   const [name, setName] = useState("");
