@@ -60,9 +60,10 @@ pipeline {
 
                                                 echo "{\\"auths\\": {\\"https://index.docker.io/v1/\\": {\\"auth\\": \\"${AUTH}\\"}}}" > $DOCKER_CONFIG/config.json
                                                 
-                                                docker build -t $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID .
-                                                
-                                                # Retry push 3 times to beat the 400 Bad Request
+                                                (docker build -t $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID . || \
+                                                 (sleep 5 && docker build -t $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID .) || \
+                                                 (sleep 10 && docker build -t $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID .))
+
                                                 (docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID || \
                                                  sleep 5 && docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID || \
                                                  sleep 10 && docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID)
@@ -109,9 +110,10 @@ pipeline {
 
                                                 echo "{\\"auths\\": {\\"https://index.docker.io/v1/\\": {\\"auth\\": \\"${AUTH}\\"}}}" > $DOCKER_CONFIG/config.json
                                                 
-                                                docker build -t $DOCKER_REGISTRY/rhine-backend:$BUILD_ID .
-                                                
-                                                # Retry push 3 times to beat the 400 Bad Request
+                                                (docker build -t $DOCKER_REGISTRY/rhine-backend:$BUILD_ID . || \
+                                                 (sleep 5 && docker build -t $DOCKER_REGISTRY/rhine-backend:$BUILD_ID .) || \
+                                                 (sleep 10 && docker build -t $DOCKER_REGISTRY/rhine-backend:$BUILD_ID .))
+
                                                 (docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID || \
                                                  sleep 5 && docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID || \
                                                  sleep 10 && docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID)
