@@ -1,29 +1,17 @@
-import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { Trash2, Shield, UserCheck, MoreVertical, Eye, AlertCircle, Check, CheckCircleIcon, CheckCircle2Icon, CheckCircle2, CheckCheck, CheckCircle } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Trash2, AlertCircle, CheckCircle, MoreVertical, Eye } from "lucide-react";
 import { highlightSearchMatch } from "../../utils/taskUtils";
+import { useTeamTable } from "../../hooks/useTeamTable";
 
 export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm }) => {
-    const navigate = useNavigate();
-    const { projectId } = useParams();
-    const [actionMenuOpen, setActionMenuOpen] = useState(null);
-    const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-
-    const toggleActionMenu = (email, event) => {
-        if (actionMenuOpen === email) {
-            setActionMenuOpen(null);
-        } else {
-            const rect = event.currentTarget.getBoundingClientRect();
-            setMenuPosition({
-                top: rect.bottom + window.scrollY,
-                left: rect.right + window.scrollX - 192
-            });
-            setActionMenuOpen(email);
-        }
-    };
-
-    const closeMenu = () => setActionMenuOpen(null);
+    const {
+        actionMenuOpen,
+        menuPosition,
+        toggleActionMenu,
+        closeMenu,
+        handleViewTasks,
+        handleRemoveMember
+    } = useTeamTable({ members, userEmail, onRemove });
 
     return (
         <div className="bg-white h-fit flex flex-col min-h-0">
@@ -116,10 +104,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                         style={{ top: menuPosition.top, left: menuPosition.left }}
                     >
                         <button
-                            onClick={() => {
-                                navigate(`/project/${projectId}?assigneeEmail=${actionMenuOpen}`);
-                                closeMenu();
-                            }}
+                            onClick={handleViewTasks}
                             className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
                             <Eye className="mr-3 h-4 w-4 text-gray-400" />
@@ -130,10 +115,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                             if (member && member.email !== userEmail) {
                                 return (
                                     <button
-                                        onClick={() => {
-                                            onRemove(member);
-                                            closeMenu();
-                                        }}
+                                        onClick={handleRemoveMember}
                                         className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                                     >
                                         <Trash2 className="mr-3 h-4 w-4 text-red-500" />

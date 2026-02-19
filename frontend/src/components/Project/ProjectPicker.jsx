@@ -1,58 +1,26 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { ChevronDown, Plus } from "lucide-react";
-import { useGetProjectsQuery } from "../../store/api/projectsApi";
-import { useUpdateLastProjectMutation } from "../../store/api/usersApi";
-import { setActiveProject } from "../../store/slices/projectSlice";
-import { closeMobileMenu } from "../../store/slices/uiSlice";
 import { Button } from "../ui";
 import CreateProjectDialog from "./CreateProjectDialog";
+import { useProjectPicker } from "../../hooks/useProjectPicker";
 
 const ProjectPicker = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const [open, setOpen] = useState(false);
-    const [createDialogOpen, setCreateDialogOpen] = useState(false);
-    const ref = useRef(null);
-    const activeProject = useSelector((state) => state.project.activeProject);
-    const { data: projects = [] } = useGetProjectsQuery();
-    const [updateLastProject] = useUpdateLastProjectMutation();
-
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (ref.current && !ref.current.contains(e.target)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const handleSelectProject = (project) => {
-        dispatch(
-            setActiveProject({
-                id: project.id,
-                name: project.name,
-                role: project.currentUserRole,
-            })
-        );
-        updateLastProject(project.id).unwrap().catch(console.error);
-        dispatch(closeMobileMenu());
-        setOpen(false);
-        navigate(`/project/${project.id}`);
-    };
-
-    const handleCreateNew = () => {
-        setOpen(false);
-        setCreateDialogOpen(true);
-    };
+    const {
+        open,
+        createDialogOpen,
+        setCreateDialogOpen,
+        ref,
+        activeProject,
+        projects,
+        handleSelectProject,
+        handleCreateNew,
+        toggleOpen
+    } = useProjectPicker();
 
     return (
         <>
             <div className="relative" ref={ref}>
                 <button
-                    onClick={() => setOpen(!open)}
+                    onClick={toggleOpen}
                     className="flex items-center gap-2 py-1.5 rounded-lg transition-colors text-sm font-medium text-gray-700 cursor-pointer"
                 >
                     <span className="max-w-[150px] truncate text-xl">

@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Card, Chip, Button } from "../ui";
+import React from "react";
+import { Card, Chip } from "../ui";
 import { Pencil, Trash2, Eye } from "lucide-react";
-import { useGetUserByEmailQuery } from "../../store/api/usersApi";
-import { useGetTaskNewStateQuery } from "../../store/api/tasksApi";
-import { useCountUnreadCommentsQuery } from "../../store/api/commentsApi";
 import {
-  getDueDateStatus,
   formatDueDateText,
   getCardBackground,
   dueDateStatusConfig,
   highlightSearchMatch,
 } from "../../utils/taskUtils";
+import { useTaskCard } from "../../hooks/useTaskCard";
 
 const TaskCard = ({
   task,
@@ -24,43 +20,23 @@ const TaskCard = ({
   createdBy,
   searchTerm
 }) => {
-  const { title, priority, dueDate, taskStatus, projectId } = task;
+  const { title, priority, dueDate, taskStatus } = task;
 
-  const { data: adminUser } = useGetUserByEmailQuery(createdBy, {
-    skip: !createdBy,
+  const {
+    adminUser,
+    unreadCountByRecipient,
+    taskIsNew,
+    dueDateStatus,
+    firstName,
+    lastName,
+    shouldGrayOut,
+  } = useTaskCard({
+    task,
+    isAdmin,
+    assignee,
+    loggedInUser,
+    createdBy,
   });
-  const { data: employeeUser } = useGetUserByEmailQuery(assignee, {
-    skip: !assignee,
-  });
-
-  const { data: unreadCountByRecipient = 0 } = useCountUnreadCommentsQuery(
-    {
-      taskId: task.id,
-      recipientEmail: loggedInUser?.email,
-    },
-    {
-      skip: !loggedInUser?.email,
-    }
-  );
-
-  const { data: taskNewState } = useGetTaskNewStateQuery(
-    { projectId, taskId: task.id },
-    {
-      skip: isAdmin || !projectId,
-    }
-  );
-  const taskIsNew = taskNewState?.isNew || false;
-
-  const dueDateStatus = getDueDateStatus(dueDate, taskStatus);
-
-  const fullName = String(employeeUser?.name || "");
-  const names = fullName.split(/\s+/);
-  const firstName = names[0];
-  const lastName = names[1];
-
-  const shouldGrayOut = () => {
-    return dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED";
-  };
 
   return (
     <div className="relative">

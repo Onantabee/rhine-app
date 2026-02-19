@@ -1,25 +1,18 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { LayoutDashboard, Users, Settings, User, LogOut } from "lucide-react";
 import { Button, Dialog } from "../ui";
-import { logout as logoutAction } from "../../store/slices/authSlice";
-import { clearActiveProject } from "../../store/slices/projectSlice";
-import { useLogoutMutation } from "../../store/api/authApi";
+import { useSidePane } from "../../hooks/useSidePane";
 
 const SidePane = ({ onLinkClick }) => {
-    const params = useParams();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const activeProject = useSelector((state) => state.project.activeProject);
-
-    const projectId = params.projectId || activeProject?.id;
-
-    const [logoutServer] = useLogoutMutation();
-    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-
-    const isAdmin = activeProject?.role === "PROJECT_ADMIN";
+    const {
+        projectId,
+        isAdmin,
+        isActive,
+        handleNavClick,
+        handleLogoutClick,
+        handleLogoutConfirm,
+        logoutDialogOpen,
+        setLogoutDialogOpen
+    } = useSidePane({ onLinkClick });
 
     const navItems = [];
 
@@ -38,31 +31,6 @@ const SidePane = ({ onLinkClick }) => {
             path: `/project/${projectId}/team`,
         });
     }
-
-    const isActive = (path) => location.pathname === path;
-
-    const handleNavClick = (path) => {
-        navigate(path);
-        if (onLinkClick) onLinkClick();
-    };
-
-    const handleLogoutClick = () => {
-        setLogoutDialogOpen(true);
-    };
-
-    const handleLogoutConfirm = async () => {
-        try {
-            await logoutServer().unwrap();
-        } catch (error) {
-            console.error("Logout failed on server:", error);
-        }
-        dispatch(logoutAction());
-        dispatch(clearActiveProject());
-        setLogoutDialogOpen(false);
-        if (onLinkClick) onLinkClick();
-        navigate("/");
-        window.location.reload();
-    };
 
     return (
         <aside className="w-full md:w-[300px] h-full border-r border-gray-200 bg-white flex flex-col justify-between">

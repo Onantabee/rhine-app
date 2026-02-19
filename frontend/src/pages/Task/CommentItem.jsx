@@ -1,7 +1,7 @@
-import { useState, useRef, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
 import { MoreVerticalIcon } from "lucide-react";
 import { differenceInSeconds, formatDistanceToNowStrict } from "date-fns";
+import { useCommentItem } from "../../hooks/useCommentItem";
 
 const CommentItem = ({
     comment,
@@ -15,21 +15,18 @@ const CommentItem = ({
     onDelete,
     dropdownRef,
 }) => {
-    const isOwnComment = comment.authorEmail === currentUserEmail;
-    const canEdit = differenceInSeconds(now, new Date(comment.createdAt)) <= 300 && isCommentingAllowed;
-
-    const triggerRef = useRef(null);
-    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
-
-    useLayoutEffect(() => {
-        if (isDropdownOpen && triggerRef.current) {
-            const rect = triggerRef.current.getBoundingClientRect();
-            setDropdownPosition({
-                top: rect.bottom + window.scrollY,
-                left: rect.right + window.scrollX - 144,
-            });
-        }
-    }, [isDropdownOpen]);
+    const {
+        isOwnComment,
+        canEdit,
+        triggerRef,
+        dropdownPosition,
+    } = useCommentItem({
+        comment,
+        currentUserEmail,
+        now,
+        isCommentingAllowed,
+        isDropdownOpen,
+    });
 
     return (
         <div className="relative overflow-visible border-b border-gray-200 last:border-b-0">

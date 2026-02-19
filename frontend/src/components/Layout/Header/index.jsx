@@ -1,117 +1,38 @@
-import { useState, useRef, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Menu } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "../../ui";
-import { setSearchTerm, logout } from "../../../store/slices/authSlice";
-import { useLogoutMutation } from "../../../store/api/authApi";
 
 import MobileDrawer from "./MobileDrawer";
-import EditProfileDrawer from "./EditProfileDrawer";
 import SearchBar from "./SearchBar";
 import ProjectPicker from "../../Project/ProjectPicker";
 
-import { toggleMobileMenu, closeMobileMenu } from "../../../store/slices/uiSlice";
-
-const shouldShowMobileMenu = (pathname) => {
-    if (pathname.includes("/verify-email")) return false;
-    if (pathname.includes("/create-project")) return false;
-
-    if (pathname === "/" || pathname === "/profile") return true;
-    if (pathname.startsWith("/project/")) return true;
-
-    return false;
-};
+import { useHeader } from "../../../hooks/useHeader";
 
 const Header = ({ setIsSignup }) => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [logoutServer] = useLogoutMutation();
-
-    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-    const isVerified = useSelector((state) => state.auth.isVerified);
-    const hasProjects = useSelector((state) => state.auth.hasProjects);
-    const userName = useSelector((state) => state.auth.userName);
-    const searchTerm = useSelector((state) => state.auth.searchTerm);
-    const activeProject = useSelector((state) => state.project.activeProject);
-    const mobileMenuOpen = useSelector((state) => state.ui.mobileMenuOpen);
-    const isAdmin = activeProject?.role === "PROJECT_ADMIN";
-
-    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-    const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-    const [editProfileOpen, setEditProfileOpen] = useState(false);
-
-    const profileRef = useRef(null);
-
-    const handleDrawerToggle = () => dispatch(toggleMobileMenu());
-
-    const handleLoginClick = () => {
-        setIsSignup(false);
-        dispatch(closeMobileMenu());
-    };
-
-    const handleSignupClick = () => {
-        setIsSignup(true);
-        dispatch(closeMobileMenu());
-    };
-
-    const handleLogoutClick = () => {
-        setLogoutDialogOpen(true);
-        setProfileDropdownOpen(false);
-    };
-
-    const handleLogoutConfirm = async () => {
-        try {
-            await logoutServer().unwrap();
-        } catch (error) {
-            console.error("Logout failed on server:", error);
-        }
-        dispatch(logout());
-        dispatch(closeMobileMenu());
-        setLogoutDialogOpen(false);
-
-        navigate("/");
-    };
-
-    const handleLogoutCancel = () => {
-        setLogoutDialogOpen(false);
-    };
-
-    const toggleProfileDropdown = () => {
-        setProfileDropdownOpen(!profileDropdownOpen);
-    };
-
-    const handleSearchChange = (e) => {
-        dispatch(setSearchTerm(e.target.value));
-    };
-
-    const handleClearSearch = () => {
-        dispatch(setSearchTerm(""));
-    };
-
-    const handleEditProfileClick = () => {
-        setEditProfileOpen(true);
-        setProfileDropdownOpen(false);
-    };
-
-    const handleEditProfileClose = () => {
-        setEditProfileOpen(false);
-    };
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (profileRef.current && !profileRef.current.contains(event.target)) {
-                setProfileDropdownOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-
-    const isTaskListPage = /^\/project\/\d+(\/team)?\/?$/.test(location.pathname);
+    const {
+        location,
+        navigate,
+        isLoggedIn,
+        isVerified,
+        hasProjects,
+        userName,
+        searchTerm,
+        activeProject,
+        mobileMenuOpen,
+        isAdmin,
+        logoutDialogOpen,
+        handleDrawerToggle,
+        handleLoginClick,
+        handleSignupClick,
+        handleLogoutClick,
+        handleLogoutConfirm,
+        handleLogoutCancel,
+        handleSearchChange,
+        handleClearSearch,
+        handleEditProfileClick,
+        handleCloseMobileMenu,
+        isTaskListPage,
+        shouldShowMobileMenu
+    } = useHeader({ setIsSignup });
 
     return (
         <>
@@ -217,18 +138,12 @@ const Header = ({ setIsSignup }) => {
                 isLoggedIn={isLoggedIn}
                 userName={userName}
                 isAdmin={isAdmin}
-                onClose={() => dispatch(closeMobileMenu())}
+                onClose={handleCloseMobileMenu}
                 onLogin={handleLoginClick}
                 onSignup={handleSignupClick}
                 onEditProfile={handleEditProfileClick}
                 onLogout={handleLogoutClick}
                 isVerified={isVerified}
-            />
-
-            <EditProfileDrawer
-                open={editProfileOpen}
-                userName={userName}
-                onClose={handleEditProfileClose}
             />
 
             <Dialog
