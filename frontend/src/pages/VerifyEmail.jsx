@@ -26,7 +26,7 @@ const VerifyEmail = () => {
         } else if (userEmail) {
             setEmail(userEmail);
         } else {
-            navigate("/login");
+            navigate("/");
         }
     }, [location.state, userEmail, navigate]);
 

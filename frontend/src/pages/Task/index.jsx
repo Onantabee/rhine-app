@@ -21,6 +21,7 @@ import { LoadingSpinner } from "../../components/ui";
 import TaskDetails from "./TaskDetails";
 import CommentsList from "./CommentsList";
 import CommentInput from "./CommentInput";
+import NotFound from "../NotFound";
 
 import {
     getDueDateStatus,
@@ -48,7 +49,7 @@ export default function Task() {
     const dropdownRef = useRef(null);
 
     const { data: user } = useGetUserByEmailQuery(userEmail, { skip: !userEmail });
-    const { data: task, isLoading: isLoadingTask } = useGetTaskByIdQuery(
+    const { data: task, isLoading: isLoadingTask, isError } = useGetTaskByIdQuery(
         { projectId, taskId: taskId || state?.task?.id },
         { skip: !projectId || (!taskId && !state?.task?.id) }
     );
@@ -241,7 +242,16 @@ export default function Task() {
         }
     };
 
-    if (isLoadingTask || !task) {
+    if (isError || (!isLoadingTask && !task)) {
+        return (
+            <NotFound
+                title="Task Not Found"
+                message="The task you are looking for doesn't exist or you don't have permission to view it."
+            />
+        );
+    }
+
+    if (isLoadingTask) {
         return (
             <div className="flex justify-center items-center h-64">
                 <LoadingSpinner size="lg" />
@@ -250,7 +260,7 @@ export default function Task() {
     }
 
     return (
-        <div className="flex flex-col text-gray-800 h-full gap-4">
+        <div className="flex flex-col text-gray-800 h-full gap-4 p-6">
             <div>
                 <button className="flex items-center gap-3 text-[#7733ff] hover:text-[#5500ff] cursor-pointer" onClick={() => navigate(`/project/${projectId}`)}>
                     <ArrowLeft />

@@ -15,10 +15,17 @@ const TeamMembers = () => {
     const { projectId } = useParams();
     const activeProject = useSelector((state) => state.project.activeProject);
     const userEmail = useSelector((state) => state.auth.userEmail);
+    const searchTerm = useSelector((state) => state.auth.searchTerm);
     const isAdmin = activeProject?.role === "PROJECT_ADMIN";
     const { showSnackbar } = useSnackbar();
 
     const { data: members = [], isLoading } = useGetProjectMembersQuery(projectId);
+
+    const filteredMembers = members.filter(member =>
+        member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     const [inviteMember, { isLoading: inviteLoading }] = useInviteMemberMutation();
     const [removeMember] = useRemoveMemberMutation();
 
@@ -71,15 +78,15 @@ const TeamMembers = () => {
     }
 
     return (
-        <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-3">
-                <div className="flex justify-between gap-2">
-                    <h1 className="text-3xl text-gray-600 truncate">Team Members</h1>
-                    <span className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">
-                        {members.length}
-                    </span>
-                </div>
-                {isAdmin && (
+        <div className="flex flex-col gap-3 h-full">
+            <div className="p-6 pb-0">
+                <div className="flex items-center justify-between border-b border-gray-200 pb-3 flex-shrink-0">
+                    <div className="flex justify-between gap-2">
+                        <h1 className="text-3xl text-gray-600 truncate">Team Members</h1>
+                        <span className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">
+                            {filteredMembers.length}
+                        </span>
+                    </div>
                     <Button
                         variant="primary"
                         size="md"
@@ -88,15 +95,18 @@ const TeamMembers = () => {
                         <UserPlus size={16} />
                         Invite
                     </Button>
-                )}
+                </div>
             </div>
 
-            <TeamTable
-                members={members}
-                userEmail={userEmail}
-                isAdmin={isAdmin}
-                onRemove={setRemoveTarget}
-            />
+            <div className="w-full h-full p-6 pt-0">
+                <TeamTable
+                    members={filteredMembers}
+                    userEmail={userEmail}
+                    isAdmin={isAdmin}
+                    onRemove={setRemoveTarget}
+                    searchTerm={searchTerm}
+                />
+            </div>
             <Dialog
                 open={inviteDialogOpen}
                 onClose={() => {

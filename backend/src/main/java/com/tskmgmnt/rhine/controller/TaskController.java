@@ -54,8 +54,8 @@ public class TaskController {
 
     @Operation(summary = "Get task by ID")
     @GetMapping("/{id}")
-    public TaskDto getTaskById(@PathVariable Long projectId, @PathVariable Long id) {
-        return taskService.getTaskById(id);
+    public TaskDto getTaskById(@PathVariable Long projectId, @PathVariable Long id, Authentication auth) {
+        return taskService.getTaskById(id, auth.getName());
     }
 
     @Operation(summary = "Update task details")

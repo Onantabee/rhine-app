@@ -145,7 +145,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-2xl flex flex-col gap-8">
+    <div className="max-w-2xl flex flex-col gap-8 p-6">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <h1 className="text-3xl text-gray-600 pb-3 border-b border-gray-200">

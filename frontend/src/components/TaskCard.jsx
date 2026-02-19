@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Card, Chip, Button, Dialog } from "./ui";
+import { Card, Chip, Button } from "./ui";
 import { Pencil, Trash2, Eye } from "lucide-react";
 import { useGetUserByEmailQuery } from "../store/api/usersApi";
 import { useGetTaskNewStateQuery } from "../store/api/tasksApi";
@@ -22,11 +22,9 @@ const TaskCard = ({
   assignee,
   loggedInUser,
   createdBy,
-  searchTerm,
+  searchTerm
 }) => {
   const { title, priority, dueDate, taskStatus, projectId } = task;
-  const [deleteTaskDialogOpen, setDeleteTaskDialogOpen] = useState(false);
-  const [dueDateStatus, setDueDateStatus] = useState(null);
 
   const { data: adminUser } = useGetUserByEmailQuery(createdBy, {
     skip: !createdBy,
@@ -53,9 +51,7 @@ const TaskCard = ({
   );
   const taskIsNew = taskNewState?.isNew || false;
 
-  useEffect(() => {
-    setDueDateStatus(getDueDateStatus(dueDate, taskStatus));
-  }, [dueDate, taskStatus]);
+  const dueDateStatus = getDueDateStatus(dueDate, taskStatus);
 
   const fullName = String(employeeUser?.name || "");
   const names = fullName.split(/\s+/);
@@ -204,7 +200,7 @@ const TaskCard = ({
               </button>
               <hr className="h-6 w-[2px] border-none bg-gray-200" />
               <button
-                onClick={() => setDeleteTaskDialogOpen(true)}
+                onClick={onDelete}
                 className="p-2 text-red-400 hover:text-red-600 cursor-pointer"
               >
                 <Trash2 size={18} />
@@ -213,26 +209,6 @@ const TaskCard = ({
           </>
         )}
       </Card>
-
-      <Dialog
-        open={deleteTaskDialogOpen}
-        onClose={() => setDeleteTaskDialogOpen(false)}
-        title="Delete Task?"
-        size="sm"
-      >
-        <p className="text-gray-600 mb-6">You are about to delete a task.</p>
-        <div className="flex justify-end gap-3">
-          <Button
-            variant="secondary"
-            onClick={() => setDeleteTaskDialogOpen(false)}
-          >
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={onDelete} autoFocus>
-            Delete
-          </Button>
-        </div>
-      </Dialog>
     </div>
   );
 };

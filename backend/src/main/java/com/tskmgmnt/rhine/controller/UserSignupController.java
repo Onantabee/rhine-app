@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/users")
@@ -104,8 +105,8 @@ public class UserSignupController {
             }
     )
     @PostMapping(path = "/resend-otp")
-    public String resendOtp(@RequestParam String email) {
+    public Map<String, String> resendOtp(@RequestParam String email) {
         otpService.generateOtp(email);
-        return "OTP sent";
+        return Map.of("message", "OTP sent");
     }
 }

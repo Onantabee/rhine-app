@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Button, LoadingSpinner } from "../components/ui";
+import { Button, LoadingSpinner, Dialog } from "../components/ui";
 import { useSnackbar } from "../context/SnackbarContext";
 import { Plus, Grid, List, X } from "lucide-react";
 import TaskCard from "../components/TaskCard.jsx";
@@ -24,6 +24,8 @@ export default function Home() {
   const activeProject = useSelector((state) => state.project.activeProject);
 
   const isAdmin = activeProject?.role === "PROJECT_ADMIN";
+
+  const [taskToDelete, setTaskToDelete] = useState(null);
 
   const { showSnackbar } = useSnackbar();
   const [openDialog, setOpenDialog] = useState(false);
@@ -118,8 +120,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-col">
+    <div className="flex flex-col h-full">
+      <div className="flex flex-col shrink-0 p-6 pb-0">
         <div className="flex justify-between border-b border-gray-200 pb-3 gap-2">
           <div className="flex gap-3 items-center">
             <h1 className="text-3xl text-gray-600">Tasks</h1>
@@ -181,14 +183,15 @@ export default function Home() {
           <LoadingSpinner size="lg" />
         </div>
       ) : isCardView ? (
-        <div>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
-            {filteredTasks.map((task) => (
-              <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
+        <div className="overflow-y-auto w-full h-full min-h-0">
+
+          {filteredTasks.map((task) => (
+            <div key={task.id} className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-6 pt-3">
+              <div onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
                 <TaskCard
                   task={task}
                   onEdit={() => handleOpenDialog(task)}
-                  onDelete={() => handleDeleteTask(task.id)}
+                  onDelete={() => setTaskToDelete(task.id)}
                   onView={() =>
                     navigate(`/project/${projectId}/task/${task.id}`, {
                       state: { task, isAdmin, user },
@@ -201,15 +204,15 @@ export default function Home() {
                   searchTerm={searchTerm}
                 />
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
 
           {filteredTasks.length === 0 && (
-            <p className="text-gray-400">No tasks available</p>
+            <p className="text-gray-400 px-6">No tasks available</p>
           )}
         </div>
       ) : (
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-auto w-full h-full min-h-0 p-6 pt-0">
           <table className="w-full min-w-[700px] sm:min-w-[1000px] border-collapse border border-gray-200">
             <TaskListHeader isAdmin={isAdmin} />
             <tbody>
@@ -218,7 +221,7 @@ export default function Home() {
                   key={task.id}
                   task={task}
                   onEdit={() => handleOpenDialog(task)}
-                  onDelete={() => handleDeleteTask(task.id)}
+                  onDelete={() => setTaskToDelete(task.id)}
                   onView={() =>
                     navigate(`/project/${projectId}/task/${task.id}`, {
                       state: { task, isAdmin, user },
@@ -250,6 +253,35 @@ export default function Home() {
         task={selectedTask}
         projectId={projectId}
       />
+
+      <Dialog
+        open={!!taskToDelete}
+        onClose={() => setTaskToDelete(null)}
+        title="Delete Task?"
+        size="sm"
+      >
+        <p className="text-gray-600 mb-6">You are about to delete a task. This action cannot be undone.</p>
+        <div className="flex justify-end gap-3">
+          <Button
+            variant="secondary"
+            onClick={() => setTaskToDelete(null)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              if (taskToDelete) {
+                handleDeleteTask(taskToDelete);
+                setTaskToDelete(null);
+              }
+            }}
+            autoFocus
+          >
+            Delete
+          </Button>
+        </div>
+      </Dialog>
     </div>
   );
 }

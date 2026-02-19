@@ -10,6 +10,7 @@ import com.tskmgmnt.rhine.repository.ProjectMemberRepository;
 import com.tskmgmnt.rhine.repository.ProjectRepository;
 import com.tskmgmnt.rhine.repository.TaskRepository;
 import com.tskmgmnt.rhine.repository.UserRepository;
+import com.tskmgmnt.rhine.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -110,8 +111,23 @@ public class TaskService {
         return response;
     }
 
-    public TaskDto getTaskById(Long id) {
+    public TaskDto getTaskById(Long id, String requestingUserEmail) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not Found!"));
+
+        boolean isCreator = task.getCreatedBy().getEmail().equals(requestingUserEmail);
+        boolean isAssignee = task.getAssignee() != null && task.getAssignee().getEmail().equals(requestingUserEmail);
+        boolean isAdmin = false;
+
+        if (task.getProject() != null) {
+            isAdmin = projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId())
+                    .map(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
+                    .orElse(false);
+        }
+
+        if (!isCreator && !isAssignee && !isAdmin) {
+             throw new ResourceNotFoundException("Task not Found!");
+        }
+
         return mapToTaskResponse(task);
     }
 

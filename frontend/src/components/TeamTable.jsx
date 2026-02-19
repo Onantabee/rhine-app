@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { Trash2, Shield, UserCheck, MoreVertical, Eye, AlertCircle, Check, CheckCircleIcon, CheckCircle2Icon, CheckCircle2, CheckCheck, CheckCircle } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { highlightSearchMatch } from "../utils/taskUtils";
 
-export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
+export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm }) => {
     const navigate = useNavigate();
     const { projectId } = useParams();
     const [actionMenuOpen, setActionMenuOpen] = useState(null);
@@ -25,16 +26,16 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
     const closeMenu = () => setActionMenuOpen(null);
 
     return (
-        <div className="bg-white border border-gray-200 overflow-hidden">
-            <div className="overflow-x-auto">
+        <div className="bg-white border border-gray-200 h-fit flex flex-col min-h-0">
+            <div className="overflow-auto flex-1">
                 <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
-                            <th className="px-6 py-4">Name</th>
-                            <th className="px-6 py-4">Email</th>
-                            <th className="px-6 py-4">Role</th>
-                            <th className="px-6 py-4 text-center truncate">Active Tasks</th>
-                            {isAdmin && <th className="px-6 py-4 text-right">Actions</th>}
+                    <thead className="bg-gray-50">
+                        <tr className="border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
+                            <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4">Name</th>
+                            <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4">Email</th>
+                            <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4">Role</th>
+                            <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4 text-center truncate">Active Tasks</th>
+                            {isAdmin && <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4 text-right">Actions</th>}
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -46,7 +47,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
                                             {member.name?.[0]?.toUpperCase() || "?"}
                                         </div>
                                         <p className="flex items-center gap-2 text-sm font-medium text-gray-900 truncate">
-                                            {member.name.replace(/\(Pending\)/g, "").trim()}
+                                            {highlightSearchMatch(member.name.replace(/\(Pending\)/g, "").trim(), searchTerm)}
                                             {member.name.includes("(Pending)") && member.projectRole !== "PROJECT_ADMIN" ? (
                                                 <AlertCircle size={16} className="text-amber-500" />
                                             ) : member.projectRole === "PROJECT_ADMIN" ? (
@@ -64,14 +65,14 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
                                 </td>
                                 <td className="px-6 py-4">
                                     <p className="text-sm text-gray-600">
-                                        {member.email}
+                                        {highlightSearchMatch(member.email, searchTerm)}
                                     </p>
                                 </td>
                                 <td className="px-6 py-4">
                                     <span
                                         className={`inline-flex items-center gap-1.5 text-xs capitalize font-medium px-2.5 py-1 rounded-[5px] ${member.projectRole === "PROJECT_ADMIN"
                                             ? "bg-[#7733ff]/10 text-[#7733ff] border border-[#7733ff]/40"
-                                            : "bg-gray-100 text-gray-600 border border-gray-100/40"
+                                            : "bg-gray-100 text-gray-600 border border-gray-300/40"
                                             }`}
                                     >
                                         {member.projectRole === "PROJECT_ADMIN"
@@ -102,7 +103,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove }) => {
                 </table>
             </div>
             {members.length === 0 && (
-                <div className="p-8 text-center text-gray-500">
+                <div className="px-6 py-4 text-center text-gray-500">
                     No team members found.
                 </div>
             )}

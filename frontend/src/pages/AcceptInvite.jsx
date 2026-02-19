@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Button, LoadingSpinner } from "../components/ui"
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAcceptInviteMutation } from '../store/api/projectsApi';
+import { setHasProjects } from '../store/slices/authSlice';
 import { useSnackbar } from '../context/SnackbarContext';
 
 const AcceptInvite = () => {
+    const dispatch = useDispatch();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const token = searchParams.get('token');
@@ -16,6 +19,7 @@ const AcceptInvite = () => {
             acceptInvite(token)
                 .unwrap()
                 .then((projectId) => {
+                    dispatch(setHasProjects(true));
                     showSnackbar('Invitation accepted successfully!', 'success');
                     setTimeout(() => navigate(`/project/${projectId}`), 2000);
                 })

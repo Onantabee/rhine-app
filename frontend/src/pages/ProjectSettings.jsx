@@ -4,11 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Settings, Trash2 } from "lucide-react";
 import { Button, Input, Dialog, LoadingSpinner } from "../components/ui";
 import {
+    useGetProjectsQuery,
     useGetProjectByIdQuery,
     useUpdateProjectMutation,
     useDeleteProjectMutation,
 } from "../store/api/projectsApi";
 import { setActiveProject, clearActiveProject } from "../store/slices/projectSlice";
+import { setHasProjects } from "../store/slices/authSlice";
 import { toast } from "sonner";
 
 const ProjectSettings = () => {
@@ -49,12 +51,29 @@ const ProjectSettings = () => {
         }
     };
 
+    const { data: projects } = useGetProjectsQuery();
+
     const handleDelete = async () => {
         try {
             await deleteProject(projectId).unwrap();
-            dispatch(clearActiveProject());
-            toast.success("Project deleted");
-            navigate("/create-project");
+
+            const remainingProjects = projects?.filter(p => p.id !== Number(projectId)) || [];
+
+            if (remainingProjects.length > 0) {
+                const nextProject = remainingProjects[0];
+                dispatch(setActiveProject({
+                    id: nextProject.id,
+                    name: nextProject.name,
+                    role: nextProject.currentUserRole
+                }));
+                navigate(`/project/${nextProject.id}`);
+                toast.success("Project deleted. Switched to " + nextProject.name);
+            } else {
+                dispatch(clearActiveProject());
+                dispatch(setHasProjects(false));
+                toast.success("Project deleted");
+                navigate("/create-project");
+            }
         } catch (error) {
             toast.error(error?.data?.message || "Failed to delete project");
         }
@@ -69,7 +88,7 @@ const ProjectSettings = () => {
     }
 
     return (
-        <div className="max-w-2xl flex flex-col gap-3">
+        <div className="max-w-2xl flex flex-col gap-3 p-6">
             <div className="flex justify-between pb-3 gap-2 border-b border-gray-200">
                 <h1 className="text-3xl text-gray-600 truncate">Project Settings</h1>
             </div>

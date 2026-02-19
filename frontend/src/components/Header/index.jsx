@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog } from "../ui";
-import { setSearchTerm } from "../../store/slices/authSlice";
+import { setSearchTerm, logout } from "../../store/slices/authSlice";
 import { useLogoutMutation } from "../../store/api/authApi";
 
 import MobileDrawer from "./MobileDrawer";
@@ -67,12 +67,11 @@ const Header = ({ setIsSignup }) => {
         } catch (error) {
             console.error("Logout failed on server:", error);
         }
-        sessionStorage.clear();
-        localStorage.removeItem("activeProject");
+        dispatch(logout());
         dispatch(closeMobileMenu());
         setLogoutDialogOpen(false);
 
-        window.location.href = "/";
+        navigate("/");
     };
 
     const handleLogoutCancel = () => {
@@ -112,7 +111,7 @@ const Header = ({ setIsSignup }) => {
         };
     }, []);
 
-    const isTaskListPage = /^\/project\/\d+\/?$/.test(location.pathname);
+    const isTaskListPage = /^\/project\/\d+(\/team)?\/?$/.test(location.pathname);
 
     return (
         <>
@@ -166,6 +165,11 @@ const Header = ({ setIsSignup }) => {
                                             value={searchTerm}
                                             onChange={handleSearchChange}
                                             onClear={handleClearSearch}
+                                            placeholder={
+                                                location.pathname.includes("/team")
+                                                    ? "Search team members by name or email..."
+                                                    : "Search tasks..."
+                                            }
                                         />
                                     )}
                                 </div>
