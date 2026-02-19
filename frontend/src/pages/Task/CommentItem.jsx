@@ -29,8 +29,8 @@ const CommentItem = ({
     });
 
     return (
-        <div className="relative overflow-visible border-b border-gray-200 last:border-b-0">
-            <div className={`py-2 pl-2 flex group items-center gap-2 ${isOwnComment ? "bg-gray-100/30 hover:bg-gray-100/50" : ""}`}>
+        <div className="relative overflow-visible border-b border-gray-200 dark:border-[#404040] last:border-b-0">
+            <div className={`py-2 pl-2 flex group items-center gap-2 ${isOwnComment ? "bg-gray-100/30 hover:bg-gray-100/50 dark:bg-[#262626]/30 dark:hover:bg-[#262626]/50" : ""}`}>
                 <div className="flex justify-between w-full items-center">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
@@ -56,7 +56,7 @@ const CommentItem = ({
                                     })}
                             </p>
                         </div>
-                        <p className="text-md text-gray-700 break-all whitespace-pre-wrap">{comment.content}</p>
+                        <p className="text-md text-gray-700 dark:text-[#cccccc] break-all whitespace-pre-wrap">{comment.content}</p>
                     </div>
                     {isOwnComment && (
                         <div className="relative top-0 opacity-0 right-0 group-hover:opacity-100">
@@ -84,7 +84,7 @@ const CommentItem = ({
                     {canEdit ? (
                         <button
                             onClick={() => onEdit(comment)}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left cursor-pointer"
+                            className="block px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 w-full text-left cursor-pointer"
                         >
                             Edit
                         </button>

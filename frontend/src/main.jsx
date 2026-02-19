@@ -9,18 +9,14 @@ import { LoadingSpinner } from './components/ui'
 
 const App = lazy(() => import('./App.jsx'))
 
-import { ThemeProvider } from './context/ThemeContext'
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <ThemeProvider>
-        <ErrorBoundary>
-          <Suspense fallback={<div className="flex h-screen w-full items-center justify-center"><LoadingSpinner size="lg" /></div>}>
-            <App />
-          </Suspense>
-        </ErrorBoundary>
-      </ThemeProvider>
+      <ErrorBoundary>
+        <Suspense fallback={<div className="flex h-screen w-full items-center justify-center"><LoadingSpinner size="lg" /></div>}>
+          <App />
+        </Suspense>
+      </ErrorBoundary>
     </Provider>
   </StrictMode>,
 )

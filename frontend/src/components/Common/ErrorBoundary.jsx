@@ -24,10 +24,10 @@ class ErrorBoundary extends React.Component {
         if (this.state.hasError) {
             return (
                 <div className="flex flex-col items-center h-screen justify-center p-4">
-                    <div className="z-30 h-auto border border-gray-200 rounded-[5px]"
+                    <div className="z-30 h-auto border border-gray-200 dark:border-[#404040] rounded-[5px]"
                         style={{ padding: '20px', width: '100%', maxWidth: '500px' }}>
                         <div className="flex flex-col items-center mb-8">
-                            <h1 className="text-3xl font-semibold text-center text-gray-700">Something went wrong</h1>
+                            <h1 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Something went wrong</h1>
                             <p className="text-gray-400 font-light text-md mt-2 text-center">
                                 An unexpected error occurred. Our team has been notified.
                             </p>

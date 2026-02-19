@@ -34,7 +34,7 @@ const Form = ({ isSignup }) => {
         >
 
           <div>
-            <h2 className="text-3xl font-semibold text-center mb-5 text-gray-700">
+            <h2 className="text-3xl font-semibold text-center mb-5 text-gray-700 dark:text-[#cccccc]">
               {isSignup ? "Create an account" : "Welcome back"}
             </h2>
           </div>

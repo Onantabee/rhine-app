@@ -32,11 +32,11 @@ export default function Profile() {
     <div className="max-w-2xl flex flex-col gap-8 p-6">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <h1 className="text-3xl text-gray-600 pb-3 border-b border-gray-200">
+          <h1 className="text-3xl text-gray-600 dark:text-[#bfbfbf] pb-3 border-b border-gray-200 dark:border-[#404040]">
             Account Settings
           </h1>
 
-          <div className="flex gap-8 border-b border-gray-200">
+          <div className="flex gap-8 border-b border-gray-200 dark:border-[#404040]">
             {[
               { id: "personal", label: "Personal Information" },
               { id: "password", label: "Change Password" },
@@ -46,7 +46,7 @@ export default function Profile() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`pb-3 text-md font-medium transition-colors relative cursor-pointer ${activeTab === tab.id
                   ? "text-primary border-b-2 border-primary"
-                  : "text-gray-500 hover:text-gray-700"
+                  : "text-gray-500 hover:text-gray-700 dark:text-[#cccccc]"
                   }`}
                 style={{ marginBottom: "-1px" }}
               >

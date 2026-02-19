@@ -38,11 +38,11 @@ export default function Home() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col shrink-0 p-6 pb-0">
-        <div className="flex justify-between border-b border-gray-200 pb-3 gap-2">
+        <div className="flex justify-between border-b border-gray-200 dark:border-[#404040] pb-3 gap-2">
           <div className="flex gap-3 items-center">
-            <h1 className="text-3xl text-gray-600">Tasks</h1>
+            <h1 className="text-3xl text-gray-600 dark:text-[#bfbfbf]">Tasks</h1>
             {filteredTasks.length > 0 && (
-              <p className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">
+              <p className="text-gray-500 dark:text-[#bfbfbf] text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-10 h-10 flex items-center justify-center">
                 {filteredTasks.length}
               </p>
             )}
@@ -129,7 +129,7 @@ export default function Home() {
         </div>
       ) : (
         <div className="h-full min-h-0 p-6 pt-0 flex flex-col">
-          <div className="bg-white flex flex-col min-h-0 border border-gray-200">
+          <div className="bg-white flex flex-col min-h-0 border border-gray-200 dark:border-[#404040]">
             <div className="overflow-auto w-full h-fit">
               <table className="w-full min-w-[1000px] border-none text-left">
                 <TaskListHeader isAdmin={isAdmin} />
@@ -180,7 +180,7 @@ export default function Home() {
         title="Delete Task?"
         size="sm"
       >
-        <p className="text-gray-600 mb-6">You are about to delete a task. This action cannot be undone.</p>
+        <p className="text-gray-600 dark:text-[#bfbfbf] mb-6">You are about to delete a task. This action cannot be undone.</p>
         <div className="flex justify-end gap-3">
           <Button
             variant="secondary"

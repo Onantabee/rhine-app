@@ -8,7 +8,7 @@ const CreateProject = () => {
                 <div className="z-30 h-[500px] lg:h-auto"
                     style={{ padding: '20px', width: '100%', maxWidth: '500px' }}>
                     <div className="flex flex-col items-center mb-8">
-                        <h1 className="text-3xl font-semibold text-center text-gray-700">
+                        <h1 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">
                             Create a Project
                         </h1>
                         <p className="text-gray-400 font-light text-md mt-2 text-center">

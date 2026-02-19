@@ -17,7 +17,7 @@ const TaskDetails = ({
 
     return (
         <div
-            className="relative bg-gray-50 px-6 py-4 w-full max-w-full flex flex-col gap-6 h-fit"
+            className="relative border-gray-200 dark:border-[#404040] px-6 py-4 w-full max-w-full flex flex-col gap-6 h-fit"
             style={{
                 backgroundColor: cardBackground,
                 border: cardBorder,
@@ -36,9 +36,9 @@ const TaskDetails = ({
 
             <div className="flex flex-col gap-1">
                 <p className="text-sm text-gray-500">Description:</p>
-                <div className="h-20 border border-gray-200 px-3 py-1 bg-gray-200/20 overflow-y-auto">
+                <div className="h-20 border border-gray-200 dark:border-[#404040] px-3 py-1 bg-gray-200/20 dark:bg-[#404040]/10 overflow-y-auto">
                     <h1
-                        className={`text-[15px] break-all whitespace-pre-wrap ${taskStatus === "CANCELLED" ? "text-gray-400" : "text-gray-700"
+                        className={`text-[15px] break-all whitespace-pre-wrap ${taskStatus === "CANCELLED" ? "text-gray-400" : "text-gray-700 dark:text-[#cccccc]"
                             }`}
                     >
                         {task.description}
@@ -50,7 +50,7 @@ const TaskDetails = ({
                 <div className="text-sm text-gray-500 flex items-center justify-center">
                     <span>Priority:&nbsp;</span>
                     <p
-                        className={`text-sm border border-gray-200 font-medium rounded-[5px] py-1 px-4 border-none ${dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED"
+                        className={`text-sm border border-gray-200 dark:border-[#404040] font-medium rounded-[5px] py-1 px-4 border-none ${dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED"
                             ? priorityColors.OVERDUE
                             : priorityColors[task.priority]
                             }`}
@@ -102,16 +102,16 @@ const TaskDetails = ({
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "COMPLETED"
                                         ? "bg-green-50 text-green-700 border-green-300"
                                         : taskStatus === "CANCELLED"
-                                            ? "bg-gray-100 text-gray-500 border-gray-300"
+                                            ? "bg-gray-100 text-gray-500 border-gray-200 dark:border-[#404040]"
                                             : dueDateStatus === "OVERDUE"
-                                                ? "bg-gray-100 text-gray-500 italic border-gray-300"
+                                                ? "bg-gray-100 text-gray-500 italic border-gray-200 dark:border-[#404040]"
                                                 : dueDateStatus === "DUE_TODAY"
                                                     ? "bg-red-50 text-red-600 italic border-red-300"
                                                     : dueDateStatus === "DUE_TOMORROW"
                                                         ? "bg-orange-50 text-orange-600 italic border-orange-300"
                                                         : dueDateStatus === "DUE_IN_2_DAYS"
                                                             ? "bg-yellow-50 text-yellow-700 italic border-yellow-300"
-                                                            : "bg-gray-50 text-gray-600 border-gray-200"
+                                                            : "bg-gray-50 text-gray-600 dark:text-[#bfbfbf] border-gray-200 dark:border-[#404040]"
                                         }`}
                                 >
                                     {formatDueDateText(task.dueDate, taskStatus, dueDateStatus)}
@@ -123,7 +123,7 @@ const TaskDetails = ({
                             value: (
                                 <span
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "CANCELLED"
-                                        ? "bg-gray-100 border-gray-300 text-gray-500"
+                                        ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
                                         : "bg-blue-50 border-blue-300 text-blue-700"
                                         }`}
                                 >
@@ -136,9 +136,9 @@ const TaskDetails = ({
                             value: (
                                 <span
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "CANCELLED"
-                                        ? "bg-gray-100 border-gray-300 text-gray-500"
+                                        ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
                                         : !task.assigneeId
-                                            ? "bg-gray-100 border-gray-300 text-gray-500"
+                                            ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
                                             : "bg-primary/10 border-primary/30 text-primary"
                                         }`}
                                 >

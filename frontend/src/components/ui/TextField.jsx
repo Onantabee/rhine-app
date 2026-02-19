@@ -36,7 +36,7 @@ const TextField = forwardRef(
         }, [value, autoResize, maxRows]);
 
         const baseStyles =
-            'w-full px-4 py-3 bg-white text-gray-800 border border-gray-300 outline-none resize-none';
+            'w-full px-4 py-3 bg-white dark:bg-[#1a1a1a] text-gray-800 border border-gray-200 dark:border-[#404040] outline-none resize-none';
         const focusStyles = isFocused
             ? 'border-primary'
             : 'hover:border-gray-400';
@@ -55,7 +55,7 @@ const TextField = forwardRef(
         return (
             <div className={`flex flex-col gap-2 ${fullWidth ? 'w-full' : ''} ${className}`}>
                 {label && (
-                    <label className="text-sm text-gray-600 font-medium px-1">
+                    <label className="text-sm text-gray-600 dark:text-[#bfbfbf] font-medium px-1">
                         {label}
                     </label>
                 )}

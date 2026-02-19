@@ -1,62 +1,25 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: #7733ff;
   --color-primary-hover: #661aff;
   --color-primary-light: #7733ff1a;
 
-  /* Base grayscale - Default (Light Mode) */
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-  --color-gray-950: #030712;
-
-  --color-white: #ffffff;
-  --color-black: #000000;
+  /* Semantic Theme Variables */
+  --color-bg-primary: #ffffff;
+  --color-text-primary: #1f2937;
 }
 
-/* Dark Mode - Inverted Grayscale */
-@variant dark (&:where(.dark, .dark *));
-
-:root.dark {
-  --color-gray-50: #18181b;
-  /* was 950 */
-  --color-gray-100: #27272a;
-  /* was 900 */
-  --color-gray-200: #3f3f46;
-  /* was 800 */
-  --color-gray-300: #52525b;
-  /* was 700 */
-  --color-gray-400: #71717a;
-  /* was 600 */
-  --color-gray-500: #a1a1aa;
-  /* was 500 */
-  --color-gray-600: #9ca3af;
-  /* was 400 */
-  --color-gray-700: #d4d4d8;
-  /* was 300 */
-  --color-gray-800: #e4e4e7;
-  /* was 200 */
-  --color-gray-900: #f4f4f5;
-  /* was 100 */
-  --color-gray-950: #fafafa;
-  /* was 50 */
-
-  --color-primary: #9966ff;
-  --color-primary-hover: #8047ff;
-  --color-primary-light: #9966ff1a;
-
-  --color-white: #1a1a1a;
-  /* bg-white becomes dark bg */
-  --color-black: #ffffff;
-  /* text-black becomes white */
+@layer base {
+  .dark {
+    --color-primary: #9966ff;
+    --color-primary-hover: #661aff;
+    --color-primary-light: #7733ff1a;
+    --color-bg-primary: #1a1a1a;
+    --color-text-primary: #cccccc;
+  }
 }
 
 
@@ -69,8 +32,6 @@ html {
 }
 
 body {
-  background-color: var(--color-white);
-  color: var(--color-gray-800);
   font-family: system-ui, -apple-system, sans-serif;
 }
 

@@ -34,10 +34,10 @@ const TeamMembers = () => {
     return (
         <div className="flex flex-col gap-3 h-full">
             <div className="p-6 pb-0">
-                <div className="flex items-center justify-between border-b border-gray-200 pb-3 flex-shrink-0">
+                <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#404040] pb-3 flex-shrink-0">
                     <div className="flex justify-between gap-2">
-                        <h1 className="text-3xl text-gray-600 truncate">Team Members</h1>
-                        <span className="text-gray-500 text-2xl p-2 rounded-full bg-gray-100 w-10 h-10 flex items-center justify-center">
+                        <h1 className="text-3xl text-gray-600 dark:text-[#bfbfbf] truncate">Team Members</h1>
+                        <span className="text-gray-500 dark:text-[#bfbfbf] text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-10 h-10 flex items-center justify-center">
                             {filteredMembers.length}
                         </span>
                     </div>
@@ -72,7 +72,7 @@ const TeamMembers = () => {
             >
                 <form onSubmit={handleInvite} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-[#cccccc] mb-1.5">
                             Email Address
                         </label>
                         <Input
@@ -121,7 +121,7 @@ const TeamMembers = () => {
                 title="Remove Member?"
                 size="sm"
             >
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 dark:text-[#bfbfbf] mb-6">
                     Remove <strong>{removeTarget?.name}</strong> from this project?
                     They will lose access to all tasks and data.
                 </p>

@@ -11,9 +11,9 @@ const Card = ({
     ...props
 }) => {
     const variantStyles = {
-        default: 'bg-white border border-gray-200',
-        elevated: 'bg-white border border-gray-200',
-        outlined: 'bg-transparent border border-gray-300',
+        default: 'bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040]',
+        elevated: 'bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040]',
+        outlined: 'bg-transparent border border-gray-200 dark:border-[#404040]',
     };
 
     const hoverStyles = hoverable ? 'cursor-pointer hover:bg-gray-50' : '';

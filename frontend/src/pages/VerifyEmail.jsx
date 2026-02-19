@@ -19,9 +19,9 @@ const VerifyEmail = () => {
             <div className="z-30 h-[500px] lg:h-auto"
                 style={{ padding: '20px', width: '100%', maxWidth: '500px' }}>
                 <div className="flex flex-col items-center mb-8">
-                    <h1 className="text-3xl font-semibold text-center text-gray-700">Verify your email</h1>
+                    <h1 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Verify your email</h1>
                     <p className="text-gray-400 font-light text-md mt-2 text-center">
-                        We've sent a verification code to <span className="font-medium text-gray-700">{email}</span>
+                        We've sent a verification code to <span className="font-medium text-gray-700 dark:text-[#cccccc]">{email}</span>
                     </p>
                 </div>
 

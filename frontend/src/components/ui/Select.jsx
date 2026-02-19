@@ -50,8 +50,8 @@ const Select = forwardRef(
             ? "px-3 py-1.5 text-sm"
             : "px-4 py-3";
         const baseStyles =
-            `w-full text-gray-800 border border-gray-300 flex justify-between items-center outline-none cursor-pointer relative z-10 ${sizeStyles}`;
-        const bgStyle = className.includes("bg-") ? "" : "bg-white";
+            `w-full text-gray-800 dark:text-[#cccccc] border border-gray-200 dark:border-[#404040] flex justify-between items-center outline-none cursor-pointer relative z-10 ${sizeStyles}`;
+        const bgStyle = className.includes("bg-") ? "" : "bg-white dark:bg-[#1a1a1a]";
         const focusStyles = isOpen
             ? "border-primary"
             : "hover:border-gray-400";
@@ -66,7 +66,7 @@ const Select = forwardRef(
                 className={`flex flex-col gap-2 ${fullWidth ? "w-full" : ""} relative`}
             >
                 {label && (
-                    <label className="text-sm text-gray-600 font-medium px-1">
+                    <label className="text-sm text-gray-600 dark:text-[#bfbfbf] font-medium px-1">
                         {label}
                     </label>
                 )}
@@ -87,14 +87,14 @@ const Select = forwardRef(
                 </div>
 
                 {isOpen && (
-                    <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-white border border-gray-200 overflow-hidden z-50 max-h-60 overflow-y-auto">
+                    <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] overflow-hidden z-50 max-h-60 overflow-y-auto">
                         {options.map((option) => (
                             <div
                                 key={option.value}
                                 onClick={() => handleSelect(option.value)}
                                 className={`${size === "sm" ? "px-3 py-2 text-sm" : "px-4 py-3"} flex items-center justify-between cursor-pointer ${value === option.value
                                     ? "bg-primary/10 text-primary"
-                                    : "text-gray-700 hover:bg-gray-50"
+                                    : "text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626]"
                                     }`}
                             >
                                 <span className="truncate">{option.label}</span>

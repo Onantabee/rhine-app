@@ -102,7 +102,7 @@ const DatePicker = forwardRef(
             ? 'border-red-500'
             : open
                 ? 'border-primary'
-                : 'border-gray-300 hover:border-gray-400';
+                : 'border-gray-200 dark:border-[#404040] hover:border-gray-400';
 
         const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : '';
 
@@ -112,24 +112,24 @@ const DatePicker = forwardRef(
                 className={`relative flex flex-col gap-2 ${fullWidth ? 'w-full' : ''} ${className}`}
             >
                 {label && (
-                    <label className="text-sm text-gray-600 font-medium px-1">
+                    <label className="text-sm text-gray-600 dark:text-[#bfbfbf] font-medium px-1">
                         {label}
                     </label>
                 )}
 
                 <div
                     onClick={toggleOpen}
-                    className={`flex items-center justify-between w-full px-4 py-3 bg-white border outline-none cursor-pointer select-none ${borderColor} ${disabledStyles}`}
+                    className={`flex items-center justify-between w-full px-4 py-3 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] outline-none cursor-pointer select-none ${borderColor} ${disabledStyles}`}
                 >
-                    <span className={displayValue ? 'text-gray-800' : 'text-gray-400'}>
+                    <span className={displayValue ? 'text-gray-800 dark:text-[#cccccc]' : 'text-gray-400 dark:text-[#cccccc]'}>
                         {displayValue || placeholder}
                     </span>
-                    <Calendar size={18} className="text-gray-400 flex-shrink-0" />
+                    <Calendar size={18} className="text-gray-400 dark:text-[#cccccc] flex-shrink-0" />
                 </div>
 
                 {open && (
-                    <div className="absolute max-w-[350px] min-h-[300px] bottom-full left-0 mb-1 w-full bg-white border border-gray-300 shadow-md z-50 select-none">
-                        <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200">
+                    <div className="absolute max-w-[350px] min-h-[300px] bottom-full left-0 mb-1 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] shadow-md z-50 select-none">
+                        <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-[#404040]">
                             <button
                                 type="button"
                                 onClick={prevMonth}
@@ -137,7 +137,7 @@ const DatePicker = forwardRef(
                             >
                                 <ChevronLeft size={16} />
                             </button>
-                            <span className="text-sm font-semibold text-gray-700">
+                            <span className="text-sm font-semibold text-gray-700 dark:text-[#cccccc]">
                                 {MONTHS[month]} {year}
                             </span>
                             <button
@@ -190,7 +190,7 @@ const DatePicker = forwardRef(
                                                 ? 'bg-primary text-white font-semibold'
                                                 : isToday
                                                     ? 'font-semibold text-primary'
-                                                    : 'text-gray-700 hover:bg-gray-100'
+                                                    : 'text-gray-700 dark:text-[#cccccc] hover:bg-gray-100 dark:hover:bg-[#262626]'
                                             }
                                             ${isDayDisabled ? 'opacity-30 cursor-not-allowed' : ''}
                                         `}

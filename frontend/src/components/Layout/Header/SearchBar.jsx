@@ -3,11 +3,11 @@ import { Search, X } from "lucide-react";
 
 const SearchBar = ({ value, onChange, onClear, placeholder = "Search tasks…" }) => {
     return (
-        <div className="flex items-center justify-center w-[30rem] border border-gray-300 focus-within:border-primary pl-6 pr-1 bg-white py-1">
+        <div className="flex items-center justify-center w-[30rem] border border-gray-200 dark:border-[#404040] focus-within:border-primary pl-6 pr-1 bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-[#cccccc] py-1">
             <input
                 type="text"
                 placeholder={placeholder}
-                className="text-[16px] w-full text-gray-800 py-1 focus:outline-0 bg-transparent placeholder:text-gray-400"
+                className="text-[16px] w-full text-gray-800 py-1 focus:outline-0 bg-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-[#cccccc]"
                 value={value}
                 onChange={onChange}
             />

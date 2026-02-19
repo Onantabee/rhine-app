@@ -9,6 +9,7 @@ import NotFound from "../NotFound";
 
 import { getCardBackground, getCardBorder } from "../../utils/taskUtils";
 import { useTaskDetails } from "../../hooks/task/useTaskDetails";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Task() {
     const {
@@ -42,6 +43,7 @@ export default function Task() {
         navigate,
         projectId
     } = useTaskDetails();
+    const { theme } = useTheme();
 
     if (isError || (!isLoadingTask && !task)) {
         return (
@@ -77,8 +79,8 @@ export default function Task() {
                     creatorName={creatorUser?.name}
                     assigneeName={assigneeUser?.name}
                     onStatusChange={handleStatusChange}
-                    cardBackground={getCardBackground(taskStatus, dueDateStatus)}
-                    cardBorder={getCardBorder(taskStatus, dueDateStatus)}
+                    cardBackground={getCardBackground(taskStatus, dueDateStatus, theme)}
+                    cardBorder={getCardBorder(taskStatus, dueDateStatus, theme)}
                 />
 
                 <div className="w-full flex flex-col flex-1 md:flex-initial min-h-0">

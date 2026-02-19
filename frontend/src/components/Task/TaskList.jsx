@@ -14,7 +14,7 @@ import {
 
 export const TaskListHeader = ({ isAdmin }) => (
   <thead className="bg-gray-50 border-0">
-    <tr className="sticky top-0 z-10 bg-gray-50 border-b border-gray-200">
+    <tr className="sticky top-0 z-10 bg-gray-50 border-b border-gray-200 dark:border-[#404040]">
       <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Title</th>
       <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Status</th>
       <th className="text-center text-xs font-semibold text-gray-500 uppercase tracking-wider p-3.5">Priority</th>
@@ -76,7 +76,7 @@ const TaskList = ({
           <h3
             className={`text-base font-bold truncate ${taskStatus === "CANCELLED"
               ? "text-gray-400 line-through italic"
-              : "text-gray-700"
+              : "text-gray-700 dark:text-[#cccccc]"
               }`}
           >
             {highlightSearchMatch(title, searchTerm)}
@@ -118,17 +118,17 @@ const TaskList = ({
                   {employeeUser?.name?.charAt(0) || "U"}
                 </div>
               ) : (
-                <div className="w-8 h-8 rounded-full border border-gray-300 bg-gray-100 text-gray-500 flex justify-center items-center text-sm">
+                <div className="w-8 h-8 rounded-full border border-gray-200 dark:border-[#404040] bg-gray-100 text-gray-500 flex justify-center items-center text-sm">
                   <span className="text-xs">?</span>
                 </div>
               )}
-              <span className="text-gray-600 text-sm truncate">
+              <span className="text-gray-600 dark:text-[#bfbfbf] text-sm truncate">
                 {employeeUser?.name || "Unassigned"}
               </span>
             </div>
           ) : (
             <span className={`px-3 py-1 rounded-[5px] border text-sm font-medium truncate max-w-[115px] ${taskStatus === "CANCELLED"
-              ? "bg-gray-100 border-gray-300 text-gray-500"
+              ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
               : "bg-blue-50 border-blue-300 text-blue-700"
               }`}>
               {adminUser?.name || "Loading..."}
@@ -140,7 +140,7 @@ const TaskList = ({
           <span
             className={`px-3 py-1 text-sm font-medium italic border rounded-[5px] whitespace-nowrap ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
               ? dueDateStatusConfig[dueDateStatus].className
-              : "text-gray-600 border-none"
+              : "text-gray-600 dark:text-[#bfbfbf] border-none"
               }`}
           >
             {formatDueDateText(dueDate, taskStatus, dueDateStatus)}

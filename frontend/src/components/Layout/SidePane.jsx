@@ -33,7 +33,7 @@ const SidePane = ({ onLinkClick }) => {
     }
 
     return (
-        <aside className="w-full md:w-[300px] h-full border-r border-gray-200 bg-white flex flex-col justify-between">
+        <aside className="w-full md:w-[300px] h-full border-r border-gray-200 dark:border-[#404040] bg-white dark:bg-[#1a1a1a] flex flex-col justify-between">
             <div className="p-6">
                 <nav className="space-y-1">
                     {navItems.map((item) => (
@@ -42,14 +42,14 @@ const SidePane = ({ onLinkClick }) => {
                             onClick={() => handleNavClick(item.path)}
                             className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive(item.path)
                                 ? "bg-primary/10 text-primary"
-                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                : "text-gray-600 dark:text-[#d9d9d9] hover:bg-gray-50 dark:hover:bg-[#262626] hover:text-gray-900 dark:hover:text-[#cccccc]"
                                 }`}
                         >
                             <span
                                 className={
                                     isActive(item.path)
                                         ? "text-primary"
-                                        : "text-gray-600"
+                                        : "text-gray-600 dark:text-[#d9d9d9]"
                                 }
                             >
                                 {item.icon}
@@ -60,15 +60,15 @@ const SidePane = ({ onLinkClick }) => {
                 </nav>
             </div>
 
-            <div className="p-6 border-t border-gray-200 space-y-1">
+            <div className="p-6 border-t border-gray-200 dark:border-[#404040] space-y-1">
                 <button
                     onClick={() => handleNavClick("/profile")}
                     className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive("/profile")
                         ? "bg-primary/10 text-primary"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        : "text-gray-600 dark:text-[#d9d9d9] hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-[#262626] dark:hover:text-[#cccccc]"
                         }`}
                 >
-                    <User size={20} className={isActive("/profile") ? "text-primary" : "text-gray-600"} />
+                    <User size={20} className={isActive("/profile") ? "text-primary" : "text-gray-600 dark:text-[#d9d9d9]"} />
                     Profile
                 </button>
                 {isAdmin && (
@@ -76,16 +76,16 @@ const SidePane = ({ onLinkClick }) => {
                         onClick={() => handleNavClick(`/project/${projectId}/settings`)}
                         className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive(`/project/${projectId}/settings`)
                             ? "bg-primary/10 text-primary"
-                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                            : "text-gray-600 dark:text-[#d9d9d9] hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-[#262626] dark:hover:text-[#cccccc]"
                             }`}
                     >
-                        <Settings size={20} className={isActive(`/project/${projectId}/settings`) ? "text-primary" : "text-gray-600"} />
+                        <Settings size={20} className={isActive(`/project/${projectId}/settings`) ? "text-primary" : "text-gray-600 dark:text-[#d9d9d9]"} />
                         Settings
                     </button>
                 )}
                 <button
                     onClick={handleLogoutClick}
-                    className="w-full flex items-center gap-3 px-3 py-4 text-lg font-normal text-red-600 hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3 py-4 text-lg font-normal text-red-600 dark:text-red-500 hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
                 >
                     <LogOut size={20} />
                     Logout
@@ -98,7 +98,7 @@ const SidePane = ({ onLinkClick }) => {
                 title="Logout?"
                 size="sm"
             >
-                <p className="text-gray-600 mb-6">Are you sure you want to logout?</p>
+                <p className="text-gray-600 dark:text-[#d9d9d9] mb-6">Are you sure you want to logout?</p>
                 <div className="flex gap-3 justify-end">
                     <Button variant="secondary" onClick={() => setLogoutDialogOpen(false)}>
                         Cancel

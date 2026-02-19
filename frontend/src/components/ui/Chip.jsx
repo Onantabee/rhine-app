@@ -23,8 +23,8 @@ const Chip = ({
         PENDING: 'bg-yellow-100 text-yellow-800 border border-yellow-300',
         ONGOING: 'bg-blue-100 text-blue-800 border border-blue-300',
         COMPLETED: 'bg-green-100 text-green-800 border border-green-300',
-        CANCELLED: 'bg-gray-100 text-gray-500 border border-gray-300',
-        OVERDUE: 'bg-gray-100 text-gray-500 border border-gray-300',
+        CANCELLED: 'bg-gray-100 text-gray-500 border border-gray-200 dark:border-[#404040]',
+        OVERDUE: 'bg-gray-100 text-gray-500 border border-gray-200 dark:border-[#404040]',
     };
 
     const priorityVariants = {
@@ -41,7 +41,7 @@ const Chip = ({
         statusVariants[variant] ||
         priorityVariants[variant] ||
         customColor ||
-        'bg-gray-100 text-gray-700 border border-gray-300';
+        'bg-gray-100 text-gray-700 dark:text-[#cccccc] border border-gray-200 dark:border-[#404040]';
 
     return (
         <span

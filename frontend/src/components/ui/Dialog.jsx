@@ -36,23 +36,23 @@ const Dialog = ({
         <>
             <div
                 onClick={onClose}
-                className="fixed inset-0 bg-black/30 z-40"
+                className="fixed inset-0 bg-black/30 dark:bg-black/50 z-40"
             />
 
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
                 <div
-                    className={`w-full ${sizeStyles[size]} bg-white border border-gray-200 ${className}`}
+                    className={`w-full ${sizeStyles[size]} bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] ${className}`}
                     {...props}
                 >
                     {(title || showClose) && (
-                        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-[#404040]">
                             {title && (
-                                <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-[#cccccc]">{title}</h2>
                             )}
                             {showClose && (
                                 <button
                                     onClick={onClose}
-                                    className="ml-auto text-gray-400 hover:text-gray-600 p-1 cursor-pointer"
+                                    className="ml-auto text-gray-400 hover:text-gray-600 dark:text-[#bfbfbf] p-1 cursor-pointer"
                                 >
                                     <X size={24} />
                                 </button>

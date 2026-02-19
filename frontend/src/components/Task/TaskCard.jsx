@@ -75,19 +75,19 @@ const TaskCard = ({
                     ? "rgba(249, 115, 22, 0.3)"
                     : dueDateStatus === "DUE_IN_2_DAYS"
                       ? "rgba(234, 179, 8, 0.3)"
-                      : undefined,
+                      : "#e5e7eb",
         }}
       >
         <h3
           className={`text-base font-bold mb-3 truncate ${taskStatus === "CANCELLED"
             ? "text-gray-400 line-through italic"
-            : "text-gray-700"
+            : "text-gray-700 dark:text-[#cccccc]"
             }`}
         >
           {highlightSearchMatch(title, searchTerm)}
         </h3>
 
-        <div className="border-t border-gray-200 my-3" />
+        <div className="border-t border-gray-200 dark:border-[#404040] my-3" />
 
         <div className="flex gap-2 mb-3">
           <Chip
@@ -109,7 +109,7 @@ const TaskCard = ({
         <div className="flex items-center gap-2 mb-3">
           {isAdmin ? (
             !assignee ? (
-              <div className="px-3 py-1.5 font-semibold border text-sm rounded-[5px] bg-gray-100 border-gray-300 text-gray-500">
+              <div className="px-3 py-1.5 font-semibold border text-sm rounded-[5px] bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500">
                 Unassigned
               </div>
             ) : (
@@ -117,7 +117,7 @@ const TaskCard = ({
                 {taskStatus === "COMPLETED" || taskStatus === "CANCELLED" ? (
                   <div
                     className={`px-3 py-1.5 font-semibold border text-sm rounded-[5px] ${taskStatus === "CANCELLED"
-                      ? "bg-gray-100 border-gray-300 text-gray-500"
+                      ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
                       : "bg-primary/10 border-primary/30 text-primary"
                       }`}
                   >
@@ -136,7 +136,7 @@ const TaskCard = ({
               <span className="text-gray-400 text-xs mb-1">Creator</span>
               <span
                 className={`px-3 py-1 rounded-[5px] border text-sm font-medium truncate max-w-[115px] ${taskStatus === "CANCELLED"
-                  ? "bg-gray-100 border-gray-300 text-gray-500"
+                  ? "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500"
                   : "bg-blue-50 border-blue-300 text-blue-700"
                   }`}
               >
@@ -153,7 +153,7 @@ const TaskCard = ({
                 <span
                   className={`px-3 py-1 border text-sm font-medium italic rounded-[5px] ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
                     ? dueDateStatusConfig[dueDateStatus].className
-                    : "bg-gray-50 border-gray-200 text-gray-600"
+                    : "bg-gray-50 border-gray-200 dark:border-[#404040] text-gray-600 dark:text-[#bfbfbf]"
                     }`}
                 >
                   {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
@@ -166,7 +166,7 @@ const TaskCard = ({
         {
           isAdmin && (
             <>
-              <div className="border-t border-gray-200 my-3" />
+              <div className="border-t border-gray-200 dark:border-[#404040] my-3" />
               <div className="flex justify-end items-center gap-2">
                 <button
                   onClick={onView}

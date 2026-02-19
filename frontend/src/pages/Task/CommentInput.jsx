@@ -34,7 +34,7 @@ const CommentInput = ({
                         </button>
                     </div>
                 )}
-                <div className="flex gap-2 items-end bg-gray-100 p-2 border border-gray-200">
+                <div className="flex gap-2 items-end bg-gray-100 dark:bg-[#333333] p-2 border border-gray-200 dark:border-[#404040]">
                     <div
                         contentEditable="true"
                         ref={inputRef}
@@ -61,7 +61,7 @@ const CommentInput = ({
                         disabled={newComment.trim() === ""}
                         className={`flex justify-center items-center border h-10 font-semibold cursor-pointer rounded-full ${newComment.trim() !== ""
                             ? "bg-primary border-primary w-11 text-white hover:bg-primary-hover"
-                            : "bg-gray-200 border-gray-300 w-11 text-gray-400"
+                            : "bg-gray-200 border-gray-200 dark:border-[#404040] w-11 text-gray-400"
                             }`}
                     >
                         <ArrowUp size={24} />

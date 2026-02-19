@@ -15,10 +15,10 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
 
     return (
         <div className="bg-white h-fit flex flex-col min-h-0">
-            <div className="overflow-auto flex-1 border border-gray-200">
+            <div className="overflow-auto flex-1 border border-gray-200 dark:border-[#404040]">
                 <table className="w-full text-left">
                     <thead className="bg-gray-50">
-                        <tr className="border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
+                        <tr className="border-b border-gray-200 dark:border-[#404040] text-xs uppercase text-gray-500 font-semibold">
                             <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4">Name</th>
                             <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4">Email</th>
                             <th className="sticky top-0 z-10 bg-gray-50 px-6 py-4">Role</th>
@@ -52,7 +52,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                                     </div>
                                 </td>
                                 <td className="px-6 py-4">
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-600 dark:text-[#bfbfbf]">
                                         {highlightSearchMatch(member.email, searchTerm)}
                                     </p>
                                 </td>
@@ -60,7 +60,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                                     <span
                                         className={`inline-flex items-center gap-1.5 text-xs capitalize font-medium px-2.5 py-1 rounded-[5px] ${member.projectRole === "PROJECT_ADMIN"
                                             ? "bg-primary/10 text-primary border border-primary/40"
-                                            : "bg-gray-100 text-gray-600 border border-gray-300/40"
+                                            : "bg-gray-100 text-gray-600 dark:text-[#bfbfbf] border border-gray-200 dark:border-[#404040]/40"
                                             }`}
                                     >
                                         {member.projectRole === "PROJECT_ADMIN"
@@ -69,7 +69,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 text-center">
-                                    <span className="inline-flex items-center justify-center min-w-[30px] h-[30px] text-gray-700 text-sm font-medium">
+                                    <span className="inline-flex items-center justify-center min-w-[30px] h-[30px] text-gray-700 dark:text-[#cccccc] text-sm font-medium">
                                         {member.activeTaskCount || 0}
                                     </span>
                                 </td>
@@ -78,7 +78,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                                         <div className="relative inline-block text-left">
                                             <button
                                                 onClick={(e) => toggleActionMenu(member.email, e)}
-                                                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg transition-colors cursor-pointer"
+                                                className="p-2 text-gray-400 hover:text-gray-600 dark:text-[#bfbfbf] rounded-lg transition-colors cursor-pointer"
                                             >
                                                 <MoreVertical size={18} />
                                             </button>
@@ -106,7 +106,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                         <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white border-t border-l border-gray-400 z-[-1]" />
                         <button
                             onClick={handleViewTasks}
-                            className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            className="flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-100"
                         >
                             <Eye className="mr-3 h-4 w-4 text-gray-400" />
                             View Tasks

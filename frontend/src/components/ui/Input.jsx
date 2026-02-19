@@ -27,7 +27,7 @@ const Input = forwardRef(
         const inputType = type === 'password' && showPassword ? 'text' : type;
 
         const baseInputStyles =
-            'w-full px-4 py-3 bg-white text-gray-800 border border-gray-300 outline-none';
+            'w-full px-4 py-3 bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-[#cccccc] border border-gray-200 dark:border-[#404040] dark:border-[#404040] outline-none';
         const focusStyles = isFocused
             ? 'border-primary'
             : 'hover:border-gray-400';
@@ -39,7 +39,7 @@ const Input = forwardRef(
         return (
             <div className={`flex flex-col gap-2 ${fullWidth ? 'w-full' : ''} ${className}`}>
                 {label && (
-                    <label className="text-sm text-gray-600 font-medium px-1">
+                    <label className="text-sm text-gray-600 dark:text-[#bfbfbf] font-medium px-1 dark:text-[#cccccc]">
                         {label}
                     </label>
                 )}
@@ -66,7 +66,7 @@ const Input = forwardRef(
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-[#bfbfbf] cursor-pointer"
                             tabIndex={-1}
                         >
                             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
