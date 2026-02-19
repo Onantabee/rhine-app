@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   mobileMenuOpen: false,
+  notifications: [],
 };
 
 const uiSlice = createSlice({
@@ -17,8 +18,12 @@ const uiSlice = createSlice({
     closeMobileMenu: (state) => {
       state.mobileMenuOpen = false;
     },
+    addNotification: (state, action) => {
+      if (!state.notifications) state.notifications = [];
+      state.notifications.push(action.payload);
+    },
   },
 });
 
-export const { toggleMobileMenu, setMobileMenuOpen, closeMobileMenu } = uiSlice.actions;
+export const { toggleMobileMenu, setMobileMenuOpen, closeMobileMenu, addNotification } = uiSlice.actions;
 export default uiSlice.reducer;
