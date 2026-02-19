@@ -118,13 +118,13 @@ const TaskCard = ({
                   <div
                     className={`px-3 py-1.5 font-semibold border text-sm rounded-[5px] ${taskStatus === "CANCELLED"
                       ? "bg-gray-100 border-gray-300 text-gray-500"
-                      : "bg-[#7733ff]/10 border-[#7733ff]/30 text-[#7733ff]"
+                      : "bg-primary/10 border-primary/30 text-primary"
                       }`}
                   >
                     {firstName || "User"} {lastName ? lastName.charAt(0) + "." : ""}
                   </div>
                 ) : (
-                  <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
+                  <div className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex justify-center items-center text-sm">
                     {firstName?.charAt(0) || "U"}
                     {lastName?.charAt(0) || ""}
                   </div>
@@ -177,7 +177,7 @@ const TaskCard = ({
                 <hr className="h-6 w-[2px] border-none bg-gray-200" />
                 <button
                   onClick={onEdit}
-                  className="p-2 text-gray-400 hover:text-[#7733ff] cursor-pointer"
+                  className="p-2 text-gray-400 hover:text-primary cursor-pointer"
                 >
                   <Pencil size={18} />
                 </button>

@@ -36,7 +36,7 @@ const CommentItem = ({
                         <div className="flex items-center gap-2 mb-1">
                             <span
                                 className={`text-sm capitalize ${isOwnComment
-                                    ? "text-gray-500 group-hover:text-[#7733ff]"
+                                    ? "text-gray-500 group-hover:text-primary"
                                     : "text-gray-500"
                                     }`}
                             >
@@ -45,7 +45,7 @@ const CommentItem = ({
                             <div className="bg-gray-300 w-1 h-1 rounded-full" />
                             <p
                                 className={`text-xs ${isOwnComment
-                                    ? "text-gray-400 group-hover:text-[#7733ff]/70"
+                                    ? "text-gray-400 group-hover:text-primary/70"
                                     : "text-gray-400"
                                     }`}
                             >
@@ -63,7 +63,7 @@ const CommentItem = ({
                             <button
                                 ref={triggerRef}
                                 onClick={() => onToggleDropdown(comment.id)}
-                                className="cursor-pointer p-1 text-gray-400 hover:text-[#7733ff]"
+                                className="cursor-pointer p-1 text-gray-400 hover:text-primary"
                             >
                                 <MoreVerticalIcon size={25} />
                             </button>

@@ -31,7 +31,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                             <tr key={member.email} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm flex-shrink-0">
+                                        <div className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex justify-center items-center text-sm flex-shrink-0">
                                             {member.name?.[0]?.toUpperCase() || "?"}
                                         </div>
                                         <p className="flex items-center gap-2 text-sm font-medium text-gray-900 truncate">
@@ -59,7 +59,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                                 <td className="px-6 py-4">
                                     <span
                                         className={`inline-flex items-center gap-1.5 text-xs capitalize font-medium px-2.5 py-1 rounded-[5px] ${member.projectRole === "PROJECT_ADMIN"
-                                            ? "bg-[#7733ff]/10 text-[#7733ff] border border-[#7733ff]/40"
+                                            ? "bg-primary/10 text-primary border border-primary/40"
                                             : "bg-gray-100 text-gray-600 border border-gray-300/40"
                                             }`}
                                     >

@@ -10,7 +10,7 @@ const NoProjects = () => {
         <div className="h-[70vh] flex justify-center items-center">
             <div className="flex flex-col items-center p-8 text-center max-w-md">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                    <FolderPlus size={32} className="text-[#7733ff]" />
+                    <FolderPlus size={32} className="text-primary" />
                 </div>
                 <h1 className="text-2xl font-semibold text-gray-800 mb-2">
                     No Projects Yet

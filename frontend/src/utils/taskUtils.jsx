@@ -6,7 +6,7 @@ export const getDueDateStatus = (dueDate, currentStatus) => {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const due = new Date(dueDate); 
+    const due = new Date(dueDate);
     due.setHours(0, 0, 0, 0);
 
     const diffTime = due - today;
@@ -118,7 +118,7 @@ export const highlightSearchMatch = (text, searchTerm) => {
         part.toLowerCase() === searchTerm.toLowerCase() ? (
             <span
                 key={index}
-                className="bg-[#7733ff]/30 text-[#7733ff] px-1 font-bold"
+                className="bg-primary/30 text-primary px-1 font-bold"
             >
                 {part}
             </span>

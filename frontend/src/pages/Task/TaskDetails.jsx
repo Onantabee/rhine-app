@@ -139,7 +139,7 @@ const TaskDetails = ({
                                         ? "bg-gray-100 border-gray-300 text-gray-500"
                                         : !task.assigneeId
                                             ? "bg-gray-100 border-gray-300 text-gray-500"
-                                            : "bg-[#7733ff]/10 border-[#7733ff]/30 text-[#7733ff]"
+                                            : "bg-primary/10 border-primary/30 text-primary"
                                         }`}
                                 >
                                     {assigneeName || "Unassigned"}

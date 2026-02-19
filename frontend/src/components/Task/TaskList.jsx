@@ -114,7 +114,7 @@ const TaskList = ({
           {isAdmin ? (
             <div className="flex items-center gap-2">
               {assignee ? (
-                <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
+                <div className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex justify-center items-center text-sm">
                   {employeeUser?.name?.charAt(0) || "U"}
                 </div>
               ) : (
@@ -159,7 +159,7 @@ const TaskList = ({
               <hr className="h-6 w-[2px] border-none bg-gray-200 mx-2" />
               <button
                 onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
-                className="p-1 text-gray-400 group-hover:text-[#7733ff] cursor-pointer"
+                className="p-1 text-gray-400 group-hover:text-primary cursor-pointer"
               >
                 <Pencil size={18} />
               </button>

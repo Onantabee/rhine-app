@@ -53,7 +53,7 @@ const Select = forwardRef(
             `w-full text-gray-800 border border-gray-300 flex justify-between items-center outline-none cursor-pointer relative z-10 ${sizeStyles}`;
         const bgStyle = className.includes("bg-") ? "" : "bg-white";
         const focusStyles = isOpen
-            ? "border-[#7733ff]"
+            ? "border-primary"
             : "hover:border-gray-400";
         const errorStyles = error ? "border-red-500" : "";
         const disabledStyles = disabled
@@ -93,7 +93,7 @@ const Select = forwardRef(
                                 key={option.value}
                                 onClick={() => handleSelect(option.value)}
                                 className={`${size === "sm" ? "px-3 py-2 text-sm" : "px-4 py-3"} flex items-center justify-between cursor-pointer ${value === option.value
-                                    ? "bg-[#7733ff]/10 text-[#7733ff]"
+                                    ? "bg-primary/10 text-primary"
                                     : "text-gray-700 hover:bg-gray-50"
                                     }`}
                             >

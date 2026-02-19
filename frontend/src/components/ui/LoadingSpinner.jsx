@@ -1,5 +1,5 @@
 
-const LoadingSpinner = ({ size = "md", color = "text-[#7733ff]", className = "" }) => {
+const LoadingSpinner = ({ size = "md", color = "text-primary", className = "" }) => {
     const sizes = {
         sm: "h-4 w-4",
         md: "h-5 w-5",

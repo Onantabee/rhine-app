@@ -29,7 +29,7 @@ const MobileDrawer = ({
                     {isLoggedIn && isVerified ? <ProjectPicker /> : (
                         <div>
                             <h1
-                                className="text-2xl text-[#7733ff] font-semibold cursor-pointer"
+                                className="text-2xl text-primary font-semibold cursor-pointer"
                                 onClick={() =>
                                     activeProject
                                         ? navigate(`/project/${activeProject.id}`)

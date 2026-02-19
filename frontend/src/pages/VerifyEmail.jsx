@@ -55,7 +55,7 @@ const VerifyEmail = () => {
                         <button
                             onClick={handleResend}
                             disabled={isResending}
-                            className="text-[#7733ff] hover:text-[#5a189a] text-center cursor-pointer"
+                            className="text-primary hover:text-primary-hover text-center cursor-pointer"
                         >
                             {isResending ? "Resending..." : "Resend"}
                         </button>

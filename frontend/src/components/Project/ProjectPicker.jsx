@@ -42,7 +42,7 @@ const ProjectPicker = () => {
                                         key={project.id}
                                         onClick={() => handleSelectProject(project)}
                                         className={`w-full flex items-center gap-3 h-14 px-2 text-sm transition-colors cursor-pointer ${activeProject?.id === project.id
-                                            ? "bg-[#7733ff]/10 text-[#7733ff] font-medium"
+                                            ? "bg-primary/10 text-primary font-medium"
                                             : "text-gray-700 hover:bg-gray-50"
                                             }`}
                                     >
@@ -50,7 +50,7 @@ const ProjectPicker = () => {
                                             <span className="truncate w-full text-left text-lg">
                                                 {project.name}
                                             </span>
-                                            <span className={`text-xs font-light ${activeProject?.id === project.id ? 'text-[#7733ff]' : 'text-gray-600'}`}>
+                                            <span className={`text-xs font-light ${activeProject?.id === project.id ? 'text-primary' : 'text-gray-600'}`}>
                                                 {project.currentUserRole === 'PROJECT_ADMIN' && 'Owner'}
                                             </span>
                                         </div>

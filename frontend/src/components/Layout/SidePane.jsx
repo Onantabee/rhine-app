@@ -41,14 +41,14 @@ const SidePane = ({ onLinkClick }) => {
                             key={item.path}
                             onClick={() => handleNavClick(item.path)}
                             className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive(item.path)
-                                ? "bg-[#7733ff]/10 text-[#7733ff]"
+                                ? "bg-primary/10 text-primary"
                                 : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                 }`}
                         >
                             <span
                                 className={
                                     isActive(item.path)
-                                        ? "text-[#7733ff]"
+                                        ? "text-primary"
                                         : "text-gray-600"
                                 }
                             >
@@ -64,22 +64,22 @@ const SidePane = ({ onLinkClick }) => {
                 <button
                     onClick={() => handleNavClick("/profile")}
                     className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive("/profile")
-                        ? "bg-[#7733ff]/10 text-[#7733ff]"
+                        ? "bg-primary/10 text-primary"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                         }`}
                 >
-                    <User size={20} className={isActive("/profile") ? "text-[#7733ff]" : "text-gray-600"} />
+                    <User size={20} className={isActive("/profile") ? "text-primary" : "text-gray-600"} />
                     Profile
                 </button>
                 {isAdmin && (
                     <button
                         onClick={() => handleNavClick(`/project/${projectId}/settings`)}
                         className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive(`/project/${projectId}/settings`)
-                            ? "bg-[#7733ff]/10 text-[#7733ff]"
+                            ? "bg-primary/10 text-primary"
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                             }`}
                     >
-                        <Settings size={20} className={isActive(`/project/${projectId}/settings`) ? "text-[#7733ff]" : "text-gray-600"} />
+                        <Settings size={20} className={isActive(`/project/${projectId}/settings`) ? "text-primary" : "text-gray-600"} />
                         Settings
                     </button>
                 )}

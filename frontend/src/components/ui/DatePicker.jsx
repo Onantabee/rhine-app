@@ -101,7 +101,7 @@ const DatePicker = forwardRef(
         const borderColor = error
             ? 'border-red-500'
             : open
-                ? 'border-[#7733ff]'
+                ? 'border-primary'
                 : 'border-gray-300 hover:border-gray-400';
 
         const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : '';
@@ -187,9 +187,9 @@ const DatePicker = forwardRef(
                                         className={`
                                             aspect-square text-sm text-center cursor-pointer rounded-full flex items-center justify-center
                                             ${isSelected
-                                                ? 'bg-[#7733ff] text-white font-semibold'
+                                                ? 'bg-primary text-white font-semibold'
                                                 : isToday
-                                                    ? 'font-semibold text-[#7733ff]'
+                                                    ? 'font-semibold text-primary'
                                                     : 'text-gray-700 hover:bg-gray-100'
                                             }
                                             ${isDayDisabled ? 'opacity-30 cursor-not-allowed' : ''}

@@ -60,7 +60,7 @@ const CommentInput = ({
                         onClick={onSubmit}
                         disabled={newComment.trim() === ""}
                         className={`flex justify-center items-center border h-10 font-semibold cursor-pointer rounded-full ${newComment.trim() !== ""
-                            ? "bg-[#7733ff] border-[#7733ff] w-11 text-white hover:bg-[#661aff]"
+                            ? "bg-primary border-primary w-11 text-white hover:bg-primary-hover"
                             : "bg-gray-200 border-gray-300 w-11 text-gray-400"
                             }`}
                     >

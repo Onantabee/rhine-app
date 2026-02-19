@@ -31,11 +31,11 @@ const Button = React.forwardRef(
 
         const variantStyles = {
             primary:
-                'bg-[#7733ff] text-white hover:bg-[#661aff] disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed',
+                'bg-primary text-white hover:bg-primary-hover disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed',
             secondary:
                 'bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed',
             outlined:
-                'bg-transparent text-[#7733ff] border border-[#7733ff] hover:bg-[#7733ff]/10 disabled:opacity-50 disabled:cursor-not-allowed',
+                'bg-transparent text-primary border border-primary hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed',
             ghost:
                 'bg-transparent text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed',
             danger:

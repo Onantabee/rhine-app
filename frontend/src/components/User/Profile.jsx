@@ -45,7 +45,7 @@ export default function Profile() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`pb-3 text-md font-medium transition-colors relative cursor-pointer ${activeTab === tab.id
-                  ? "text-[#7733ff] border-b-2 border-[#7733ff]"
+                  ? "text-primary border-b-2 border-primary"
                   : "text-gray-500 hover:text-gray-700"
                   }`}
                 style={{ marginBottom: "-1px" }}
