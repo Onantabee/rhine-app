@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class ProjectController {
 
     @Operation(summary = "Create a new project")
     @PostMapping
-    public ProjectDto createProject(@RequestBody CreateProjectReq request, Authentication auth) {
+    public ProjectDto createProject(@Valid @RequestBody CreateProjectReq request, Authentication auth) {
         return projectService.createProject(auth.getName(), request);
     }
 
@@ -47,7 +48,7 @@ public class ProjectController {
     @Operation(summary = "Update a project (admin only)")
     @PutMapping("/{projectId}")
     public ProjectDto updateProject(@PathVariable Long projectId,
-                                    @RequestBody CreateProjectReq request,
+                                    @Valid @RequestBody CreateProjectReq request,
                                     Authentication auth) {
         return projectService.updateProject(projectId, auth.getName(), request);
     }

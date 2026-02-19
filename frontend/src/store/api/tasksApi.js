@@ -29,7 +29,10 @@ export const tasksApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: taskData,
             }),
-            invalidatesTags: [{ type: 'Task', id: 'LIST' }],
+            invalidatesTags: (result, error, { projectId }) => [
+                { type: 'Task', id: 'LIST' },
+                { type: 'ProjectMember', id: projectId },
+            ],
         }),
 
         updateTask: builder.mutation({
@@ -38,9 +41,10 @@ export const tasksApi = baseApi.injectEndpoints({
                 method: 'PUT',
                 body: taskData,
             }),
-            invalidatesTags: (result, error, { id }) => [
+            invalidatesTags: (result, error, { projectId, id }) => [
                 { type: 'Task', id },
                 { type: 'Task', id: 'LIST' },
+                { type: 'ProjectMember', id: projectId },
             ],
         }),
 
@@ -50,7 +54,10 @@ export const tasksApi = baseApi.injectEndpoints({
                 method: 'PUT',
                 body: { taskStatus },
             }),
-            invalidatesTags: (result, error, { id }) => [{ type: 'Task', id }],
+            invalidatesTags: (result, error, { projectId, id }) => [
+                { type: 'Task', id },
+                { type: 'ProjectMember', id: projectId },
+            ],
         }),
 
         updateTaskNewState: builder.mutation({
@@ -67,7 +74,10 @@ export const tasksApi = baseApi.injectEndpoints({
                 url: `/api/projects/${projectId}/tasks/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: [{ type: 'Task', id: 'LIST' }],
+            invalidatesTags: (result, error, { projectId }) => [
+                { type: 'Task', id: 'LIST' },
+                { type: 'ProjectMember', id: projectId },
+            ],
         }),
     }),
 });

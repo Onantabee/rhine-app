@@ -10,5 +10,7 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByProjectId(Long projectId);
 
+    List<Task> findByProjectIdAndAssigneeEmail(Long projectId, String assigneeEmail);
+
     long countByProjectIdAndAssigneeEmailAndTaskStatusNot(Long projectId, String assigneeEmail, com.tskmgmnt.rhine.enums.TaskStatus status);
 }

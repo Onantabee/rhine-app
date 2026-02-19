@@ -151,6 +151,7 @@ export default function Task() {
             setNewComment("");
             if (commentInputRef.current) {
                 commentInputRef.current.innerText = "";
+                commentInputRef.current.style.height = "auto";
             }
         }
     };
@@ -169,6 +170,7 @@ export default function Task() {
         setNewComment("");
         if (commentInputRef.current) {
             commentInputRef.current.innerText = "";
+            commentInputRef.current.style.height = "auto";
         }
 
         try {
@@ -239,6 +241,7 @@ export default function Task() {
         setNewComment("");
         if (commentInputRef.current) {
             commentInputRef.current.innerText = "";
+            commentInputRef.current.style.height = "auto";
         }
     };
 

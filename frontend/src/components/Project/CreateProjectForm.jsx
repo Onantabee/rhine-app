@@ -20,6 +20,9 @@ const CreateProjectForm = ({ onSuccess, onCancel, showCancel = false }) => {
         if (!name.trim()) {
             setFieldErrors({ name: "Project name is required" });
             return;
+        } else if (name.length > 100) {
+            setFieldErrors({ name: "Project name must be less than 100 characters" });
+            return;
         }
 
         try {
@@ -55,6 +58,7 @@ const CreateProjectForm = ({ onSuccess, onCancel, showCancel = false }) => {
                 autoFocus
                 error={!!fieldErrors.name}
                 helperText={fieldErrors.name}
+                maxLength={100}
             />
 
             <div className={`flex ${showCancel ? 'justify-end gap-3' : 'flex-col'} mt-6`}>

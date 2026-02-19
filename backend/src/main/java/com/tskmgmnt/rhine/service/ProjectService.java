@@ -7,6 +7,7 @@ import com.tskmgmnt.rhine.dto.ProjectMemberDto;
 import com.tskmgmnt.rhine.entity.Project;
 import com.tskmgmnt.rhine.entity.ProjectMember;
 import com.tskmgmnt.rhine.entity.User;
+import com.tskmgmnt.rhine.entity.Task;
 import com.tskmgmnt.rhine.enums.ProjectRole;
 import com.tskmgmnt.rhine.repository.ProjectMemberRepository;
 import com.tskmgmnt.rhine.repository.ProjectRepository;
@@ -183,6 +184,12 @@ public class ProjectService {
 
         ProjectMember memberToRemove = projectMemberRepository.findByUserEmailAndProjectId(memberEmail, projectId)
                 .orElseThrow(() -> new RuntimeException("Member not found in this project"));
+
+        List<Task> tasks = taskRepository.findByProjectIdAndAssigneeEmail(projectId, memberEmail);
+        for (Task task : tasks) {
+            task.setAssignee(null);
+            taskRepository.save(task);
+        }
 
         projectMemberRepository.delete(memberToRemove);
     }

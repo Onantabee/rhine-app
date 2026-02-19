@@ -25,7 +25,7 @@ const TaskDetails = ({
         >
             <div>
                 <h1
-                    className={`text-4xl font-bold ${taskStatus === "CANCELLED"
+                    className={`text-4xl font-bold break-all whitespace-pre-wrap ${taskStatus === "CANCELLED"
                         ? "text-gray-400 line-through italic"
                         : "text-gray-900"
                         }`}
@@ -38,7 +38,7 @@ const TaskDetails = ({
                 <p className="text-sm text-gray-500">Description:</p>
                 <div className="h-20 border border-gray-200 px-3 py-1 bg-gray-200/20 overflow-y-auto">
                     <h1
-                        className={`text-[15px] ${taskStatus === "CANCELLED" ? "text-gray-400" : "text-gray-700"
+                        className={`text-[15px] break-all whitespace-pre-wrap ${taskStatus === "CANCELLED" ? "text-gray-400" : "text-gray-700"
                             }`}
                     >
                         {task.description}
@@ -137,10 +137,12 @@ const TaskDetails = ({
                                 <span
                                     className={`px-3 py-1 border rounded-[5px] text-sm flex justify-center items-center font-medium ${taskStatus === "CANCELLED"
                                         ? "bg-gray-100 border-gray-300 text-gray-500"
-                                        : "bg-[#7733ff]/10 border-[#7733ff]/30 text-[#7733ff]"
+                                        : !task.assigneeId
+                                            ? "bg-gray-100 border-gray-300 text-gray-500"
+                                            : "bg-[#7733ff]/10 border-[#7733ff]/30 text-[#7733ff]"
                                         }`}
                                 >
-                                    {assigneeName || "Loading..."}
+                                    {assigneeName || "Unassigned"}
                                 </span>
                             ),
                         }]),

@@ -185,9 +185,9 @@ export default function Home() {
       ) : isCardView ? (
         <div className="overflow-y-auto w-full h-full min-h-0">
 
-          {filteredTasks.map((task) => (
-            <div key={task.id} className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-6 pt-3">
-              <div onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-6 pt-3">
+            {filteredTasks.map((task) => (
+              <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
                 <TaskCard
                   task={task}
                   onEdit={() => handleOpenDialog(task)}
@@ -204,11 +204,11 @@ export default function Home() {
                   searchTerm={searchTerm}
                 />
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
           {filteredTasks.length === 0 && (
-            <p className="text-gray-400 px-6">No tasks available</p>
+            <p className="text-gray-400 px-6 py-2">No tasks available</p>
           )}
         </div>
       ) : (

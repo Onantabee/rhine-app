@@ -113,11 +113,17 @@ const TaskList = ({
         <td className="p-3.5">
           {isAdmin ? (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
-                {employeeUser?.name?.charAt(0) || "U"}
-              </div>
+              {assignee ? (
+                <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
+                  {employeeUser?.name?.charAt(0) || "U"}
+                </div>
+              ) : (
+                <div className="w-8 h-8 rounded-full border border-gray-300 bg-gray-100 text-gray-500 flex justify-center items-center text-sm">
+                  <span className="text-xs">?</span>
+                </div>
+              )}
               <span className="text-gray-600 text-sm truncate">
-                {employeeUser?.name || "Loading..."}
+                {employeeUser?.name || "Unassigned"}
               </span>
             </div>
           ) : (

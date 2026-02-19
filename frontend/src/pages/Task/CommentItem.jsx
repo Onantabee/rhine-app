@@ -59,7 +59,7 @@ const CommentItem = ({
                                     })}
                             </p>
                         </div>
-                        <p className="text-md text-gray-700">{comment.content}</p>
+                        <p className="text-md text-gray-700 break-all whitespace-pre-wrap">{comment.content}</p>
                     </div>
                     {isOwnComment && (
                         <div className="relative top-0 opacity-0 right-0 group-hover:opacity-100">
@@ -81,9 +81,9 @@ const CommentItem = ({
                         top: dropdownPosition.top,
                         left: dropdownPosition.left,
                     }}
-                    className="absolute py-1 gap-1 w-36 bg-white border border-gray-200 z-50 shadow-lg rounded-md"
+                    className="absolute py-1 gap-1 w-36 bg-white border border-gray-400 z-50"
                 >
-                    <div className="absolute -top-[7px] right-[17px] w-3 h-3 rotate-45 bg-white border-t border-l border-gray-200 z-[-1]" />
+                    <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white border-t border-l border-gray-400 z-[-1]" />
                     {canEdit ? (
                         <button
                             onClick={() => onEdit(comment)}

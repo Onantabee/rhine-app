@@ -60,7 +60,10 @@ const projectsApi = baseApi.injectEndpoints({
                 method: "POST",
                 params: { token },
             }),
-            invalidatesTags: ["Project"],
+            invalidatesTags: (result) => [
+                "Project",
+                { type: "ProjectMember", id: result }
+            ],
         }),
         removeMember: builder.mutation({
             query: ({ projectId, email }) => ({

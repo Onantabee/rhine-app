@@ -132,23 +132,29 @@ const TaskCard = ({
 
         <div className="flex items-center gap-2 mb-3">
           {isAdmin ? (
-            <div>
-              {taskStatus === "COMPLETED" || taskStatus === "CANCELLED" ? (
-                <div
-                  className={`px-3 py-1.5 font-semibold border text-sm rounded-[5px] ${taskStatus === "CANCELLED"
-                    ? "bg-gray-100 border-gray-300 text-gray-500"
-                    : "bg-[#7733ff]/10 border-[#7733ff]/30 text-[#7733ff]"
-                    }`}
-                >
-                  {firstName || "User"} {lastName ? lastName.charAt(0) + "." : ""}
-                </div>
-              ) : (
-                <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
-                  {firstName?.charAt(0) || "U"}
-                  {lastName?.charAt(0) || ""}
-                </div>
-              )}
-            </div>
+            !assignee ? (
+              <div className="px-3 py-1.5 font-semibold border text-sm rounded-[5px] bg-gray-100 border-gray-300 text-gray-500">
+                Unassigned
+              </div>
+            ) : (
+              <div>
+                {taskStatus === "COMPLETED" || taskStatus === "CANCELLED" ? (
+                  <div
+                    className={`px-3 py-1.5 font-semibold border text-sm rounded-[5px] ${taskStatus === "CANCELLED"
+                      ? "bg-gray-100 border-gray-300 text-gray-500"
+                      : "bg-[#7733ff]/10 border-[#7733ff]/30 text-[#7733ff]"
+                      }`}
+                  >
+                    {firstName || "User"} {lastName ? lastName.charAt(0) + "." : ""}
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 rounded-full border border-[#7733ff]/30 bg-[#7733ff]/10 text-[#7733ff] flex justify-center items-center text-sm">
+                    {firstName?.charAt(0) || "U"}
+                    {lastName?.charAt(0) || ""}
+                  </div>
+                )}
+              </div>
+            )
           ) : (
             <div className="flex flex-col">
               <span className="text-gray-400 text-xs mb-1">Creator</span>
@@ -181,35 +187,37 @@ const TaskCard = ({
           )}
         </div>
 
-        {isAdmin && (
-          <>
-            <div className="border-t border-gray-200 my-3" />
-            <div className="flex justify-end items-center gap-2">
-              <button
-                onClick={onView}
-                className="p-2 text-gray-400 hover:text-blue-500 cursor-pointer"
-              >
-                <Eye size={18} />
-              </button>
-              <hr className="h-6 w-[2px] border-none bg-gray-200" />
-              <button
-                onClick={onEdit}
-                className="p-2 text-gray-400 hover:text-[#7733ff] cursor-pointer"
-              >
-                <Pencil size={18} />
-              </button>
-              <hr className="h-6 w-[2px] border-none bg-gray-200" />
-              <button
-                onClick={onDelete}
-                className="p-2 text-red-400 hover:text-red-600 cursor-pointer"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-          </>
-        )}
-      </Card>
-    </div>
+        {
+          isAdmin && (
+            <>
+              <div className="border-t border-gray-200 my-3" />
+              <div className="flex justify-end items-center gap-2">
+                <button
+                  onClick={onView}
+                  className="p-2 text-gray-400 hover:text-blue-500 cursor-pointer"
+                >
+                  <Eye size={18} />
+                </button>
+                <hr className="h-6 w-[2px] border-none bg-gray-200" />
+                <button
+                  onClick={onEdit}
+                  className="p-2 text-gray-400 hover:text-[#7733ff] cursor-pointer"
+                >
+                  <Pencil size={18} />
+                </button>
+                <hr className="h-6 w-[2px] border-none bg-gray-200" />
+                <button
+                  onClick={onDelete}
+                  className="p-2 text-red-400 hover:text-red-600 cursor-pointer"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </>
+          )
+        }
+      </Card >
+    </div >
   );
 };
 

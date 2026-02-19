@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,7 @@ public class TaskController {
     )
     @PostMapping
     public TaskDto createTask(@PathVariable Long projectId,
-                              @RequestBody TaskDto request,
+                              @Valid @RequestBody TaskDto request,
                               Authentication auth) {
         return taskService.createTask(projectId, request, auth.getName());
     }
@@ -62,7 +63,7 @@ public class TaskController {
     @PutMapping("/{id}")
     public TaskDto updateTask(@PathVariable Long projectId,
                               @PathVariable Long id,
-                              @RequestBody TaskDto taskReq) {
+                              @Valid @RequestBody TaskDto taskReq) {
         return taskService.updateTaskById(id, taskReq);
     }
 

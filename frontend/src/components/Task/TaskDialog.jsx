@@ -83,10 +83,14 @@ const TaskDialog = ({
 
     if (taskDetails.title.trim() === "") {
       errors.title = "Task name is required";
+    } else if (taskDetails.title.length > 100) {
+      errors.title = "Task name must be less than 100 characters";
     }
 
     if (taskDetails.description.trim() === "") {
       errors.description = "Description is required";
+    } else if (taskDetails.description.length > 255) {
+      errors.description = "Description must be less than 255 characters";
     }
 
     if (!taskDetails.dueDate) {
@@ -175,6 +179,7 @@ const TaskDialog = ({
           autoFocus
           error={!!fieldErrors.title}
           helperText={fieldErrors.title}
+          maxLength={100}
         />
 
         <TextField
@@ -186,6 +191,8 @@ const TaskDialog = ({
           onChange={handleChange}
           error={!!fieldErrors.description}
           helperText={fieldErrors.description}
+          maxLength={255}
+          showCount
         />
 
         <div className="flex flex-row gap-4">

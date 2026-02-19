@@ -46,7 +46,7 @@ const CommentInput = ({
                             }
                         }}
                         data-placeholder={!newComment ? "Add a comment..." : ""}
-                        className="w-full p-2 text-gray-800 resize-none overflow-y-auto outline-none relative before:absolute before:left-2 before:top-2 before:text-gray-400 before:pointer-events-none before:content-[attr(data-placeholder)]"
+                        className="w-full p-2 text-gray-800 resize-none overflow-y-auto outline-none relative before:absolute before:left-2 before:top-2 before:text-gray-400 before:pointer-events-none before:content-[attr(data-placeholder)] break-all whitespace-pre-wrap"
                         style={{
                             maxHeight: `${5 * 24}px`,
                             backgroundColor: "transparent",

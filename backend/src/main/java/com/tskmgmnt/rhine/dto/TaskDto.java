@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tskmgmnt.rhine.enums.TaskStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.Instant;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -12,9 +14,12 @@ public class TaskDto {
     @Schema(description = "Unique identifier of the task", example = "1")
     private Long id;
 
+    @NotBlank(message = "Title is required")
+    @Size(max = 100, message = "Title must be less than 100 characters")
     @Schema(description = "Title of the task", example = "Complete Project Report")
     private String title;
 
+    @Size(max = 255, message = "Description must be less than 255 characters")
     @Schema(description = "Detailed description of the task", example = "Analyze Q1 financial data and draft the summary section.")
     private String description;
 
