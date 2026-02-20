@@ -33,7 +33,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mysql-secret
-                  key: rhine-password
+                  key: mysql-password
             - name: SPRING_MAIL_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -53,13 +53,13 @@ spec:
               value: "86400000"
           livenessProbe:
             httpGet:
-              path: /api/users/me
+              path: /actuator/health
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /api/users/me
+              path: /actuator/health
               port: 8080
             initialDelaySeconds: 20
             periodSeconds: 5
