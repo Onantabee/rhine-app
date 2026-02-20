@@ -36,9 +36,9 @@ export const useCreateProject = ({ onSuccess } = {}) => {
                     role: project.currentUserRole,
                 })
             );
-            dispatch(setHasProjects(true));
             toast.success("Project created!");
             navigate(`/project/${project.id}`);
+            dispatch(setHasProjects(true));
 
             if (onSuccess) {
                 onSuccess(project);
