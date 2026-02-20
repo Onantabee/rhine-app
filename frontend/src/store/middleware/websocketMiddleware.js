@@ -14,7 +14,7 @@ export const websocketMiddleware = (store) => (next) => (action) => {
 };
 
 function initializeWebSocket(store) {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+    const baseUrl = window.__env__?.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
     const socket = new SockJS(baseUrl + '/ws');
 
 
