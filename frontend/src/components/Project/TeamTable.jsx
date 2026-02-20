@@ -91,7 +91,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                 </table>
             </div>
             {members.length === 0 && (
-                <div className="px-6 py-4 text-center text-gray-500">
+                <div className="px-6 py-4 text-center text-gray-400 dark:bg-[#1a1a1a]">
                     No team members found.
                 </div>
             )}
