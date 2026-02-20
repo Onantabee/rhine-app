@@ -12,7 +12,8 @@ RUN echo 'server { \
 }' > /etc/nginx/conf.d/default.conf
 
 COPY env.sh /docker-entrypoint.d/env.sh
-RUN chmod +x /docker-entrypoint.d/env.sh
+RUN sed -i 's/\r$//' /docker-entrypoint.d/env.sh && \
+    chmod +x /docker-entrypoint.d/env.sh
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
