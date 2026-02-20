@@ -133,7 +133,7 @@ pipeline {
         }
 
         stage('Deploy Backend & DB') {
-            when { branch 'develop' }
+            when { branch 'dev' }
             steps {
                 script {
                     withCredentials([
@@ -195,7 +195,7 @@ pipeline {
         }
 
         stage('Deploy Frontend') {
-            when { branch 'develop' }
+            when { branch 'dev' }
             steps {
                 script {
                     withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
