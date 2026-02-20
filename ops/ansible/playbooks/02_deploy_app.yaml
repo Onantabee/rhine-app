@@ -1,0 +1,39 @@
+---
+- name: Deploy Rhine Application to K3s Cluster
+  hosts: k3s_cluster
+  become: yes
+  vars:
+    manifest_dir: "/tmp/rhine-k8s-manifests"
+
+  tasks:
+    - name: Ensure manifest directory exists
+      file:
+        path: "{{ manifest_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Template Kubernetes Manifests configuration
+      template:
+        src: "../templates/{{ item }}.j2"
+        dest: "{{ manifest_dir }}/{{ item }}"
+      with_items:
+        - secrets-and-pv.yaml
+        - mysql-deployment.yaml
+        - backend-deployment.yaml
+        - frontend-deployment.yaml
+
+    - name: Apply secrets and persistent volumes
+      command: "k3s kubectl apply -f {{ manifest_dir }}/secrets-and-pv.yaml"
+
+    - name: Apply MySQL deployment
+      command: "k3s kubectl apply -f {{ manifest_dir }}/mysql-deployment.yaml"
+
+    - name: Apply Backend deployment
+      command: "k3s kubectl apply -f {{ manifest_dir }}/backend-deployment.yaml"
+
+    - name: Apply Frontend deployment
+      command: "k3s kubectl apply -f {{ manifest_dir }}/frontend-deployment.yaml"
+
+    - name: Display deployment success message
+      debug:
+        msg: "Application deployed successfully! You can access the frontend at http://{{ ansible_host }}:5173 and backend at http://{{ ansible_host }}:8080"

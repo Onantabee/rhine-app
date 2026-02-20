@@ -1,0 +1,55 @@
+---
+- name: Setup K3s Kubernetes Cluster
+  hosts: k3s_cluster
+  become: yes
+  tasks:
+    - name: Update apt cache and install prerequisites
+      apt:
+        update_cache: yes
+        name:
+          - curl
+          - apt-transport-https
+        state: present
+
+    - name: Download and install K3s
+      shell: curl -sfL https://get.k3s.io | sh -s - server --docker
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Wait for K3s service to be active
+      systemd:
+        name: k3s
+        state: started
+
+    - name: Ensure .kube directory exists for ubuntu user
+      file:
+        path: /home/{{ ansible_user | default('ubuntu') }}/.kube
+        state: directory
+        owner: "{{ ansible_user | default('ubuntu') }}"
+        group: "{{ ansible_user | default('ubuntu') }}"
+        mode: '0755'
+
+    - name: Copy kubeconfig to user's home directory
+      copy:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: /home/{{ ansible_user | default('ubuntu') }}/.kube/config
+        remote_src: yes
+        owner: "{{ ansible_user | default('ubuntu') }}"
+        group: "{{ ansible_user | default('ubuntu') }}"
+        mode: '0600'
+
+    - name: Update Kubernetes API server address in user kubeconfig
+      replace:
+        path: /home/{{ ansible_user | default('ubuntu') }}/.kube/config
+        regexp: 'https://127\.0\.0\.1:6443'
+        replace: 'https://{{ ansible_host }}:6443'
+
+    - name: Fetch the kubeconfig file to the local machine
+      fetch:
+        src: /home/{{ ansible_user | default('ubuntu') }}/.kube/config
+        dest: ../kubeconfig
+        flat: yes
+
+    - name: Display instructions
+      debug:
+        msg: "K3s installed successfully! Kubeconfig downloaded to 'ops/ansible/kubeconfig'. You can access the cluster using: export KUBECONFIG=ops/ansible/kubeconfig && kubectl get nodes"

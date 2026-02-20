@@ -231,6 +231,15 @@ pipeline {
             }
         }
 
+        stage('Deploy to AWS EC2 via Ansible') {
+            steps {
+                dir('ops/ansible') {
+                    sh 'ansible-playbook playbooks/01_setup_k3s.yaml -i inventory/hosts.yaml'
+                    sh "ansible-playbook playbooks/02_deploy_app.yaml -i inventory/hosts.yaml -e 'build_id=${env.BUILD_ID}'"
+                }
+            }
+        }
+
     }
 
     post {

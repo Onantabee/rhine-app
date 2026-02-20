@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rhine-frontend
+  labels:
+    app: rhine-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rhine-frontend
+  template:
+    metadata:
+      labels:
+        app: rhine-frontend
+    spec:
+      containers:
+        - name: rhine-frontend
+          image: "onantabee/rhine-frontend:{{ build_id | default('latest') }}"
+          ports:
+            - containerPort: 80
+          env:
+            - name: VITE_API_BASE_URL
+              value: "http://{{ ansible_host }}:8080"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rhine-frontend-service
+spec:
+  selector:
+    app: rhine-frontend
+  ports:
+    - protocol: TCP
+      port: 5173
+      targetPort: 80
+  type: LoadBalancer
