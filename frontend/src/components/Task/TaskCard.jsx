@@ -143,7 +143,7 @@ const TaskCard = ({
               <div className="flex flex-col">
                 {!isAdmin && <span className="text-gray-400 text-xs mb-1">Due</span>}
                 <span
-                  className={`px-3 py-1 border text-sm font-medium italic rounded-[5px] ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
+                  className={`px-3 py-1 border text-sm font-medium italic rounded-[5px] line-clamp-1 ${dueDateStatus && dueDateStatusConfig[dueDateStatus]
                     ? dueDateStatusConfig[dueDateStatus].className
                     : "bg-gray-50 dark:bg-[#262626] border-gray-200 dark:border-[#404040] text-gray-600 dark:text-[#bfbfbf] "
                     }`}
