@@ -41,7 +41,6 @@ export const useSidePane = ({ onLinkClick }) => {
         setLogoutDialogOpen(false);
         if (onLinkClick) onLinkClick();
         navigate("/");
-        window.location.reload();
     };
 
     return {
