@@ -133,7 +133,7 @@ pipeline {
         }
 
         stage('Deploy Backend & DB') {
-            when { branch 'dev' }
+            when { anyOf { branch 'dev'; branch 'origin/dev' } }
             steps {
                 script {
                     withCredentials([
@@ -195,7 +195,7 @@ pipeline {
         }
 
         stage('Deploy Frontend') {
-            when { branch 'dev' }
+            when { anyOf { branch 'dev'; branch 'origin/dev' } }
             steps {
                 script {
                     withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
@@ -234,7 +234,7 @@ pipeline {
         }
 
         stage('Deploy to AWS EC2 via Ansible') {
-            when { branch 'main' }
+            when { anyOf { branch 'main'; branch 'origin/main' } }
             steps {
                 dir('ops/ansible') {
                     sh 'ansible-playbook playbooks/01_setup_k3s.yaml -i inventory/hosts.yaml'
