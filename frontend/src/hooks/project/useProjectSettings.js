@@ -7,7 +7,8 @@ import {
     useUpdateProjectMutation,
     useDeleteProjectMutation,
 } from "../../store/api/projectsApi";
-import { clearActiveProject } from "../../store/slices/projectSlice";
+import { clearActiveProject, setActiveProject } from "../../store/slices/projectSlice";
+import { setHasProjects } from "../../store/slices/authSlice";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { toast } from "sonner";
 
