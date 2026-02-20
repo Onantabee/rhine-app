@@ -28,7 +28,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-[#404040]">
                         {members.map((member) => (
-                            <tr key={member.email} className="hover:bg-gray-50 dark:bg-[#1a1a1a] dark:hover:bg-[#262626] transition-colors">
+                            <tr key={member.email} className="hover:bg-gray-50 dark:bg-[#1a1a1a] dark:hover:bg-[#262626]">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex justify-center items-center text-sm flex-shrink-0">

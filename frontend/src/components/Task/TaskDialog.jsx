@@ -21,6 +21,8 @@ const TaskDialog = ({
     assigneeOptions,
   } = useTaskDialog({ open, onClose, task, projectId });
 
+  // const todayStr = new Date().toISOString().split('T')[0];
+
   return (
     <Dialog open={open} onClose={onClose} title={task ? "Update Task" : "Add Task"} size="lg">
       <div className="space-y-4">
@@ -77,6 +79,7 @@ const TaskDialog = ({
           value={taskDetails.dueDate}
           onChange={handleDateChange}
           fullWidth
+          // minDate={todayStr}
           error={!!fieldErrors.dueDate}
           helperText={fieldErrors.dueDate}
         />
