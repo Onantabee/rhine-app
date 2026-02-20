@@ -65,8 +65,8 @@ pipeline {
                                                  (sleep 10 && docker build -t $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID .))
 
                                                 (docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID || \
-                                                 sleep 5 && docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID || \
-                                                 sleep 10 && docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID)
+                                                 (sleep 5 && docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID) || \
+                                                 (sleep 10 && docker push $DOCKER_REGISTRY/rhine-frontend:$BUILD_ID))
 
                                                 docker push $DOCKER_REGISTRY/rhine-frontend:latest
                                                 
@@ -115,8 +115,8 @@ pipeline {
                                                  (sleep 10 && docker build -t $DOCKER_REGISTRY/rhine-backend:$BUILD_ID .))
 
                                                 (docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID || \
-                                                 sleep 5 && docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID || \
-                                                 sleep 10 && docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID)
+                                                 (sleep 5 && docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID) || \
+                                                 (sleep 10 && docker push $DOCKER_REGISTRY/rhine-backend:$BUILD_ID))
 
                                                 docker push $DOCKER_REGISTRY/rhine-backend:latest
                                                 
