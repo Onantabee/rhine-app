@@ -202,7 +202,7 @@ pipeline {
                                     }
 
                                     if (host != "") {
-                                        backendIp = (host == "localhost") ? "host.docker.internal" : host
+                                        backendIp = (host == "localhost" || host == "host.docker.internal") ? "localhost" : host
                                         return true
                                     }
                                     return false
