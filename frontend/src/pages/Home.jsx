@@ -41,11 +41,9 @@ export default function Home() {
         <div className="flex justify-between border-b border-gray-200 dark:border-[#404040] pb-3 gap-2">
           <div className="flex gap-3 items-center">
             <h1 className="text-3xl text-gray-600 dark:text-[#bfbfbf]">Tasks</h1>
-            {filteredTasks.length > 0 && (
-              <p className="text-gray-500 dark:text-[#bfbfbf] text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-10 h-10 flex items-center justify-center">
-                {filteredTasks.length}
-              </p>
-            )}
+            <p className="text-gray-500 dark:text-[#bfbfbf] text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-10 h-10 flex items-center justify-center">
+              {filteredTasks.length}
+            </p>
             {assigneeEmailFilter && (
               <div className="flex items-center gap-2 ml-4">
                 <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10">
