@@ -6,6 +6,23 @@ metadata:
     app: rhine-mysql
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: rhine-mysql
+  template:
+    metadata:
+      labels:
+        app: rhine-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
                   name: mysql-secret
                   key: mysql-root-password
             - name: MYSQL_DATABASE
