@@ -15,6 +15,13 @@ pipeline {
     }
 
     stages {
+        stage('Debug Env') {
+            steps {
+                sh 'env'
+                echo "GIT_BRANCH: ${env.GIT_BRANCH}"
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -133,7 +140,7 @@ pipeline {
         }
 
         stage('Deploy Backend & DB') {
-            when { anyOf { branch 'dev'; branch 'origin/dev' } }
+            when { expression { env.GIT_BRANCH == 'origin/dev' || env.GIT_BRANCH == 'dev' } }
             steps {
                 script {
                     withCredentials([
@@ -195,7 +202,7 @@ pipeline {
         }
 
         stage('Deploy Frontend') {
-            when { anyOf { branch 'dev'; branch 'origin/dev' } }
+            when { expression { env.GIT_BRANCH == 'origin/dev' || env.GIT_BRANCH == 'dev' } }
             steps {
                 script {
                     withCredentials([file(credentialsId: env.KUBECONFIG_CREDENTIALS, variable: 'KUBECONFIG')]) {
@@ -234,7 +241,7 @@ pipeline {
         }
 
         stage('Deploy to AWS EC2 via Ansible') {
-            when { anyOf { branch 'main'; branch 'origin/main' } }
+            when { expression { env.GIT_BRANCH == 'origin/main' || env.GIT_BRANCH == 'main' } }
             steps {
                 dir('ops/ansible') {
                     sh 'ansible-playbook playbooks/01_setup_k3s.yaml -i inventory/hosts.yaml'
