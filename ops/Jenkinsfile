@@ -248,8 +248,8 @@ pipeline {
     post {
         always {
             mail to: 'onantab47@gmail.com',
-                 subject: "Completed Pipeline: ${currentBuild.fullDisplayName}",
-                 body: "Your build completed. Check it here: ${env.BUILD_URL}"
+                 subject: "Pipeline ${currentBuild.currentResult}: ${currentBuild.fullDisplayName}",
+                 body: "The build ${currentBuild.fullDisplayName} finished with status: ${currentBuild.currentResult}.\n\nCheck it here: ${env.BUILD_URL}"
         }
     }
 }
