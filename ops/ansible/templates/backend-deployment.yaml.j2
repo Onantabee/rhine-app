@@ -5,7 +5,7 @@ metadata:
   labels:
     app: rhine-backend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: rhine-backend
@@ -60,6 +60,15 @@ spec:
                   key: jwt-secret-key
             - name: JWT_EXPIRATION
               value: "86400000"
+            - name: JAVA_OPTS
+              value: "-Xms256m -Xmx512m"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "768Mi"
+              cpu: "500m"
           livenessProbe:
             httpGet:
               path: /actuator/health
