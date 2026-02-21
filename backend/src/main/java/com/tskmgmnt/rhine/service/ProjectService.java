@@ -12,12 +12,12 @@ import com.tskmgmnt.rhine.enums.ProjectRole;
 import com.tskmgmnt.rhine.repository.ProjectMemberRepository;
 import com.tskmgmnt.rhine.repository.ProjectRepository;
 import com.tskmgmnt.rhine.repository.UserRepository;
+import com.tskmgmnt.rhine.repository.TaskRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,19 +31,19 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final UserRepository userRepository;
-    private final com.tskmgmnt.rhine.repository.TaskRepository taskRepository;
-    private final org.springframework.mail.javamail.JavaMailSender mailSender;
+    private final TaskRepository taskRepository;
+    private final MailService mailService;
 
     public ProjectService(ProjectRepository projectRepository,
                           ProjectMemberRepository projectMemberRepository,
                           UserRepository userRepository,
-                          com.tskmgmnt.rhine.repository.TaskRepository taskRepository,
-                          org.springframework.mail.javamail.JavaMailSender mailSender) {
+                          TaskRepository taskRepository,
+                          MailService mailService) {
         this.projectRepository = projectRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
-        this.mailSender = mailSender;
+        this.mailService = mailService;
     }
 
     public ProjectDto createProject(String ownerEmail, CreateProjectReq req) {
@@ -137,27 +137,11 @@ public class ProjectService {
         ProjectMember membership = new ProjectMember(user, project, role, com.tskmgmnt.rhine.enums.ProjectMemberStatus.PENDING, token);
         projectMemberRepository.save(membership);
 
-        sendInviteEmail(user.getEmail(), project.getName(), role, token);
+        mailService.sendInviteEmail(user.getEmail(), project.getName(), role, token);
 
         return new ProjectMemberDto(user.getEmail(), user.getName(), role, 0);
     }
 
-    private void sendInviteEmail(String to, String projectName, ProjectRole role, String token) {
-        String inviteLink = "http://localhost:5173/accept-invite?token=" + token;
-        logger.info("Invite email sent to {} with link: {}", to, inviteLink);
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("onantabasseyvee@gmail.com");
-            message.setTo(to);
-            message.setSubject("You've been invited to join " + projectName);
-            message.setText("Hello,\n\nYou have been invited to join the project '" + projectName + "' as a " + role + ".\n\nPlease click the link below to accept the invitation:\n" + inviteLink);
-            mailSender.send(message);
-            logger.info("Invite email sent to {} with link: {}", to, inviteLink);
-        } catch (Exception e) {
-            logger.error("Failed to send Invite email to {}: {}", to, e.getMessage());
-
-        }
-    }
 
     public Long acceptInvite(String token) {
         ProjectMember membership = projectMemberRepository.findByToken(token)

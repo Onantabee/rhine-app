@@ -24,6 +24,13 @@ spec:
               value: "prod"
             - name: APPLICATION_CORS_ALLOWED_ORIGINS
               value: "http://{{ ansible_host }}:5173"
+            - name: FRONTEND_URL
+              value: "http://{{ ansible_host }}:5173"
+            - name: SPRING_MAIL_FROM
+              valueFrom:
+                secretKeyRef:
+                  name: rhine-secrets
+                  key: mail-username
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:mysql://mysql-service:3306/rhine_db"
             - name: SPRING_DATASOURCE_USERNAME
