@@ -61,3 +61,4 @@ build/
 .vscode/
 
 ops/.env
+ops/ansible/kubeconfig

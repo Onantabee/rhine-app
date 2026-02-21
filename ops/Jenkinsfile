@@ -64,9 +64,9 @@ pipeline {
                                                 
                                                 IMAGE_TAG="${BRANCH_NAME}-${BUILD_ID}"
                                                 
-                                                (docker build -t $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG} . || \
-                                                 (sleep 5 && docker build -t $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG} .) || \
-                                                 (sleep 10 && docker build -t $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG} .))
+                                                (docker build --platform linux/amd64 -t $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG} . || \
+                                                 (sleep 5 && docker build --platform linux/amd64 -t $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG} .) || \
+                                                 (sleep 10 && docker build --platform linux/amd64 -t $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG} .))
 
                                                 (docker push $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG} || \
                                                  (sleep 5 && docker push $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG}) || \
@@ -119,9 +119,9 @@ pipeline {
                                                 
                                                 IMAGE_TAG="${BRANCH_NAME}-${BUILD_ID}"
                                                 
-                                                (docker build -t $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG} . || \
-                                                 (sleep 5 && docker build -t $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG} .) || \
-                                                 (sleep 10 && docker build -t $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG} .))
+                                                (docker build --platform linux/amd64 -t $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG} . || \
+                                                 (sleep 5 && docker build --platform linux/amd64 -t $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG} .) || \
+                                                 (sleep 10 && docker build --platform linux/amd64 -t $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG} .))
 
                                                 (docker push $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG} || \
                                                  (sleep 5 && docker push $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG}) || \
