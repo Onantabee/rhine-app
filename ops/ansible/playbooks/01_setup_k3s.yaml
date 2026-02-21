@@ -12,9 +12,15 @@
         state: present
 
     - name: Download and install K3s
-      shell: curl -sfL https://get.k3s.io | sh -s - server --docker
+      shell: curl -sfL https://get.k3s.io | sh -s - server
       args:
         creates: /etc/rancher/k3s/k3s.yaml
+
+    - name: Wait for K3s config file to be created
+      wait_for:
+        path: /etc/rancher/k3s/k3s.yaml
+        state: present
+        timeout: 300
 
     - name: Wait for K3s service to be active
       systemd:
