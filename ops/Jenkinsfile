@@ -259,14 +259,14 @@ pipeline {
                         ]) {
                             sh """
                                 ansible-playbook playbooks/02_deploy_app.yaml -i inventory/hosts.yaml \
-                                -e 'build_id=${env.BUILD_ID}' \
-                                -e 'mysql_root_password=${MYSQL_ROOT_PASSWORD}' \
-                                -e 'mysql_password=${RHINE_PASSWORD}' \
-                                -e 'mysql_database=${env.MYSQL_DATABASE}' \
-                                -e 'mysql_user=${env.MYSQL_USER}' \
-                                -e 'mail_username=${MAIL_USER}' \
-                                -e 'mail_password=${MAIL_PASSWORD}' \
-                                -e 'jwt_secret_key=${JWT_SECRET}'
+                                -e "build_id=${env.BRANCH_NAME}-${env.BUILD_ID}" \
+                                -e "mysql_root_password=\$MYSQL_ROOT_PASSWORD" \
+                                -e "mysql_password=\$RHINE_PASSWORD" \
+                                -e "mysql_database=${env.MYSQL_DATABASE}" \
+                                -e "mysql_user=${env.MYSQL_USER}" \
+                                -e "mail_username=\$MAIL_USER" \
+                                -e "mail_password=\$MAIL_PASSWORD" \
+                                -e "jwt_secret_key=\$JWT_SECRET"
                             """
                         }
                     }
