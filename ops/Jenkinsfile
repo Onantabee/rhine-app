@@ -25,7 +25,6 @@ pipeline {
 
         stage('Parallel Build & Push') {
             parallel {
-                failFast true
                 stage('Frontend') {
                     stages {
                         stage('Install Dependencies') {
