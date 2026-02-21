@@ -14,7 +14,7 @@
     - name: Download and install K3s
       shell: curl -sfL https://get.k3s.io | sh -s - server --docker
       args:
-        creates: /usr/local/bin/k3s
+        creates: /etc/rancher/k3s/k3s.yaml
 
     - name: Wait for K3s service to be active
       systemd:

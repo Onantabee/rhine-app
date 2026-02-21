@@ -72,7 +72,7 @@ pipeline {
                                                  (sleep 5 && docker push $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG}) || \
                                                  (sleep 10 && docker push $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG}))
 
-                                                if [ "${BRANCH_NAME}" == "main" ]; then
+                                                if [ "${BRANCH_NAME}" = "main" ]; then
                                                     docker tag $DOCKER_REGISTRY/rhine-frontend:${IMAGE_TAG} $DOCKER_REGISTRY/rhine-frontend:latest
                                                     docker push $DOCKER_REGISTRY/rhine-frontend:latest
                                                 fi
@@ -127,7 +127,7 @@ pipeline {
                                                  (sleep 5 && docker push $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG}) || \
                                                  (sleep 10 && docker push $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG}))
 
-                                                if [ "${BRANCH_NAME}" == "main" ]; then
+                                                if [ "${BRANCH_NAME}" = "main" ]; then
                                                     docker tag $DOCKER_REGISTRY/rhine-backend:${IMAGE_TAG} $DOCKER_REGISTRY/rhine-backend:latest
                                                     docker push $DOCKER_REGISTRY/rhine-backend:latest
                                                 fi
