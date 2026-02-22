@@ -13,6 +13,7 @@ export const commentsApi = baseApi.injectEndpoints({
         countUnreadComments: builder.query({
             query: ({ taskId, recipientEmail }) =>
                 `/api/comments/count-unread-by-recipient/${taskId}/${recipientEmail}`,
+            transformResponse: (response) => response.count,
             providesTags: (result, error, { taskId, recipientEmail }) => [
                 { type: 'UnreadCount', id: `${taskId}-${recipientEmail}` },
             ],
