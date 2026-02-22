@@ -47,6 +47,7 @@ public class AuthController {
 
     @Operation(
             summary = "Authenticate user",
+            tags = {"Authentication"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Login successful", 
                         content = @Content(schema = @Schema(implementation = LoginResponse.class))),
@@ -76,6 +77,7 @@ public class AuthController {
 
     @Operation(
             summary = "Register a new user",
+            tags = {"Authentication"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Registration successful"),
                     @ApiResponse(responseCode = "400", description = "Invalid input or user already exists")
@@ -105,7 +107,7 @@ public class AuthController {
                 user.getEmail(), user.getName(), false, false, token);
     }
 
-    @Operation(summary = "Verify user email")
+    @Operation(summary = "Verify user email", tags = {"Authentication"})
     @PostMapping("/verify")
     public LoginResponse verify(@RequestParam String email, @RequestParam String code) {
         boolean isValid = otpService.validateOtp(email, code);
@@ -119,14 +121,14 @@ public class AuthController {
         }
     }
 
-    @Operation(summary = "Resend OTP")
+    @Operation(summary = "Resend OTP", tags = {"Authentication"})
     @PostMapping("/resend-otp")
     public Map<String, String> resendOtp(@RequestParam String email) {
         otpService.generateOtp(email);
         return Map.of("message", "OTP sent");
     }
 
-    @Operation(summary = "Logout user")
+    @Operation(summary = "Logout user", tags = {"Authentication"})
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
         SecurityContextHolder.clearContext();

@@ -14,7 +14,7 @@ const projectsApi = baseApi.injectEndpoints({
         }),
         createProject: builder.mutation({
             query: (data) => ({
-                url: "/api/projects",
+                url: "/api/projects/create",
                 method: "POST",
                 body: data,
             }),

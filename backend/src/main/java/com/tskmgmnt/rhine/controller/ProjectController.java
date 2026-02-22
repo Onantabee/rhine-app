@@ -28,7 +28,7 @@ public class ProjectController {
     }
 
     @Operation(summary = "Create a new project")
-    @PostMapping
+    @PostMapping("/create")
     public ProjectDto createProject(@Valid @RequestBody CreateProjectReq request, Authentication auth) {
         return projectService.createProject(auth.getName(), request);
     }
