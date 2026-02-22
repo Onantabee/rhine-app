@@ -5,7 +5,8 @@ metadata:
   labels:
     app: rhine-backend
 spec:
-  replicas: 1
+  replicas: 2
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: rhine-backend
