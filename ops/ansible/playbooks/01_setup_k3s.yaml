@@ -4,6 +4,17 @@
   become: yes
   gather_facts: no
   tasks:
+    - name: Kill any holding apt locks
+      shell: |
+        systemctl stop apt-daily.service || true
+        systemctl stop apt-daily-upgrade.service || true
+        killall apt apt-get || true
+        rm -f /var/lib/apt/lists/lock
+        rm -f /var/cache/apt/archives/lock
+        rm -f /var/lib/dpkg/lock*
+        dpkg --configure -a
+      ignore_errors: yes
+
     - name: Update apt cache and install prerequisites
       apt:
         update_cache: yes
