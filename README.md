@@ -4,7 +4,7 @@ Rhine is a full-featured, real-time task management application designed for sea
 
 The application is built with a modern tech stack, featuring a React frontend and a Spring Boot backend, all containerized with Docker and ready for production-grade deployment via Kubernetes.
 
-## 🚀 Features
+## Features
 
 ### Project Management
 - **Centralized Project Control:** Easily create and manage multiple projects to compartmentalize work.
@@ -41,7 +41,7 @@ The application is built with a modern tech stack, featuring a React frontend an
 
 ---
 
-## 🏁 Getting Started
+## Getting Started
 
 ### Prerequisites
 - [Docker](https://docs.docker.com/get-docker/)
@@ -81,7 +81,7 @@ The application is built with a modern tech stack, featuring a React frontend an
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 rhine-app/
