@@ -156,7 +156,7 @@ pipeline {
                         string(credentialsId: 'rhine-password', variable: 'RHINE_PASSWORD')
                     ]) {
                         sh "sed -i 's|\${DOCKER_REGISTRY}|${env.DOCKER_REGISTRY}|g' ops/k8s/backend-deployment.yaml"
-                        sh "sed -i 's|\${BUILD_ID}|${env.BUILD_ID}|g' ops/k8s/backend-deployment.yaml"
+                        sh "sed -i 's|\${BUILD_ID}|${env.BRANCH_NAME}-${env.BUILD_ID}|g' ops/k8s/backend-deployment.yaml"
                         sh "sed -i 's|\${FRONTEND_URL}|http://localhost:5173|g' ops/k8s/backend-deployment.yaml"
                         
                         sh """
@@ -236,7 +236,7 @@ pipeline {
                         echo "Backend IP detected: ${backendIp}"
                         
                         sh "sed -i 's|\${DOCKER_REGISTRY}|${env.DOCKER_REGISTRY}|g' ops/k8s/frontend-deployment.yaml"
-                        sh "sed -i 's|\${BUILD_ID}|${env.BUILD_ID}|g' ops/k8s/frontend-deployment.yaml"
+                        sh "sed -i 's|\${BUILD_ID}|${env.BRANCH_NAME}-${env.BUILD_ID}|g' ops/k8s/frontend-deployment.yaml"
                         sh "sed -i 's|REPLACE_WITH_REAL_IP|http://${backendIp}:8080|g' ops/k8s/frontend-deployment.yaml"
                         
                         sh 'kubectl apply -f ops/k8s/frontend-deployment.yaml'
