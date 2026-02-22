@@ -252,7 +252,8 @@ pipeline {
             when { branch 'main' }
             steps {
                 dir('ops/ansible') {
-                    sh 'ansible-playbook -vvv playbooks/01_setup_k3s.yaml -i inventory/hosts.yaml'
+                    // Infrastructure is stable; setup is only needed for fresh servers
+                    // sh 'ansible-playbook -v playbooks/01_setup_k3s.yaml -i inventory/hosts.yaml'
                     script {
                         withCredentials([
                             string(credentialsId: 'mysql-root-password', variable: 'MYSQL_ROOT_PASSWORD'),
@@ -261,7 +262,7 @@ pipeline {
                             string(credentialsId: 'rhine-jwt-secret', variable: 'JWT_SECRET')
                         ]) {
                             sh """
-                                ansible-playbook -vvv playbooks/02_deploy_app.yaml -i inventory/hosts.yaml \
+                                ansible-playbook -v playbooks/02_deploy_app.yaml -i inventory/hosts.yaml \
                                 -e "build_id=${env.BRANCH_NAME}-${env.BUILD_ID}" \
                                 -e "mysql_root_password=\$MYSQL_ROOT_PASSWORD" \
                                 -e "mysql_password=\$RHINE_PASSWORD" \
