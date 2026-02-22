@@ -4,27 +4,20 @@
   become: yes
   gather_facts: no
   tasks:
-    - name: Kill any holding apt locks
+    - name: Bootstrap K3s (Single-Trip)
       shell: |
         systemctl stop apt-daily.service || true
         systemctl stop apt-daily-upgrade.service || true
         killall apt apt-get || true
-        rm -f /var/lib/apt/lists/lock
-        rm -f /var/cache/apt/archives/lock
-        rm -f /var/lib/dpkg/lock*
+        rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock*
         dpkg --configure -a
-      ignore_errors: yes
-
-    - name: Update apt cache and install prerequisites
-      apt:
-        update_cache: yes
-        name:
-          - curl
-          - apt-transport-https
-        state: present
-
-    - name: Download and install K3s
-      shell: curl -sfL https://get.k3s.io | sh -s - server --tls-san {{ ansible_host }}
+        
+        apt-get update
+        apt-get install -y curl apt-transport-https
+        curl -sfL https://get.k3s.io | sh -s - server --tls-san {{ ansible_host }}
+      args:
+        executable: /bin/bash
+      register: bootstrap_result
 
     - name: Wait for K3s config file to be created
       wait_for:
