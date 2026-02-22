@@ -87,12 +87,6 @@ public class UserController {
         return ResponseEntity.ok(Collections.singletonMap("message", data));
     }
 
-    @Operation(summary = "Logout user", tags = {"Authentication"})
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(jakarta.servlet.http.HttpServletRequest request) {
-        SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("Logged out successfully");
-    }
 
     @Operation(summary = "Update last accessed project")
     @PutMapping("/update-last-project/{projectId}")
