@@ -2,8 +2,8 @@ all:
   children:
     k3s_cluster:
       hosts:
-        18.117.155.184:
-          ansible_host: 18.117.155.184
+        3.140.251.41:
+          ansible_host: 3.140.251.41
           ansible_user: ubuntu 
           ansible_ssh_private_key_file: /var/jenkins_home/.ssh/rhine-key.pem
           ansible_python_interpreter: /usr/bin/python3
