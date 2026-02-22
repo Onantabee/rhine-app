@@ -6,14 +6,16 @@
   tasks:
     - name: Bootstrap K3s (Single-Trip)
       shell: |
+        export DEBIAN_FRONTEND=noninteractive
+        
         systemctl stop apt-daily.service || true
         systemctl stop apt-daily-upgrade.service || true
-        killall apt apt-get || true
-        rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock*
-        dpkg --configure -a
+        
+        fuser -vki /var/lib/dpkg/lock-frontend || true
         
         apt-get update
-        apt-get install -y curl apt-transport-https
+        apt-get install -y -o Dpkg::Options::="--force-confold" curl apt-transport-https
+        
         curl -sfL https://get.k3s.io | sh -s - server --tls-san {{ ansible_host }}
       args:
         executable: /bin/bash
