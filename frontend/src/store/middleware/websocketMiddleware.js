@@ -12,24 +12,42 @@ export const websocketMiddleware = (store) => (next) => (action) => {
     return next(action);
 };
 
+function logStompMessage(topic, body, icon = '🟢') {
+    try {
+        const parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
+        console.groupCollapsed(
+            `%c${icon} [WebSocket] ${topic}`,
+            'color: #14B8A6; font-weight: bold;'
+        );
+        console.log('Topic:', topic);
+        console.log('Payload:', parsedBody);
+        console.groupEnd();
+    } catch (e) {
+        console.log(`${icon} [WebSocket] ${topic}:`, body);
+    }
+}
+
 function initializeWebSocket(store) {
     const apiBaseUrl = window.__env__?.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-    
-    // Replace http(s) with ws(s)
+
     const protocol = apiBaseUrl.startsWith('https') ? 'wss' : 'ws';
     const brokerURL = `${protocol}://${apiBaseUrl.replace(/^https?:\/\//, '')}/ws`;
 
     stompClient = new Client({
         brokerURL,
-        debug: (str) => console.log('[WebSocket]', str),
+        debug: (str) => {
+            if (str.includes('PONG') || str.includes('PING')) return;
+            console.log('%c[WebSocket] STOMP Frame:', 'color: #888; font-style: italic;', str);
+        },
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
 
         onConnect: () => {
-            console.log('[WebSocket] Connected');
+            console.log('%c[WebSocket] Connected', 'color: #14B8A6; font-weight: bold; font-size: 1.1em;');
 
             stompClient.subscribe('/topic/unread-updates', (message) => {
+                logStompMessage('/topic/unread-updates', message.body);
                 try {
                     const { taskId, recipientEmail } = JSON.parse(message.body);
                     store.dispatch(
@@ -43,6 +61,7 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/comments', (message) => {
+                logStompMessage('/topic/comments', message.body);
                 try {
                     const newComment = JSON.parse(message.body);
                     store.dispatch(
@@ -54,6 +73,7 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/comment-update', (message) => {
+                logStompMessage('/topic/comment-update', message.body);
                 try {
                     const updatedComment = JSON.parse(message.body);
                     store.dispatch(
@@ -65,6 +85,7 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/comment-deletion', (message) => {
+                logStompMessage('/topic/comment-deletion', message.body, '🔴');
                 try {
                     const data = JSON.parse(message.body);
                     store.dispatch(
@@ -76,8 +97,8 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/task-created', (message) => {
+                logStompMessage('/topic/task-created', message.body, '🆕');
                 try {
-                    const data = JSON.parse(message.body);
                     store.dispatch(
                         tasksApi.util.invalidateTags([{ type: 'Task', id: 'LIST' }])
                     );
@@ -87,8 +108,8 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/task-deleted', (message) => {
+                logStompMessage('/topic/task-deleted', message.body, '🗑️');
                 try {
-                    const data = JSON.parse(message.body);
                     store.dispatch(
                         tasksApi.util.invalidateTags([{ type: 'Task', id: 'LIST' }])
                     );
@@ -98,6 +119,7 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/task-updated', (message) => {
+                logStompMessage('/topic/task-updated', message.body, '📝');
                 try {
                     const updatedTask = JSON.parse(message.body);
                     const taskId = updatedTask.payload?.id;
@@ -115,6 +137,7 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/task-status-updated', (message) => {
+                logStompMessage('/topic/task-status-updated', message.body, '🔄');
                 try {
                     const data = JSON.parse(message.body);
                     const taskId = data.payload?.id;
