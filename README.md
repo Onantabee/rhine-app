@@ -28,7 +28,7 @@ The application is built with a modern tech stack, featuring a React frontend an
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Category      | Technology                                                              |
 |---------------|-------------------------------------------------------------------------|
