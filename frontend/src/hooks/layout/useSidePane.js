@@ -4,6 +4,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { logout as logoutAction } from "../../store/slices/authSlice";
 import { clearActiveProject } from "../../store/slices/projectSlice";
 import { useLogoutMutation } from "../../store/api/authApi";
+import { baseApi } from "../../store/api/baseApi";
 
 export const useSidePane = ({ onLinkClick }) => {
     const params = useParams();
@@ -38,6 +39,7 @@ export const useSidePane = ({ onLinkClick }) => {
         }
         dispatch(logoutAction());
         dispatch(clearActiveProject());
+        dispatch(baseApi.util.resetApiState());
         setLogoutDialogOpen(false);
         if (onLinkClick) onLinkClick();
         navigate("/");

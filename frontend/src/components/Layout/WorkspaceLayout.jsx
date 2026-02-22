@@ -1,8 +1,10 @@
 import { Outlet, useLocation, Navigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
 import SidePane from "./SidePane";
 import { closeMobileMenu } from "../../store/slices/uiSlice";
 import { useGetProjectByIdQuery } from "../../store/api/projectsApi";
+import { setActiveProject } from "../../store/slices/projectSlice";
 import NotFound from "../../pages/NotFound";
 import { LoadingSpinner } from "../ui";
 
@@ -11,11 +13,23 @@ const WorkspaceLayout = () => {
     const mobileMenuOpen = useSelector((state) => state.ui.mobileMenuOpen);
     const location = useLocation();
     const { hasProjects, sessionChecked } = useSelector((state) => state.auth);
+    const activeProject = useSelector((state) => state.project.activeProject);
     const { projectId } = useParams();
-
-    const { error, isLoading } = useGetProjectByIdQuery(projectId, {
+    const { data: project, error, isLoading } = useGetProjectByIdQuery(projectId, {
         skip: !projectId,
     });
+
+    useEffect(() => {
+        if (project && (!activeProject || activeProject.id !== project.id)) {
+            dispatch(
+                setActiveProject({
+                    id: project.id,
+                    name: project.name,
+                    role: project.currentUserRole,
+                })
+            );
+        }
+    }, [project, activeProject, dispatch]);
 
     if (sessionChecked && !hasProjects) {
         return <Navigate to="/create-project" replace />;

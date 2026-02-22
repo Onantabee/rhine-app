@@ -1,4 +1,3 @@
-import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { tasksApi } from '../api/tasksApi';
 import { commentsApi } from '../api/commentsApi';
@@ -14,12 +13,14 @@ export const websocketMiddleware = (store) => (next) => (action) => {
 };
 
 function initializeWebSocket(store) {
-    const baseUrl = window.__env__?.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-    const socket = new SockJS(baseUrl + '/ws');
-
+    const apiBaseUrl = window.__env__?.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+    
+    // Replace http(s) with ws(s)
+    const protocol = apiBaseUrl.startsWith('https') ? 'wss' : 'ws';
+    const brokerURL = `${protocol}://${apiBaseUrl.replace(/^https?:\/\//, '')}/ws`;
 
     stompClient = new Client({
-        webSocketFactory: () => socket,
+        brokerURL,
         debug: (str) => console.log('[WebSocket]', str),
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,

@@ -12,6 +12,7 @@ const ProjectPicker = () => {
         ref,
         activeProject,
         projects,
+        isLoadingProjects,
         handleSelectProject,
         handleCreateNew,
         toggleOpen
@@ -31,7 +32,7 @@ const ProjectPicker = () => {
                     className="flex items-center gap-2 py-1.5 transition-colors text-sm font-medium text-gray-700 dark:text-[#cccccc] cursor-pointer"
                 >
                     <span className="max-w-[150px] truncate text-xl">
-                        {activeProject?.name || "Select Project"}
+                        {isLoadingProjects ? "Loading..." : (activeProject?.name || "Select Project")}
                     </span>
                     <ChevronDown
                         size={24}
@@ -87,6 +88,10 @@ const ProjectPicker = () => {
                                         </div>
                                     </button>
                                 ))}
+                            </div>
+                        ) : isLoadingProjects ? (
+                            <div className="flex flex-col items-center justify-center py-6 px-4 text-center">
+                                <p className="text-gray-400 px-6 py-2">Loading projects...</p>
                             </div>
                         ) : (
                             <div className="flex flex-col items-center justify-center py-6 px-4 text-center">

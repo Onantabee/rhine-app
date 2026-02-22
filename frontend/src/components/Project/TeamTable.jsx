@@ -14,7 +14,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
     } = useTeamTable({ members, userEmail, onRemove });
 
     return (
-        <div className="bg-white h-fit flex flex-col min-h-0">
+        <div className="bg-white dark:bg-[#1a1a1a] h-fit flex flex-col min-h-0">
             <div className="overflow-auto flex-1 border border-gray-200 dark:border-[#404040]">
                 <table className="w-full text-left">
                     <thead className="bg-gray-50 dark:bg-[#262626]">
@@ -106,13 +106,22 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                         style={{ top: menuPosition.top, left: menuPosition.left }}
                     >
                         <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-t border-l border-gray-400 dark:border-[#404040] z-[-1]" />
-                        <button
-                            onClick={handleViewTasks}
-                            className="flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-100 dark:hover:bg-[#262626]"
-                        >
-                            <Eye className="mr-3 h-4 w-4 text-gray-400" />
-                            View Tasks
-                        </button>
+                        {(() => {
+                            const member = members.find(m => m.email === actionMenuOpen);
+                            const isPending = member?.name?.includes("(Pending)");
+                            if (!isPending) {
+                                return (
+                                    <button
+                                        onClick={handleViewTasks}
+                                        className="flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-100 dark:hover:bg-[#262626]"
+                                    >
+                                        <Eye className="mr-3 h-4 w-4 text-gray-400" />
+                                        View Tasks
+                                    </button>
+                                );
+                            }
+                            return null;
+                        })()}
                         {(() => {
                             const member = members.find(m => m.email === actionMenuOpen);
                             if (member && member.email !== userEmail) {

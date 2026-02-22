@@ -19,6 +19,7 @@ import { SnackbarProvider } from "./context/SnackbarContext";
 import { login, logout, setSessionChecked } from "./store/slices/authSlice";
 import { setActiveProject } from "./store/slices/projectSlice";
 import { useLazyGetCurrentUserQuery } from "./store/api/authApi";
+import { LoadingSpinner } from "./components/ui";
 
 function App() {
   const [isSignup, setIsSignup] = useState(false);
@@ -56,6 +57,14 @@ function App() {
     if (lastProjectId) return `/project/${lastProjectId}`;
     return "/create-project";
   };
+
+  if (!sessionChecked) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full bg-white dark:bg-[#1a1a1a]">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
 
   return (
     <SnackbarProvider>

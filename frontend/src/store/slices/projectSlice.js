@@ -1,16 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const getPersistedProject = () => {
-    try {
-        const stored = localStorage.getItem("activeProject");
-        return stored ? JSON.parse(stored) : null;
-    } catch {
-        return null;
-    }
-};
-
 const initialState = {
-    activeProject: getPersistedProject(),
+    activeProject: null,
     projects: [],
 };
 

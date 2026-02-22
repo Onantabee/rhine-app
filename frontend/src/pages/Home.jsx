@@ -129,7 +129,7 @@ export default function Home() {
         </div>
       ) : (
         <div className="h-full min-h-0 p-6 pt-0 flex flex-col">
-          <div className="bg-white flex flex-col min-h-0 border border-gray-200 dark:border-[#404040]">
+          <div className="bg-white dark:bg-[#1a1a1a] flex flex-col min-h-0 border border-gray-200 dark:border-[#404040]">
             <div className="overflow-auto w-full h-fit">
               <table className="w-full min-w-[1000px] border-none text-left">
                 <TaskListHeader isAdmin={isAdmin} />

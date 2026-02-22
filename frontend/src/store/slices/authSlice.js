@@ -4,14 +4,10 @@ const getSessionState = () => {
     try {
         return {
             isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
-            userEmail: localStorage.getItem("userEmail") || "",
-            userName: localStorage.getItem("userName") || "",
-            lastProjectId: localStorage.getItem("lastProjectId") || null,
-            isVerified: localStorage.getItem("isVerified") === "true",
             token: localStorage.getItem("token") || "",
         };
     } catch {
-        return { isLoggedIn: false, userEmail: "", userName: "", lastProjectId: null, token: "" };
+        return { isLoggedIn: false, token: "" };
     }
 };
 
@@ -19,14 +15,14 @@ const persisted = getSessionState();
 
 const initialState = {
     isLoggedIn: persisted.isLoggedIn,
-    userEmail: persisted.userEmail,
-    userName: persisted.userName,
-    lastProjectId: persisted.lastProjectId,
+    userEmail: "",
+    userName: "",
+    lastProjectId: null,
     searchTerm: "",
     assigneeEmailFilter: "",
     sessionChecked: false,
     hasProjects: false,
-    isVerified: persisted.isVerified,
+    isVerified: false,
     token: persisted.token,
 };
 
@@ -41,17 +37,19 @@ const authSlice = createSlice({
             state.hasProjects = action.payload.hasProjects ?? false;
             state.lastProjectId = action.payload.lastProjectId || null;
             state.isVerified = action.payload.isVerified ?? false;
+
             if (action.payload.token) {
                 state.token = action.payload.token;
                 localStorage.setItem("token", action.payload.token);
             }
+
             state.sessionChecked = true;
             localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("userEmail", action.payload.email);
-            localStorage.setItem("userName", action.payload.name);
-            localStorage.setItem("isVerified", String(action.payload.isVerified ?? false));
+
             if (action.payload.lastProjectId) {
                 localStorage.setItem("lastProjectId", action.payload.lastProjectId);
+            } else {
+                localStorage.removeItem("lastProjectId");
             }
         },
         logout: (state) => {
@@ -65,9 +63,6 @@ const authSlice = createSlice({
             state.searchTerm = "";
             state.sessionChecked = true;
             localStorage.removeItem("isLoggedIn");
-            localStorage.removeItem("userEmail");
-            localStorage.removeItem("userName");
-            localStorage.removeItem("isVerified");
             localStorage.removeItem("token");
             localStorage.removeItem("lastProjectId");
             localStorage.removeItem("activeProject");
@@ -76,22 +71,22 @@ const authSlice = createSlice({
             if (action.payload) {
                 if (action.payload.name) {
                     state.userName = action.payload.name;
-                    localStorage.setItem("userName", action.payload.name);
                 }
                 if (action.payload.email) {
                     state.userEmail = action.payload.email;
-                    localStorage.setItem("userEmail", action.payload.email);
                 }
                 if (action.payload.hasProjects !== undefined) {
                     state.hasProjects = action.payload.hasProjects;
                 }
                 if (action.payload.isVerified !== undefined) {
                     state.isVerified = action.payload.isVerified;
-                    localStorage.setItem("isVerified", String(action.payload.isVerified));
                 }
-                 if (action.payload.lastProjectId) {
+                if (action.payload.lastProjectId) {
                     state.lastProjectId = action.payload.lastProjectId;
                     localStorage.setItem("lastProjectId", action.payload.lastProjectId);
+                } else if (action.payload.lastProjectId === null) {
+                    state.lastProjectId = null;
+                    localStorage.removeItem("lastProjectId");
                 }
                 if (action.payload.token) {
                     state.token = action.payload.token;

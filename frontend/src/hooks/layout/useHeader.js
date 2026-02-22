@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setSearchTerm, logout } from "../../store/slices/authSlice";
 import { useLogoutMutation } from "../../store/api/authApi";
+import { baseApi } from "../../store/api/baseApi";
 import { toggleMobileMenu, closeMobileMenu } from "../../store/slices/uiSlice";
 
 export const useHeader = ({ setIsSignup }) => {
@@ -45,6 +46,7 @@ export const useHeader = ({ setIsSignup }) => {
             console.error("Logout failed on server:", error);
         }
         dispatch(logout());
+        dispatch(baseApi.util.resetApiState());
         dispatch(closeMobileMenu());
         setLogoutDialogOpen(false);
 

@@ -15,7 +15,7 @@ export const useProjectPicker = () => {
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const ref = useRef(null);
     const activeProject = useSelector((state) => state.project.activeProject);
-    const { data: projects = [] } = useGetProjectsQuery();
+    const { data: projects = [], isLoading: isLoadingProjects } = useGetProjectsQuery();
     const [updateLastProject] = useUpdateLastProjectMutation();
 
     useEffect(() => {
@@ -56,6 +56,7 @@ export const useProjectPicker = () => {
         ref,
         activeProject,
         projects,
+        isLoadingProjects,
         handleSelectProject,
         handleCreateNew,
         toggleOpen

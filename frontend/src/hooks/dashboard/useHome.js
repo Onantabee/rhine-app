@@ -46,18 +46,6 @@ export const useHome = () => {
         skip: !projectId,
     });
 
-    useEffect(() => {
-        if (project && (!activeProject || activeProject.id !== project.id)) {
-            dispatch(
-                setActiveProject({
-                    id: project.id,
-                    name: project.name,
-                    role: project.currentUserRole,
-                })
-            );
-        }
-    }, [project, activeProject, dispatch]);
-
     const sortedTasks = [...tasks].sort((a, b) => {
         return new Date(b.createdAt) - new Date(a.createdAt);
     });
