@@ -84,10 +84,16 @@ export const useTaskDetails = () => {
 
     useEffect(() => {
         if (task?.id && user?.email) {
-            markCommentsAsRead({
-                taskId: task.id,
-                recipientEmail: user.email,
-            });
+            const hasUnreadComments = comments.some(
+                (c) => !c.readByRecipient && c.recipientEmail === user.email
+            );
+
+            if (hasUnreadComments) {
+                markCommentsAsRead({
+                    taskId: task.id,
+                    recipientEmail: user.email,
+                });
+            }
 
             if (!isAdmin && task.assigneeId === user.email) {
                 updateTaskNewState({ projectId, id: task.id, isNew: false });

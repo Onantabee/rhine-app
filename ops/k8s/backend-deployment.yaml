@@ -16,16 +16,16 @@ spec:
     spec:
       containers:
         - name: rhine-backend
-          image: ${DOCKER_REGISTRY}/rhine-backend:${BUILD_ID}
+          image: __DOCKER_REGISTRY__/rhine-backend:__BUILD_ID__
           ports:
             - containerPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "prod"
             - name: APPLICATION_CORS_ALLOWED_ORIGINS
-              value: "${FRONTEND_URL}"
+              value: "__FRONTEND_URL__"
             - name: FRONTEND_URL
-              value: "${FRONTEND_URL}"
+              value: "__FRONTEND_URL__"
             - name: SPRING_MAIL_FROM
               valueFrom:
                 secretKeyRef:

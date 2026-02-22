@@ -93,12 +93,13 @@ public class CommentController {
             }
     )
     @PostMapping("/mark-as-read-by-recipient/{taskId}")
-    public void markCommentsAsReadByRecipients(
+    public ResponseEntity<Map<String, String>> markCommentsAsReadByRecipients(
             @PathVariable Long taskId,
             @RequestBody Map<String, String> payload
     ) {
         String recipientEmail = payload.get("recipientEmail");
         commentService.markCommentsAsReadByRecipient(taskId, recipientEmail);
+        return ResponseEntity.ok(Map.of("message", "Comments marked as read"));
     }
 
     @Operation(
@@ -112,11 +113,12 @@ public class CommentController {
             }
     )
     @GetMapping("/count-unread-by-recipient/{taskId}/{recipientEmail}")
-    public long countUnreadCommentsByRecipients(
+    public ResponseEntity<Map<String, Long>> countUnreadCommentsByRecipients(
             @PathVariable Long taskId,
             @PathVariable String recipientEmail
     ) {
-        return commentService.countUnreadCommentsByRecipient(recipientEmail, taskId);
+        long count = commentService.countUnreadCommentsByRecipient(recipientEmail, taskId);
+        return ResponseEntity.ok(Map.of("count", count));
     }
 
     @Operation(
@@ -131,10 +133,11 @@ public class CommentController {
             }
     )
     @PostMapping("/mark-as-read/{commentId}")
-    public void markCommentAsRead(
+    public ResponseEntity<Map<String, String>> markCommentAsRead(
             @PathVariable Long commentId,
             @RequestBody MarkAsReadDto markAsReadDto) {
         commentService.markCommentAsRead(commentId, markAsReadDto.getUserEmail());
+        return ResponseEntity.ok(Map.of("message", "Comment marked as read"));
     }
 
     @Operation(

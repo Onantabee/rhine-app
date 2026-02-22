@@ -16,12 +16,12 @@ spec:
     spec:
       containers:
         - name: rhine-frontend
-          image: ${DOCKER_REGISTRY}/rhine-frontend:${BUILD_ID}
+          image: __DOCKER_REGISTRY__/rhine-frontend:__BUILD_ID__
           ports:
             - containerPort: 80
           env:
             - name: VITE_API_BASE_URL
-              value: "REPLACE_WITH_REAL_IP"
+              value: "__BACKEND_URL__"
 
 
 ---
