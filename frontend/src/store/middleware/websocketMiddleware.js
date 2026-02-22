@@ -12,18 +12,18 @@ export const websocketMiddleware = (store) => (next) => (action) => {
     return next(action);
 };
 
-function logStompMessage(topic, body, icon = '🟢') {
+function logStompMessage(topic, body) {
     try {
         const parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
         console.groupCollapsed(
-            `%c${icon} [WebSocket] ${topic}`,
+            `%c[WebSocket] ${topic}`,
             'color: #14B8A6; font-weight: bold;'
         );
         console.log('Topic:', topic);
         console.log('Payload:', parsedBody);
         console.groupEnd();
     } catch (e) {
-        console.log(`${icon} [WebSocket] ${topic}:`, body);
+        console.log(`[WebSocket] ${topic}:`, body);
     }
 }
 
