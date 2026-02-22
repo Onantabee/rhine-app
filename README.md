@@ -76,7 +76,7 @@ The application is built with a modern tech stack, featuring a React frontend an
 
 4.  **Access points:**
     - **Frontend:** [http://localhost:5173](http://localhost:5173)
-    - **API Documentation (Swagger):** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+    - **API Documentation (Swagger):** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
     - **H2 Console (Internal Testing):** [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
 
 ---
