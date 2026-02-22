@@ -150,6 +150,10 @@ public class ProjectService {
         membership.setStatus(com.tskmgmnt.rhine.enums.ProjectMemberStatus.ACTIVE);
         membership.setToken(null);
         projectMemberRepository.save(membership);
+
+        User user = membership.getUser();
+        user.setLastProjectId(membership.getProject().getId());
+        userRepository.save(user);
         
         return membership.getProject().getId();
     }
