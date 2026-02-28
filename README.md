@@ -51,7 +51,7 @@ The application is built with a modern tech stack, featuring a React frontend an
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/Onantabee/rhine-app.git
     cd rhine-app
     ```
 
