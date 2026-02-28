@@ -1,8 +1,7 @@
 package com.tskmgmnt.rhine.comment.entity;
+
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.task.entity.Task;
-
-
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;

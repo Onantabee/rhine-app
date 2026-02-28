@@ -2,7 +2,6 @@ package com.tskmgmnt.rhine.task.dto;
 import com.tskmgmnt.rhine.task.enums.TaskStatus;
 import com.tskmgmnt.rhine.project.entity.Project;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 

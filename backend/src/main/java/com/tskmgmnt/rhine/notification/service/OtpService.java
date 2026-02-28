@@ -2,8 +2,6 @@ package com.tskmgmnt.rhine.notification.service;
 import com.tskmgmnt.rhine.notification.repository.OtpRepository;
 import com.tskmgmnt.rhine.notification.entity.Otp;
 
-
-
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

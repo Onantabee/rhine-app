@@ -1,6 +1,6 @@
 package com.tskmgmnt.rhine.comment.repository;
-import com.tskmgmnt.rhine.comment.entity.Comment;
 
+import com.tskmgmnt.rhine.comment.entity.Comment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

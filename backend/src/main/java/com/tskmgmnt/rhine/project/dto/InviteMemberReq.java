@@ -1,7 +1,6 @@
 package com.tskmgmnt.rhine.project.dto;
+
 import com.tskmgmnt.rhine.project.enums.ProjectRole;
-
-
 
 public class InviteMemberReq {
     private String email;

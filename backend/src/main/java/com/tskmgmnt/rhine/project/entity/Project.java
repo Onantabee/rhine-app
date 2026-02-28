@@ -2,7 +2,6 @@ package com.tskmgmnt.rhine.project.entity;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.task.entity.Task;
 
-
 import com.tskmgmnt.rhine.project.entity.ProjectMember;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;

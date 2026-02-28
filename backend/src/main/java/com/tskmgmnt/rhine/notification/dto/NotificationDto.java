@@ -3,7 +3,6 @@ package com.tskmgmnt.rhine.notification.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
-
 public class NotificationDto<T> {
     @Schema(description = "Type of the event", example = "TASK_ASSIGNED")
     private String eventType;

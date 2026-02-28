@@ -1,0 +1,38 @@
+import { useRef, useEffect, useState, useLayoutEffect } from "react";
+import { differenceInSeconds } from "date-fns";
+import { useSelector } from "react-redux";
+import {
+    useUpdateCommentMutation,
+    useDeleteCommentMutation,
+} from '../api/commentsApi';
+
+export const useCommentItem = ({
+    comment,
+    currentUserEmail,
+    now,
+    isCommentingAllowed,
+    isDropdownOpen,
+}) => {
+    const isOwnComment = comment.authorEmail === currentUserEmail;
+    const canEdit = differenceInSeconds(now, new Date(comment.createdAt)) <= 300 && isCommentingAllowed;
+
+    const triggerRef = useRef(null);
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+    useLayoutEffect(() => {
+        if (isDropdownOpen && triggerRef.current) {
+            const rect = triggerRef.current.getBoundingClientRect();
+            setDropdownPosition({
+                top: rect.bottom + window.scrollY,
+                left: rect.right + window.scrollX - 144,
+            });
+        }
+    }, [isDropdownOpen]);
+
+    return {
+        isOwnComment,
+        canEdit,
+        triggerRef,
+        dropdownPosition,
+    };
+};

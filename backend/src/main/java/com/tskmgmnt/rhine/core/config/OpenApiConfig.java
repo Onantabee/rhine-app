@@ -2,8 +2,6 @@ package com.tskmgmnt.rhine.core.config;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.project.entity.Project;
 
-
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

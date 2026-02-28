@@ -2,7 +2,6 @@ package com.tskmgmnt.rhine.task.repository;
 import com.tskmgmnt.rhine.task.enums.TaskStatus;
 import com.tskmgmnt.rhine.task.entity.Task;
 
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

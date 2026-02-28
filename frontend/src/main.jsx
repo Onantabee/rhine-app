@@ -1,12 +1,11 @@
 import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
-import { store } from './store/store.js'
+import { store } from './core/store/store.js'
 import './index.css'
-// import App from './App.jsx'
-import ErrorBoundary from './components/Common/ErrorBoundary.jsx'
-import { LoadingSpinner } from './components/ui'
-import { ThemeProvider } from './hooks/useTheme'
+import ErrorBoundary from './core/components/ErrorBoundary.jsx'
+import { LoadingSpinner } from './core/ui/index.js'
+import { ThemeProvider } from './core/hooks/useTheme'
 
 const App = lazy(() => import('./App.jsx'))
 

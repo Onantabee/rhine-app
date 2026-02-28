@@ -1,6 +1,6 @@
 package com.tskmgmnt.rhine.auth.dto;
-import com.tskmgmnt.rhine.user.entity.User;
 
+import com.tskmgmnt.rhine.user.entity.User;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

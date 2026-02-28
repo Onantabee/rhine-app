@@ -1,6 +1,6 @@
 package com.tskmgmnt.rhine.core.config;
-import com.tskmgmnt.rhine.auth.config.JwtAuthenticationFilter;
 
+import com.tskmgmnt.rhine.auth.config.JwtAuthenticationFilter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,8 +1,7 @@
 package com.tskmgmnt.rhine.core.config;
+
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.user.repository.UserRepository;
-
-
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

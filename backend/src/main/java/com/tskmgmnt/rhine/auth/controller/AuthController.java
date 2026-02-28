@@ -1,4 +1,5 @@
 package com.tskmgmnt.rhine.auth.controller;
+
 import com.tskmgmnt.rhine.notification.service.OtpService;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.auth.dto.UserRegReq;
@@ -6,13 +7,6 @@ import com.tskmgmnt.rhine.auth.dto.UserLogReq;
 import com.tskmgmnt.rhine.auth.dto.LoginResponse;
 import com.tskmgmnt.rhine.auth.service.JwtService;
 import com.tskmgmnt.rhine.auth.service.AuthService;
-
-
-
-
-
-
-
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

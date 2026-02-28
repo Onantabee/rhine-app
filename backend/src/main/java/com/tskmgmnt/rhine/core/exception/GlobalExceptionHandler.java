@@ -1,6 +1,6 @@
 package com.tskmgmnt.rhine.core.exception;
-import com.tskmgmnt.rhine.user.entity.User;
 
+import com.tskmgmnt.rhine.user.entity.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
