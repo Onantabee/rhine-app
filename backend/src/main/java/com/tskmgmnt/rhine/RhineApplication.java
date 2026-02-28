@@ -1,4 +1,6 @@
 package com.tskmgmnt.rhine;
+import com.tskmgmnt.rhine.project.entity.Project;
+
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
