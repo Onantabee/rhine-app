@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useSnackbar } from "../../../core/context/SnackbarContext";
 import { useGetTasksQuery, useDeleteTaskMutation } from '../../task/api/tasksApi';
-import { useGetProjectByIdQuery } from '../api/projectsApi';
+import { useGetProjectByIdQuery, useGetProjectMembersQuery } from '../api/projectsApi';
 import { useGetUserByEmailQuery } from '../../user/api/usersApi';
 import { setActiveProject } from '../store/projectSlice';
 import { setSearchTerm, setAssigneeEmailFilter } from '../../auth/store/authSlice';
@@ -45,6 +45,12 @@ export const useHome = () => {
     const { data: project } = useGetProjectByIdQuery(projectId, {
         skip: !projectId,
     });
+
+    const { data: members = [] } = useGetProjectMembersQuery(projectId, {
+        skip: !projectId,
+    });
+
+    const hasOtherMembers = members.length > 1;
 
     const sortedTasks = [...tasks].sort((a, b) => {
         return new Date(b.createdAt) - new Date(a.createdAt);
@@ -113,6 +119,7 @@ export const useHome = () => {
         handleDeleteTask,
         searchTerm,
         assigneeEmailFilter,
-        navigate 
+        navigate,
+        hasOtherMembers
     };
 };

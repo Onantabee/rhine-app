@@ -24,7 +24,8 @@ export default function Home() {
     handleDeleteTask,
     searchTerm,
     assigneeEmailFilter,
-    navigate
+    navigate,
+    hasOtherMembers
   } = useHome();
 
   if (!user) {
@@ -62,7 +63,9 @@ export default function Home() {
             <Button
               size="md"
               onClick={() => handleOpenDialog()}
-              className="bg-red-500 hover:bg-red-600 text-white relative"
+              disabled={!hasOtherMembers}
+              title={!hasOtherMembers ? "Invite a member first before you can add a task" : ""}
+              className={`relative ${hasOtherMembers ? 'bg-red-500 hover:bg-red-600 text-white' : ''}`}
             >
               <Plus size={20} />
               Add Task

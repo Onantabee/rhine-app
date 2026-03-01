@@ -44,7 +44,7 @@ const Button = React.forwardRef(
 
         const widthStyle = fullWidth ? 'w-full' : '';
 
-        return (
+        const buttonElement = (
             <button
                 ref={ref}
                 type={type}
@@ -63,6 +63,16 @@ const Button = React.forwardRef(
                 {children}
             </button>
         );
+
+        if (props.title) {
+            return (
+                <div className={`inline-block ${widthStyle}`} title={props.title}>
+                    {buttonElement}
+                </div>
+            );
+        }
+
+        return buttonElement;
     }
 );
 
