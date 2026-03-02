@@ -70,7 +70,6 @@ export const useHeader = ({ setIsSignup }) => {
 
     const isTaskListPage = /^\/project\/\d+(\/team)?\/?$/.test(location.pathname);
     
-    // Logic for shouldShowMobileMenu
     const shouldShowMobileMenu = (pathname) => {
         if (pathname.includes("/verify-email")) return false;
         if (pathname.includes("/create-project")) return false;
