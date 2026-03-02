@@ -15,11 +15,13 @@ const MobileListItem = ({
     isNew = false,
     badgeCount = 0,
     className = "",
+    style = {},
 }) => {
     return (
         <div
             onClick={onClick}
             className={`p-4 bg-white dark:bg-[#1a1a1a] border-b border-gray-100 dark:border-[#404040] flex flex-col gap-2 relative ${onClick ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626]" : ""} ${className}`}
+            style={style}
         >
             <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2 overflow-hidden flex-1">

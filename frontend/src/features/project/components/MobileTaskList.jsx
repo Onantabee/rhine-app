@@ -10,7 +10,9 @@ import {
     formatDueDateText,
     dueDateStatusConfig,
     highlightSearchMatch,
+    getCardBackground
 } from '../../task/utils/taskUtils';
+import { useTheme } from "../../../core/hooks/useTheme";
 
 const MobileTaskList = ({
     task,
@@ -25,6 +27,7 @@ const MobileTaskList = ({
     searchTerm,
 }) => {
     const { title, priority, dueDate, taskStatus, projectId } = task;
+    const { theme } = useTheme();
     const dueDateStatus = getDueDateStatus(dueDate, taskStatus);
     const shouldGrayOut = dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED";
 
@@ -104,13 +107,14 @@ const MobileTaskList = ({
     return (
         <>
             <MobileListItem
+                style={{ backgroundColor: getCardBackground(taskStatus, dueDateStatus, theme) }}
                 onClick={onClick}
                 titleClassName={taskStatus === "CANCELLED" ? "text-gray-400 line-through italic" : "text-gray-800 dark:text-[#cccccc]"}
                 title={highlightSearchMatch(title, searchTerm)}
                 subtitle={isAdmin ? `Assigned to ${assigneeName}` : `Created by ${creatorName}`}
                 avatarChar={avatarChar}
                 avatarColorClass={avatarColorClass}
-                
+
                 isNew={!isAdmin && taskIsNew}
                 badgeCount={unreadCountByRecipient}
                 chips={[
