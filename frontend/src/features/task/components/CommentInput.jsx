@@ -22,7 +22,7 @@ const CommentInput = ({
     }
 
     return (
-        <div className="sticky bottom-0 md:sticky md:bottom-0 shrink-0 w-full max-w-3xl mx-auto p-2 ">
+        <div className="sticky bottom-0 md:sticky md:bottom-0 shrink-0 w-full max-w-3xl mx-auto p-2 px-0 md:p-2 md:px-2 ">
             <div className={`w-full ${editingComment ? "bg-gray-600" : "bg-none"}`}>
                 {editingComment && (
                     <div className="flex justify-between items-center p-2 px-4">

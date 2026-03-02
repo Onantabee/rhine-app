@@ -74,11 +74,11 @@ const MobileListItem = ({
                 )}
 
                 {details.length > 0 && (
-                    <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                    <div className="flex">
                         {details.map((detail, idx) => (
-                            <p key={idx} className="flex items-center gap-1.5 text-[13px] text-gray-500 dark:text-gray-400">
+                            <p key={idx} className="flex items-center text-gray-500 dark:text-gray-400">
                                 {detail.icon && <span className="text-gray-400">{detail.icon}</span>}
-                                <span className="flex items-center gap-1 pr-3 uppercase text-gray-400 dark:text-[#4d4d4d]">{detail.label && `${detail.label} - `}<span className="font-medium text-gray-700 dark:text-[#cccccc] truncate">{detail.value}</span></span>
+                                <span className="flex items-center gap-1 pr-3 uppercase text-gray-400 dark:text-[#4d4d4d]">{detail.label && `${detail.label} - `}<span className="font-medium text-gray-700 dark:text-[#cccccc]">{detail.value}</span></span>
                             </p>
                         ))}
                     </div>

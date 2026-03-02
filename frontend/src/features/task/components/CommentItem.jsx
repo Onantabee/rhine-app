@@ -59,7 +59,7 @@ const CommentItem = ({
                         <p className="text-md text-gray-700 dark:text-[#cccccc] break-all whitespace-pre-wrap">{comment.content}</p>
                     </div>
                     {isOwnComment && (
-                        <div className="relative top-0 opacity-0 right-0 group-hover:opacity-100">
+                        <div className="relative top-0 md:opacity-0 right-0 group-hover:opacity-100">
                             <button
                                 ref={triggerRef}
                                 onClick={() => onToggleDropdown(comment.id)}

@@ -1,6 +1,7 @@
 import { Client } from '@stomp/stompjs';
 import { tasksApi } from '../../features/task/api/tasksApi';
 import { commentsApi } from '../../features/task/api/commentsApi';
+import { getApiBaseUrl } from '../config/env';
 
 let stompClient = null;
 
@@ -28,7 +29,7 @@ function logStompMessage(topic, body) {
 }
 
 function initializeWebSocket(store) {
-    const apiBaseUrl = window.__env__?.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+    const apiBaseUrl = getApiBaseUrl();
 
     const protocol = apiBaseUrl.startsWith('https') ? 'wss' : 'ws';
     const brokerURL = `${protocol}://${apiBaseUrl.replace(/^https?:\/\//, '')}/ws`;

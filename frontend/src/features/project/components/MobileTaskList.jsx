@@ -120,11 +120,11 @@ const MobileTaskList = ({
                     {
                         label: taskStatus !== "CANCELLED" ? undefined : undefined,
                         value: taskStatus !== "CANCELLED" ? (
-                            <span className={`px-2 py-0.5 text-sm font-medium italic border rounded-[5px] whitespace-nowrap ${dueDateStatus && dueDateStatusConfig[dueDateStatus] ? dueDateStatusConfig[dueDateStatus].className : "text-gray-600 dark:text-[#bfbfbf] border-none"}`}>
+                            <span className={`px-2 py-1 text-xs font-medium italic border rounded-[5px] whitespace-nowrap ${dueDateStatus && dueDateStatusConfig[dueDateStatus] ? dueDateStatusConfig[dueDateStatus].className : "text-gray-600 dark:text-[#bfbfbf] border-none"}`}>
                                 {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
                             </span>
                         ) : (
-                            <span className="text-gray-600 dark:text-[#bfbfbf] italic uppercase text-xs">Don't matter</span>
+                            <span className="text-gray-600 dark:text-[#bfbfbf] italic uppercase text-xs line-clamp-1">Don't matter</span>
                         )
                     },
                 ]}
