@@ -42,7 +42,7 @@ const CommentItem = ({
                             >
                                 {authorName}
                             </span>
-                            <div className="bg-gray-300 w-1 h-1 rounded-full" />
+                            <div className="bg-gray-300 dark:bg-[#4d4d4d] w-1 h-1 rounded-full" />
                             <p
                                 className={`text-xs ${isOwnComment
                                     ? "text-gray-400 group-hover:text-primary/70"

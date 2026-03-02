@@ -110,6 +110,7 @@ const MobileTaskList = ({
                 subtitle={isAdmin ? `Assigned to ${assigneeName}` : `Created by ${creatorName}`}
                 avatarChar={avatarChar}
                 avatarColorClass={avatarColorClass}
+                
                 isNew={!isAdmin && taskIsNew}
                 badgeCount={unreadCountByRecipient}
                 chips={[

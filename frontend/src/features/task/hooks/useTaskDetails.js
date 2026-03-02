@@ -157,6 +157,7 @@ export const useTaskDetails = () => {
             if (commentInputRef.current) {
                 commentInputRef.current.innerText = "";
                 commentInputRef.current.style.height = "auto";
+                commentInputRef.current.focus();
             }
         }
     };
@@ -176,6 +177,7 @@ export const useTaskDetails = () => {
         if (commentInputRef.current) {
             commentInputRef.current.innerText = "";
             commentInputRef.current.style.height = "auto";
+            commentInputRef.current.focus();
         }
 
         try {

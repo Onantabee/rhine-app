@@ -10,6 +10,7 @@ import {
 } from '../../task/utils/taskUtils';
 import { useTaskCard } from '../hooks/useTaskCard';
 import { useTheme } from "../../../core/hooks/useTheme";
+import { createPortal } from "react-dom";
 
 const TaskCard = ({
   task,
@@ -43,20 +44,20 @@ const TaskCard = ({
   const { theme } = useTheme();
 
   return (
-    <div className="relative">
+    <div className="relative overflow-visible">
       {unreadCountByRecipient > 0 && (
         <button
           onClick={onView}
           className="absolute h-6 w-6 bg-red-500 text-white text-xs border border-red-400 flex justify-center items-center -right-2 -top-2 cursor-pointer z-10 rounded-full"
         >
-          {unreadCountByRecipient}
+          {unreadCountByRecipient > 99 ? "99+" : unreadCountByRecipient}
         </button>
       )}
 
       {!isAdmin && taskIsNew && (
         <button
           onClick={onView}
-          className={`absolute rounded-full  h-6 px-3 bg-[#14B8A6] dark:bg-[#0f8a7b] text-white text-xs flex justify-center items-center ${unreadCountByRecipient > 0 ? "right-8" : "-right-2"
+          className={`absolute rounded-full h-6 px-3 bg-[#14B8A6] dark:bg-[#0f8a7b] text-white text-xs flex justify-center items-center ${unreadCountByRecipient > 0 ? "right-8" : "-right-2"
             } -top-2 cursor-pointer z-10`}
         >
           New
@@ -139,7 +140,7 @@ const TaskCard = ({
 
           {!(taskStatus === "COMPLETED" || taskStatus === "CANCELLED") && (
             <>
-              <div className="bg-gray-300 w-1 h-1 rounded-full" />
+              <div className="bg-gray-300 dark:bg-[#4d4d4d]  w-1 h-1 rounded-full" />
               <div className="flex flex-col">
                 {!isAdmin && <span className="text-gray-400 text-xs mb-1">Due</span>}
                 <span

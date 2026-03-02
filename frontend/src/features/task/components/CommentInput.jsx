@@ -22,7 +22,7 @@ const CommentInput = ({
     }
 
     return (
-        <div className="sticky bottom-0 md:sticky md:bottom-0 shrink-0 w-full max-w-3xl mx-auto p-0 md:p-2 md:px-2 ">
+        <div className="sticky bottom-0 md:sticky md:bottom-0 shrink-0 w-full max-w-3xl mx-auto p-0 md:px-2 ">
             <div className={`w-full ${editingComment ? "bg-gray-600" : "bg-none"}`}>
                 {editingComment && (
                     <div className="flex justify-between items-center p-2 px-4">
@@ -42,8 +42,10 @@ const CommentInput = ({
                         onInput={onCommentChange}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" && !e.shiftKey) {
-                                e.preventDefault();
-                                if (newComment.trim() !== "") onSubmit();
+                                if (window.innerWidth >= 768) {
+                                    e.preventDefault();
+                                    if (newComment.trim() !== "") onSubmit();
+                                }
                             }
                         }}
                         data-placeholder={!newComment ? "Add a comment..." : ""}
@@ -59,6 +61,7 @@ const CommentInput = ({
                     />
                     <button
                         onClick={onSubmit}
+                        onPointerDown={(e) => e.preventDefault()}
                         disabled={newComment.trim() === ""}
                         className={`flex justify-center items-center border h-10 font-semibold cursor-pointer rounded-full ${newComment.trim() !== ""
                             ? "bg-primary border-primary w-11 text-white hover:bg-primary-hover"

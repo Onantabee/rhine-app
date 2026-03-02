@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import CreateProjectForm from '../components/CreateProjectForm';
 
 const CreateProject = () => {

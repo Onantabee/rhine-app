@@ -33,19 +33,23 @@ const MobileListItem = ({
                         <div className="flex items-center gap-2">
                             <h3 className={`text-base font-semibold truncate ${titleClassName}`}>
                                 <span className="flex items-center gap-2">
-                                    {title} {teamSubtitle && <div className="bg-gray-300 w-1 h-1 rounded-full" />} <span className="text-sm text-gray-500 dark:text-[#bfbfbf] truncate mt-0.5 font-normal">{teamSubtitle}</span>
+                                    {title} {teamSubtitle && <div className="bg-gray-300 dark:bg-[#4d4d4d] w-1 h-1 rounded-full" />} <span className="text-sm text-gray-500 dark:text-[#bfbfbf] truncate mt-0.5 font-normal">{teamSubtitle}</span>
                                 </span>
                             </h3>
-                            {isNew && (
-                                <span className="rounded-full h-5 px-2 bg-[#14B8A6] dark:bg-[#0f8a7b] text-white text-[10px] font-medium flex justify-center items-center flex-shrink-0">
-                                    New
-                                </span>
-                            )}
-                            {badgeCount > 0 && (
-                                <span className="w-5 h-5 bg-red-500 text-white text-[10px] font-medium flex justify-center items-center rounded-full flex-shrink-0">
-                                    {badgeCount > 99 ? "99+" : badgeCount}
-                                </span>
-                            )}
+                            <div className="flex items-center gap-2">
+                                {badgeCount > 0 && (
+                                    <span className="w-6 h-6 bg-red-500 text-white border border-red-400 text-xs flex justify-center items-center rounded-full">
+                                        {badgeCount > 99 ? "99+" : badgeCount}
+                                    </span>
+                                )}
+                                {isNew && (
+                                    <button
+                                        className={`rounded-full h-6 px-3 bg-[#14B8A6] dark:bg-[#0f8a7b] text-white text-xs flex justify-center items-center cursor-pointer z-10`}
+                                    >
+                                        New
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         {subtitle && (
                             <p className="text-sm text-gray-500 dark:text-[#bfbfbf] truncate mt-0.5">

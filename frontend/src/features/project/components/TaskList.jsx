@@ -83,7 +83,7 @@ const TaskList = ({
           </h3>
           <div className="flex items-center gap-2">
             {unreadCountByRecipient > 0 && (
-              <span className="w-6 h-6 bg-red-500 text-white text-xs flex justify-center items-center rounded-full">
+              <span className="w-6 h-6 bg-red-500 text-white border border-red-400 text-xs flex justify-center items-center rounded-full">
                 {unreadCountByRecipient > 99 ? "99+" : unreadCountByRecipient}
               </span>
             )}
