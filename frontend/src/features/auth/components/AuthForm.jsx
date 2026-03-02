@@ -23,8 +23,8 @@ const Form = ({ isSignup }) => {
 
   return (
     <>
-      <div className="relative flex flex-col justify-center items-center lg:flex-row w-full p-2">
-        <div className="z-30 h-[500px] lg:h-auto md:p-5 p-2 w-full max-w-[500px]">
+      <div className="w-full flex flex-col items-center p-2">
+        <div className="z-30 h-auto md:p-5 p-2 w-full max-w-[500px]">
 
           <div>
             <h2 className="text-3xl font-semibold text-center mb-5 text-gray-700 dark:text-[#cccccc]">
@@ -90,7 +90,7 @@ const Form = ({ isSignup }) => {
                         ? "text-green-600"
                         : fieldErrors.password
                           ? "text-red-500"
-                          : "text-gray-400"
+                          : "dark:text-[#666666] text-gray-400"
                         }`}>
                         {req.valid ? (
                           <Check size={14} className="mr-2 text-green-500" />
@@ -124,21 +124,23 @@ const Form = ({ isSignup }) => {
 
 
 
-      <div className="absolute bottom-0 w-full flex justify-center">
+      <div className="w-full flex justify-center pb-4">
         <div className="py-2 px-5">
-          <h1 className="text-gray-400">Made by Onanta Bassey</h1>
+          <h1 className="text-gray-400">by Onanta Bassey</h1>
         </div>
       </div>
     </>
   );
 };
 
-const RegistrationForm = ({ isSignup }) => {
+const AuthForm = ({ isSignup }) => {
   return (
-    <div className="h-[70vh] flex justify-center items-center">
-      <Form isSignup={isSignup} />
+    <div className="flex-1 overflow-y-auto w-full">
+      <div className="min-h-full flex flex-col items-center justify-center py-8">
+        <Form isSignup={isSignup} />
+      </div>
     </div>
   );
 };
 
-export default RegistrationForm;
+export default AuthForm;

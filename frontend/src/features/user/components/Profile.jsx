@@ -113,7 +113,7 @@ export default function Profile() {
                     ? "text-green-600"
                     : fieldErrors.newPassword
                       ? "text-red-500"
-                      : "text-gray-400"
+                      : "dark:text-[#666666] text-gray-400"
                     }`}>
                     {req.valid ? (
                       <Check size={14} className="mr-2 text-green-500" />

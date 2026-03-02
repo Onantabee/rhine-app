@@ -2,9 +2,9 @@ import CreateProjectForm from '../components/CreateProjectForm';
 
 const CreateProject = () => {
     return (
-        <div className="h-[70vh] flex justify-center items-center">
-            <div className="relative flex flex-col justify-center items-center lg:flex-row w-full p-2">
-                <div className="z-30 h-[500px] lg:h-auto p-5 w-full max-w-[500px]">
+        <div className="flex-1 overflow-y-auto w-full">
+            <div className="min-h-full flex flex-col items-center justify-center p-5 py-8">
+                <div className="z-30 w-full max-w-[500px]">
                     <div className="flex flex-col items-center mb-8">
                         <h1 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">
                             Create a Project

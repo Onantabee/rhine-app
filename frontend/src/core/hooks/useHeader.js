@@ -70,15 +70,9 @@ export const useHeader = ({ setIsSignup }) => {
 
     const isTaskListPage = /^\/project\/\d+(\/team)?\/?$/.test(location.pathname);
     
-    const shouldShowMobileMenu = (pathname) => {
-        if (pathname.includes("/verify-email")) return false;
-        if (pathname.includes("/create-project")) return false;
-
-        if (pathname === "/" || pathname === "/your-profile") return true;
-        if (pathname.startsWith("/project/")) return true;
-
-        return false;
-    };
+    // A single, strong logic flag determining if we are rendering the full Workspace GUI
+    // or if we are in Auth/Setup/Interstitial views.
+    const isWorkspaceView = isLoggedIn && isVerified && hasProjects && location.pathname.match(/^\/project(\/|$)/);
 
 
     return {
@@ -103,6 +97,6 @@ export const useHeader = ({ setIsSignup }) => {
         handleClearSearch,
         handleCloseMobileMenu,
         isTaskListPage,
-        shouldShowMobileMenu
+        isWorkspaceView
     };
 };
