@@ -39,37 +39,53 @@ export default function Home() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col shrink-0 p-4 md:p-6 pb-0">
-        <div className="flex justify-between border-b border-gray-200 dark:border-[#404040] pb-3 gap-2">
-          <div className="flex gap-3 items-center">
-            <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-[#bfbfbf]">Tasks</h1>
-            <p className="text-gray-500 dark:text-[#bfbfbf] text-sm md:text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
-              {filteredTasks.length}
-            </p>
-            {assigneeEmailFilter && (
-              <div className="flex items-center gap-2 ml-4">
-                <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10">
-                  Filtering by: {assigneeEmailFilter}
-                </span>
-                <button
-                  onClick={() => navigate(`/project/${projectId}`)}
-                  className="text-xs text-red-500 hover:text-red-800 underline cursor-pointer hover:bg-gray-300 p-1.5 rounded-full dark:hover:bg-[#262626] dark:hover:text-red-400"
-                >
-                  <X size={16} />
-                </button>
-              </div>
+        <div className="border-b border-gray-200 dark:border-[#404040]">
+          <div className="flex justify-between pb-3 gap-2">
+            <div className="flex gap-3 items-center">
+              <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-[#bfbfbf]">Tasks</h1>
+              <p className="text-gray-500 dark:text-[#bfbfbf] text-sm md:text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                {filteredTasks.length}
+              </p>
+              {assigneeEmailFilter && (
+                <div className="hidden md:flex items-center gap-2 ml-4">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10">
+                    Filtering by: {assigneeEmailFilter}
+                  </span>
+                  <button
+                    onClick={() => navigate(`/project/${projectId}`)}
+                    className="text-xs text-red-500 hover:text-red-800 underline cursor-pointer hover:bg-gray-300 p-1.5 rounded-full dark:hover:bg-[#262626] dark:hover:text-red-400"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              )}
+            </div>
+            {isAdmin && (
+              <Button
+                size="md"
+                onClick={() => handleOpenDialog()}
+                disabled={!hasOtherMembers}
+                title={!hasOtherMembers ? "Invite a member first before you can add a task" : ""}
+                className={`relative ${hasOtherMembers ? 'bg-red-500 hover:bg-red-600 text-white' : ''}`}
+              >
+                <Plus size={20} />
+                <span className="hidden md:block">Add Task</span>
+              </Button>
             )}
           </div>
-          {isAdmin && (
-            <Button
-              size="md"
-              onClick={() => handleOpenDialog()}
-              disabled={!hasOtherMembers}
-              title={!hasOtherMembers ? "Invite a member first before you can add a task" : ""}
-              className={`relative ${hasOtherMembers ? 'bg-red-500 hover:bg-red-600 text-white' : ''}`}
-            >
-              <Plus size={20} />
-              <span className="hidden md:block">Add Task</span>
-            </Button>
+
+          {assigneeEmailFilter && (
+            <div className="md:hidden flex items-center gap-2 pb-3">
+              <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10">
+                Filtering by: {assigneeEmailFilter}
+              </span>
+              <button
+                onClick={() => navigate(`/project/${projectId}`)}
+                className="text-xs text-red-500 underline cursor-pointer bg-gray-100 p-1.5 rounded-full dark:bg-[#262626] dark:text-red-400"
+              >
+                <X size={16} />
+              </button>
+            </div>
           )}
         </div>
 
