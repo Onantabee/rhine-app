@@ -10,7 +10,6 @@ import {
 } from '../../task/utils/taskUtils';
 import { useTaskCard } from '../hooks/useTaskCard';
 import { useTheme } from "../../../core/hooks/useTheme";
-import { createPortal } from "react-dom";
 
 const TaskCard = ({
   task,

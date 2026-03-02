@@ -50,7 +50,7 @@ export const useHome = () => {
         skip: !projectId,
     });
 
-    const hasOtherMembers = members.length > 1;
+    const hasOtherMembers = members.some(member => member.email !== userEmail && !member.name.includes("(Pending)"));
 
     const sortedTasks = [...tasks].sort((a, b) => {
         return new Date(b.createdAt) - new Date(a.createdAt);

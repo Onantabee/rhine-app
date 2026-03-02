@@ -117,7 +117,7 @@ export default function Home() {
           <LoadingSpinner size="lg" />
         </div>
       ) : isCardView ? (
-        <div className="overflow-y-auto w-full h-full min-h-0 px-2 pt-2 -mt-2 -mx-2">
+        <div className="overflow-y-auto w-full h-full min-h-0 pt-2 -mt-2">
 
 
 
@@ -148,7 +148,7 @@ export default function Home() {
           )}
         </div>
       ) : (
-        <div className="h-full min-h-0 p-4 md:p-6 pt-0 md:pt-0 flex flex-col">
+        <div className="h-full min-h-0 p-4 pb-0 md:p-6 pt-0 md:pt-0 flex flex-col">
           <div className="bg-white dark:bg-[#1a1a1a] flex flex-col min-h-0 border-t md:border-y md:border border-gray-200 dark:border-[#404040] -mx-4 md:mx-0">
             {/* Mobile View */}
             <div className="block md:hidden overflow-y-auto">
