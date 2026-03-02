@@ -78,7 +78,7 @@ const MobileListItem = ({
                         {details.map((detail, idx) => (
                             <p key={idx} className="flex items-center text-gray-500 dark:text-gray-400">
                                 {detail.icon && <span className="text-gray-400">{detail.icon}</span>}
-                                <span className="flex items-center gap-1 pr-3 uppercase text-gray-400 dark:text-[#4d4d4d]">{detail.label && `${detail.label} - `}<span className="font-medium text-gray-700 dark:text-[#cccccc]">{detail.value}</span></span>
+                                <span className="flex items-center gap-1 pr-3 uppercase text-gray-400 text-xs dark:text-[#4d4d4d]">{detail.label && `${detail.label} - `}<span className="font-medium text-sm text-gray-700 dark:text-[#cccccc]">{detail.value}</span></span>
                             </p>
                         ))}
                     </div>

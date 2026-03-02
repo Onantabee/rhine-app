@@ -1,4 +1,4 @@
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button, Dialog } from "../../ui";
 
 import MobileDrawer from './MobileDrawer';
@@ -113,7 +113,7 @@ const Header = ({ setIsSignup }) => {
                                     className="text-2xl text-primary font-semibold cursor-pointer"
                                     onClick={() =>
                                         activeProject
-                                            ? navigate(`/ project / ${activeProject.id} `)
+                                            ? navigate(`/project/${activeProject.id}`)
                                             : navigate("/")
                                     }
                                 >
@@ -130,7 +130,7 @@ const Header = ({ setIsSignup }) => {
                             <ThemeToggle />
                             {shouldShowMobileMenu(location.pathname) && (
                                 <button onClick={handleDrawerToggle} className="p-0.5 text-gray-600 dark:text-[#bfbfbf] hover:text-gray-800 dark:hover:text-gray-300 cursor-pointer">
-                                    <Menu size={24} />
+                                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                                 </button>
                             )}
                         </div>

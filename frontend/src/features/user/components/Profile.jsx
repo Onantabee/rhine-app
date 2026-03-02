@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Input, LoadingSpinner, Tabs } from "../../../core/ui";
-import { Check, X } from "lucide-react";
+import { AlertCircle, Check, X } from "lucide-react";
 import { useProfile } from '../hooks/useProfile';
 
 export default function Profile() {
@@ -57,14 +57,19 @@ export default function Profile() {
               error={!!fieldErrors.name}
               helperText={fieldErrors.name}
             />
-            <Input
-              label="Email"
-              name="email"
-              fullWidth
-              value={userDetails.email}
-              disabled
-              helperText="Email cannot be changed"
-            />
+            <div>
+              <Input
+                label="Email"
+                name="email"
+                fullWidth
+                value={userDetails.email}
+                disabled
+              />
+              <p className="text-orange-400 text-sm font-light mt-2 flex gap-2 items-center">
+                <AlertCircle size={16} />
+                Email cannot be changed.
+              </p>
+            </div>
             <Button
               variant="primary"
               size="lg"

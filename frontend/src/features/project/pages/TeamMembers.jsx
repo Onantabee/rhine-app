@@ -72,10 +72,8 @@ const TeamMembers = () => {
             >
                 <form onSubmit={handleInvite} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-[#cccccc] mb-1.5">
-                            Email Address
-                        </label>
                         <Input
+                            label="Email Address"
                             type="email"
                             placeholder="colleague@example.com"
                             value={inviteEmail}
