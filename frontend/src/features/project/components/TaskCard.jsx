@@ -65,7 +65,7 @@ const TaskCard = ({
 
       <Card
         padding="default"
-        className=""
+        className="hover:!bg-gray-50 dark:hover:!bg-[#262626] hover:!border-gray-200 dark:hover:!border-[#404040]"
         style={{
           backgroundColor: getCardBackground(taskStatus, dueDateStatus, theme),
           border: getCardBorder(taskStatus, dueDateStatus, theme),

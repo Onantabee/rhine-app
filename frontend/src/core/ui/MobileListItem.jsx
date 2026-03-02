@@ -20,7 +20,7 @@ const MobileListItem = ({
     return (
         <div
             onClick={onClick}
-            className={`p-4 bg-white dark:bg-[#1a1a1a] border-b border-gray-100 dark:border-[#404040] flex flex-col gap-2 relative ${onClick ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626]" : ""} ${className}`}
+            className={`p-4 bg-white dark:bg-[#1a1a1a] border-b border-gray-100 dark:border-[#404040] flex flex-col gap-2 relative hover:!bg-gray-50 dark:hover:!bg-[#262626] ${onClick ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626]" : ""} ${className}`}
             style={style}
         >
             <div className="flex items-start justify-between gap-3">
@@ -68,7 +68,7 @@ const MobileListItem = ({
                 )}
             </div>
 
-            <div className="pl-[52px] w-full flex justify-between">
+            <div className="pl-[52px] w-full flex justify-between gap-2">
                 {chips.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                         {chips.map((chip, idx) => (

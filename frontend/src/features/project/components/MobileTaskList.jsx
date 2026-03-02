@@ -25,6 +25,7 @@ const MobileTaskList = ({
     loggedInUser,
     onClick,
     searchTerm,
+    isLastChild = false,
 }) => {
     const { title, priority, dueDate, taskStatus, projectId } = task;
     const { theme } = useTheme();
@@ -58,6 +59,7 @@ const MobileTaskList = ({
 
     const [actionMenuOpen, setActionMenuOpen] = useState(false);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+    const [dropDirection, setDropDirection] = useState("down");
 
     const toggleActionMenu = (e) => {
         e.stopPropagation();
@@ -65,8 +67,13 @@ const MobileTaskList = ({
             setActionMenuOpen(false);
         } else {
             const rect = e.currentTarget.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const menuHeight = 116; // Approx px height for the 3 menu items + padding
+            const isDropUp = isLastChild || spaceBelow < menuHeight;
+
+            setDropDirection(isDropUp ? "up" : "down");
             setMenuPosition({
-                top: rect.bottom + window.scrollY,
+                top: isDropUp ? rect.top + window.scrollY - menuHeight : rect.bottom + window.scrollY,
                 left: rect.right - 192,
             });
             setActionMenuOpen(true);
@@ -152,7 +159,11 @@ const MobileTaskList = ({
                         className="absolute z-[10000] w-48 bg-white dark:bg-[#1a1a1a] py-1 shadow-lg ring-1 ring-gray-400 dark:ring-[#404040] ring-opacity-5 focus:outline-none"
                         style={{ top: menuPosition.top, left: menuPosition.left }}
                     >
-                        <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-t border-l border-gray-400 dark:border-[#404040] z-[-1]" />
+                        {dropDirection === "down" ? (
+                            <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-t border-l border-gray-400 dark:border-[#404040] z-[-1]" />
+                        ) : (
+                            <div className="absolute -bottom-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-b border-r border-gray-400 dark:border-[#404040] z-[-1]" />
+                        )}
                         <button
                             onClick={(e) => { closeMenu(e); onView?.(); }}
                             className="flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-100 dark:hover:bg-[#262626]"

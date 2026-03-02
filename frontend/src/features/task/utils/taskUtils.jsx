@@ -63,18 +63,18 @@ export const formatDueDateText = (dueDate, status, dueDateStatus) => {
 export const getCardBackground = (status, dueStatus, theme = 'light') => {
     const isDark = theme === 'dark';
 
-    if (status === "COMPLETED") return isDark ? "rgba(6, 78, 59, 0.4)" : "rgba(220, 252, 231, 0.5)";
-    if (status === "CANCELLED") return isDark ? "rgba(38, 38, 38, 0.4)" : "rgba(243, 244, 246, 0.5)";
+    if (status === "COMPLETED") return isDark ? "rgba(6, 78, 59, 0.05)" : "rgba(220, 252, 231, 0.5)";
+    if (status === "CANCELLED") return isDark ? "rgba(38, 38, 38, 0.05)" : "rgba(243, 244, 246, 0.5)";
 
     switch (dueStatus) {
         case "DUE_IN_2_DAYS":
-            return isDark ? "rgba(113, 63, 18, 0.2)" : "rgba(254, 249, 195, 0.3)";
+            return isDark ? "rgba(113, 63, 18, 0.05)" : "rgba(254, 249, 195, 0.3)";
         case "DUE_TOMORROW":
-            return isDark ? "rgba(124, 45, 18, 0.2)" : "rgba(255, 237, 213, 0.3)";
+            return isDark ? "rgba(124, 45, 18, 0.05)" : "rgba(255, 237, 213, 0.3)";
         case "DUE_TODAY":
-            return isDark ? "rgba(127, 29, 29, 0.2)" : "rgba(254, 226, 226, 0.3)";
+            return isDark ? "rgba(127, 29, 29, 0.05)" : "rgba(254, 226, 226, 0.3)";
         case "OVERDUE":
-            return isDark ? "rgba(38, 38, 38, 0.4)" : "rgba(243, 244, 246, 0.5)";
+            return isDark ? "rgba(38, 38, 38, 0.05)" : "rgba(243, 244, 246, 0.5)";
         default:
             return isDark ? "#1a1a1a" : "#ffffff";
     }
@@ -83,16 +83,15 @@ export const getCardBackground = (status, dueStatus, theme = 'light') => {
 export const getCardBorder = (status, dueStatus, theme = 'light') => {
     const isDark = theme === 'dark';
 
-    if (status === "COMPLETED") return isDark ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(34, 197, 94, 0.3)";
-    if (status === "CANCELLED") return isDark ? "1px solid rgba(64, 64, 64, 0.5)" : "1px solid rgba(209, 213, 219, 0.5)";
+    if (status === "COMPLETED") return isDark ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(34, 197, 94, 0.3)";
 
     switch (dueStatus) {
         case "DUE_TODAY":
-            return isDark ? "1px solid rgba(239, 68, 68, 0.4)" : "1px solid rgba(239, 68, 68, 0.5)";
+            return isDark ? "1px solid rgba(239, 68, 68, 0.2)" : "1px solid rgba(239, 68, 68, 0.5)";
         case "DUE_TOMORROW":
-            return isDark ? "1px solid rgba(249, 115, 22, 0.4)" : "1px solid rgba(249, 115, 22, 0.5)";
+            return isDark ? "1px solid rgba(249, 115, 22, 0.2)" : "1px solid rgba(249, 115, 22, 0.5)";
         case "DUE_IN_2_DAYS":
-            return isDark ? "1px solid rgba(234, 179, 8, 0.4)" : "1px solid rgba(234, 179, 8, 0.5)";
+            return isDark ? "1px solid rgba(234, 179, 8, 0.2)" : "1px solid rgba(234, 179, 8, 0.5)";
         default:
             return isDark ? "1px solid #404040" : "1px solid #e5e7eb";
     }

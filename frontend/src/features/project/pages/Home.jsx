@@ -155,7 +155,7 @@ export default function Home() {
               {filteredTasks.length === 0 ? (
                 <p className="text-gray-400 p-4 dark:bg-[#1a1a1a]">No tasks available</p>
               ) : (
-                filteredTasks.map((task) => (
+                filteredTasks.map((task, index) => (
                   <MobileTaskList
                     key={task.id}
                     task={task}
@@ -176,6 +176,7 @@ export default function Home() {
                     assignee={task.assigneeId}
                     createdBy={task.createdById}
                     searchTerm={searchTerm}
+                    isLastChild={index === filteredTasks.length - 1}
                   />
                 ))
               )}

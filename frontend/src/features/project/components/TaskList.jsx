@@ -11,6 +11,7 @@ import {
   getCardBackground,
   highlightSearchMatch,
 } from '../../task/utils/taskUtils';
+import { useTheme } from "../../../core/hooks/useTheme";
 
 export const TaskListHeader = ({ isAdmin }) => (
   <thead className="bg-gray-50 dark:bg-[#262626] border-0">
@@ -38,6 +39,7 @@ const TaskList = ({
   searchTerm,
 }) => {
   const { title, priority, dueDate, taskStatus, projectId } = task;
+  const { theme } = useTheme();
   const dueDateStatus = getDueDateStatus(dueDate, taskStatus);
   const shouldGrayOut = dueDateStatus === "OVERDUE" || taskStatus === "CANCELLED";
 
@@ -70,7 +72,8 @@ const TaskList = ({
     <>
       <tr
         onClick={onClick}
-        className="relative bg-white dark:bg-[#1a1a1a] hover:bg-gray-50 dark:hover:bg-[#262626] group cursor-pointer"
+        className="relative hover:opacity-90 group cursor-pointer hover:!bg-gray-50 dark:hover:!bg-[#262626] border-b border-gray-200 dark:border-[#404040] last:border-b-0"
+        style={{ backgroundColor: getCardBackground(taskStatus, dueDateStatus, theme) }}
       >
         <td className="p-3.5 relative flex items-center justify-between gap-2">
           <h3
