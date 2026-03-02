@@ -69,7 +69,7 @@ export const useHome = () => {
         }
 
         if (assigneeEmailFilter) {
-            filtered = filtered.filter((task) => task.assigneeId === assigneeEmailFilter);
+            filtered = filtered.filter((task) => task.assigneeId === assigneeEmailFilter && task.taskStatus !== "CANCELLED");
         }
 
         if (!isAdmin && user) {

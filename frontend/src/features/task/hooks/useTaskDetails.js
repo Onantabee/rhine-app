@@ -15,7 +15,6 @@ import {
 } from '../api/commentsApi';
 import { useGetUserByEmailQuery } from '../../user/api/usersApi';
 import { getDueDateStatus } from '../utils/taskUtils';
-import { useSnackbar } from "../../../core/context/SnackbarContext";
 
 export const useTaskDetails = () => {
     const { state } = useLocation();
@@ -192,6 +191,18 @@ export const useTaskDetails = () => {
         setNewComment(comment.content);
         if (commentInputRef.current) {
             commentInputRef.current.innerText = comment.content;
+            
+            setTimeout(() => {
+                if (commentInputRef.current) {
+                    commentInputRef.current.focus();
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+                    range.selectNodeContents(commentInputRef.current);
+                    range.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            }, 0);
         }
         setOpenDropdownId(null);
     };

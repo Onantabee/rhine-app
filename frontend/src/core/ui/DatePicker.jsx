@@ -101,7 +101,7 @@ const DatePicker = forwardRef(
         const borderColor = error
             ? 'border-red-500 dark:border-red-500'
             : open
-                ? 'border-primary'
+                ? 'border-primary dark:border-primary'
                 : 'border-gray-200 dark:border-[#404040] hover:border-gray-400';
 
         const disabledStyles = disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : '';
