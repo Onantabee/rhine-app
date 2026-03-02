@@ -24,7 +24,9 @@ export const useSidePane = ({ onLinkClick }) => {
 
     const handleNavClick = (path) => {
         navigate(path);
-        if (onLinkClick) onLinkClick();
+        setTimeout(() => {
+            if (onLinkClick) onLinkClick();
+        }, 150);
     };
 
     const handleLogoutClick = () => {

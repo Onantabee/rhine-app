@@ -8,6 +8,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
     const {
         actionMenuOpen,
         menuPosition,
+        dropDirection,
         toggleActionMenu,
         closeMenu,
         handleViewTasks,
@@ -21,7 +22,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                 {members.length === 0 ? (
                     <p className="text-gray-400 p-4 dark:bg-[#1a1a1a]">No team members found.</p>
                 ) : (
-                    members.map((member) => (
+                    members.map((member, index) => (
                         <MobileListItem
                             key={member.email}
                             title={
@@ -51,7 +52,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                             ]}
                             actions={isAdmin && (
                                 <button
-                                    onClick={(e) => toggleActionMenu(member.email, e)}
+                                    onClick={(e) => toggleActionMenu(member.email, e, index === members.length - 1)}
                                     className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 dark:text-[#bfbfbf] rounded-lg transition-colors cursor-pointer"
                                     aria-label="More actions"
                                 >
@@ -76,7 +77,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-[#404040]">
-                        {members.map((member) => (
+                        {members.map((member, index) => (
                             <tr key={member.email} className="hover:bg-gray-50 dark:bg-[#1a1a1a] dark:hover:bg-[#262626]">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
@@ -126,7 +127,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                                     <td className="px-6 py-4 text-right relative">
                                         <div className="relative inline-block text-left">
                                             <button
-                                                onClick={(e) => toggleActionMenu(member.email, e)}
+                                                onClick={(e) => toggleActionMenu(member.email, e, index === members.length - 1)}
                                                 className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 dark:text-[#bfbfbf] rounded-lg transition-colors cursor-pointer"
                                             >
                                                 <MoreVertical size={18} />
@@ -151,10 +152,14 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                 <div className="fixed inset-0 z-[9999] flex flex-col" style={{ top: 0, left: 0 }}>
                     <div className="fixed inset-0 bg-transparent" onClick={closeMenu} />
                     <div
-                        className="absolute z-[10000] w-48 bg-white dark:bg-[#1a1a1a] py-1 ring-1 ring-gray-400 dark:ring-[#404040] ring-opacity-5 focus:outline-none"
+                        className="absolute z-[10000] w-48 bg-white dark:bg-[#1a1a1a] py-1 shadow-lg ring-1 ring-gray-400 dark:ring-[#404040] ring-opacity-5 focus:outline-none"
                         style={{ top: menuPosition.top, left: menuPosition.left }}
                     >
-                        <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-t border-l border-gray-400 dark:border-[#404040] z-[-1]" />
+                        {dropDirection === "down" ? (
+                            <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-t border-l border-gray-400 dark:border-[#404040] z-[-1]" />
+                        ) : (
+                            <div className="absolute -bottom-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-b border-r border-gray-400 dark:border-[#404040] z-[-1]" />
+                        )}
                         {(() => {
                             const member = members.find(m => m.email === actionMenuOpen);
                             const isPending = member?.name?.includes("(Pending)");

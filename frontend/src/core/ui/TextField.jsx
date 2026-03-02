@@ -38,7 +38,7 @@ const TextField = forwardRef(
         const baseStyles =
             'w-full px-4 py-3 bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-[#cccccc] border border-gray-200 dark:border-[#404040] outline-none resize-none';
         const focusStyles = isFocused
-            ? 'border-primary'
+            ? 'border-primary dark:border-primary'
             : 'hover:border-gray-400';
         const errorStyles = error ? 'border-red-500 dark:border-red-500' : '';
         const disabledStyles = disabled

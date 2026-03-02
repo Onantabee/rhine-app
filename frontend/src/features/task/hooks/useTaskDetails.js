@@ -15,7 +15,6 @@ import {
 } from '../api/commentsApi';
 import { useGetUserByEmailQuery } from '../../user/api/usersApi';
 import { getDueDateStatus } from '../utils/taskUtils';
-import { useSnackbar } from "../../../core/context/SnackbarContext";
 
 export const useTaskDetails = () => {
     const { state } = useLocation();
@@ -31,7 +30,7 @@ export const useTaskDetails = () => {
     const [openDropdownId, setOpenDropdownId] = useState(null);
     const [editingComment, setEditingComment] = useState(null);
     const [dueDateStatus, setDueDateStatus] = useState(null);
-    const [activeTab, setActiveTab] = useState("details"); // "details" | "comments"
+    const [activeTab, setActiveTab] = useState("details");
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
     const commentInputRef = useRef(null);
@@ -157,6 +156,7 @@ export const useTaskDetails = () => {
             if (commentInputRef.current) {
                 commentInputRef.current.innerText = "";
                 commentInputRef.current.style.height = "auto";
+                commentInputRef.current.focus();
             }
         }
     };
@@ -176,6 +176,7 @@ export const useTaskDetails = () => {
         if (commentInputRef.current) {
             commentInputRef.current.innerText = "";
             commentInputRef.current.style.height = "auto";
+            commentInputRef.current.focus();
         }
 
         try {
@@ -190,6 +191,18 @@ export const useTaskDetails = () => {
         setNewComment(comment.content);
         if (commentInputRef.current) {
             commentInputRef.current.innerText = comment.content;
+            
+            setTimeout(() => {
+                if (commentInputRef.current) {
+                    commentInputRef.current.focus();
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+                    range.selectNodeContents(commentInputRef.current);
+                    range.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+            }, 0);
         }
         setOpenDropdownId(null);
     };
@@ -236,7 +249,6 @@ export const useTaskDetails = () => {
 
     const handleCommentChange = (e) => {
         const text = e.target.innerText;
-        // Fix for contentEditable artifact where clearing text leaves a newline
         setNewComment(text === "\n" ? "" : text);
         e.target.style.height = "auto";
         e.target.style.height = `${Math.min(e.target.scrollHeight, 5 * 24)}px`;

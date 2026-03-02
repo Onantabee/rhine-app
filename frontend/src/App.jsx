@@ -115,7 +115,7 @@ function App() {
             </Route>
             <Route element={<WorkspaceLayout />}>
               <Route
-                path="/profile"
+                path="/project/:projectId/your-profile"
                 element={
                   <ProtectedRoute>
                     {isVerified ? <Profile /> : <Navigate to="/verify-email" replace />}

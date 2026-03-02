@@ -15,11 +15,13 @@ const MobileListItem = ({
     isNew = false,
     badgeCount = 0,
     className = "",
+    style = {},
 }) => {
     return (
         <div
             onClick={onClick}
-            className={`p-4 bg-white dark:bg-[#1a1a1a] border-b border-gray-100 dark:border-[#404040] flex flex-col gap-2 relative ${onClick ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626]" : ""} ${className}`}
+            className={`p-4 bg-white dark:bg-[#1a1a1a] border-b border-gray-100 dark:border-[#404040] flex flex-col gap-2 relative hover:!bg-gray-50 dark:hover:!bg-[#262626] ${onClick ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-[#262626]" : ""} ${className}`}
+            style={style}
         >
             <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2 overflow-hidden flex-1">
@@ -33,19 +35,23 @@ const MobileListItem = ({
                         <div className="flex items-center gap-2">
                             <h3 className={`text-base font-semibold truncate ${titleClassName}`}>
                                 <span className="flex items-center gap-2">
-                                    {title} {teamSubtitle && <div className="bg-gray-300 w-1 h-1 rounded-full" />} <span className="text-sm text-gray-500 dark:text-[#bfbfbf] truncate mt-0.5 font-normal">{teamSubtitle}</span>
+                                    {title} {teamSubtitle && <div className="bg-gray-300 dark:bg-[#4d4d4d] w-1 h-1 rounded-full" />} <span className="text-sm text-gray-500 dark:text-[#bfbfbf] truncate mt-0.5 font-normal">{teamSubtitle}</span>
                                 </span>
                             </h3>
-                            {isNew && (
-                                <span className="rounded-full h-5 px-2 bg-[#14B8A6] dark:bg-[#0f8a7b] text-white text-[10px] font-medium flex justify-center items-center flex-shrink-0">
-                                    New
-                                </span>
-                            )}
-                            {badgeCount > 0 && (
-                                <span className="w-5 h-5 bg-red-500 text-white text-[10px] font-medium flex justify-center items-center rounded-full flex-shrink-0">
-                                    {badgeCount > 99 ? "99+" : badgeCount}
-                                </span>
-                            )}
+                            <div className="flex items-center gap-2">
+                                {badgeCount > 0 && (
+                                    <span className="w-6 h-6 bg-red-500 text-white border border-red-400 text-xs flex justify-center items-center rounded-full">
+                                        {badgeCount > 99 ? "99+" : badgeCount}
+                                    </span>
+                                )}
+                                {isNew && (
+                                    <button
+                                        className={`rounded-full h-6 px-3 bg-[#14B8A6] dark:bg-[#0f8a7b] text-white text-xs flex justify-center items-center cursor-pointer z-10`}
+                                    >
+                                        New
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         {subtitle && (
                             <p className="text-sm text-gray-500 dark:text-[#bfbfbf] truncate mt-0.5">
@@ -62,7 +68,7 @@ const MobileListItem = ({
                 )}
             </div>
 
-            <div className="pl-[52px] w-full flex justify-between">
+            <div className="pl-[52px] w-full flex justify-between gap-2">
                 {chips.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                         {chips.map((chip, idx) => (
@@ -74,11 +80,11 @@ const MobileListItem = ({
                 )}
 
                 {details.length > 0 && (
-                    <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                    <div className="flex">
                         {details.map((detail, idx) => (
-                            <p key={idx} className="flex items-center gap-1.5 text-[13px] text-gray-500 dark:text-gray-400">
+                            <p key={idx} className="flex items-center text-gray-500 dark:text-gray-400">
                                 {detail.icon && <span className="text-gray-400">{detail.icon}</span>}
-                                <span className="flex items-center gap-1 pr-3 uppercase text-gray-400 dark:text-[#4d4d4d]">{detail.label && `${detail.label} - `}<span className="font-medium text-gray-700 dark:text-[#cccccc] truncate">{detail.value}</span></span>
+                                <span className="flex items-center gap-1 pr-3 uppercase text-gray-400 text-xs dark:text-[#4d4d4d]">{detail.label && `${detail.label} - `}<span className="font-medium text-sm text-gray-700 dark:text-[#cccccc]">{detail.value}</span></span>
                             </p>
                         ))}
                     </div>

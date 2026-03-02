@@ -8,14 +8,29 @@ export const useTeamTable = ({ members, userEmail, onRemove }) => {
     const { projectId } = useParams();
     const [actionMenuOpen, setActionMenuOpen] = useState(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+    const [dropDirection, setDropDirection] = useState("down");
 
-    const toggleActionMenu = (email, event) => {
+    const toggleActionMenu = (email, event, isLast = false) => {
         if (actionMenuOpen === email) {
             setActionMenuOpen(null);
         } else {
+            const member = members.find(m => m.email === email);
+            const isPending = member?.name?.includes("(Pending)");
+            const isSelf = member?.email === userEmail;
+            
+            let itemsCount = 0;
+            if (!isPending) itemsCount++;
+            if (!isSelf) itemsCount++;
+            
+            const menuHeight = itemsCount > 0 ? (itemsCount * 36) + 8 : 44;
+            
             const rect = event.currentTarget.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const isDropUp = isLast || spaceBelow < menuHeight;
+            
+            setDropDirection(isDropUp ? "up" : "down");
             setMenuPosition({
-                top: rect.bottom + window.scrollY,
+                top: isDropUp ? rect.top + window.scrollY - menuHeight : rect.bottom + window.scrollY,
                 left: rect.right + window.scrollX - 192
             });
             setActionMenuOpen(email);
@@ -41,6 +56,7 @@ export const useTeamTable = ({ members, userEmail, onRemove }) => {
         projectId,
         actionMenuOpen,
         menuPosition,
+        dropDirection,
         toggleActionMenu,
         closeMenu,
         handleViewTasks,

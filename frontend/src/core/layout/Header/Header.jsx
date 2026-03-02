@@ -1,4 +1,4 @@
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button, Dialog } from "../../ui";
 
 import MobileDrawer from './MobileDrawer';
@@ -38,7 +38,7 @@ const Header = ({ setIsSignup }) => {
 
     return (
         <>
-            <header className="sticky top-0 z-30 bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-[#404040] px-4 py-3 md:px-8 h-full max-h-[70px]">
+            <header className="sticky top-0 z-30 bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-[#404040] px-4 py-3 md:px-8 h-[70px]">
                 <nav className="flex items-center h-full gap-4">
                     <div className="w-full justify-center items-center hidden md:flex gap-4 h-full">
                         {!isVerified || !hasProjects ? (
@@ -113,7 +113,7 @@ const Header = ({ setIsSignup }) => {
                                     className="text-2xl text-primary font-semibold cursor-pointer"
                                     onClick={() =>
                                         activeProject
-                                            ? navigate(`/ project / ${activeProject.id} `)
+                                            ? navigate(`/project/${activeProject.id}`)
                                             : navigate("/")
                                     }
                                 >
@@ -130,7 +130,7 @@ const Header = ({ setIsSignup }) => {
                             <ThemeToggle />
                             {shouldShowMobileMenu(location.pathname) && (
                                 <button onClick={handleDrawerToggle} className="p-0.5 text-gray-600 dark:text-[#bfbfbf] hover:text-gray-800 dark:hover:text-gray-300 cursor-pointer">
-                                    <Menu size={24} />
+                                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                                 </button>
                             )}
                         </div>

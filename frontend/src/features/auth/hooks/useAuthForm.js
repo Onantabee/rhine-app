@@ -135,6 +135,6 @@ export const useAuthForm = (isSignup) => {
         handleLogin,
         clearFieldError,
         checkPasswordValid,
-        checkPasswordStrength // Exporting this for UI usage if needed
+        checkPasswordStrength
     };
 };

@@ -16,7 +16,7 @@ const Tabs = ({ tabs, activeTab, onChange, className = "" }) => {
                 >
                     {tab.label}
                     {tab.badge !== undefined && tab.badge > 0 && (
-                        <span className="bg-red-500 text-white text-[12px] items-center justify-center flex h-5 w-5 rounded-full">
+                        <span className="w-6 h-6 bg-red-500 text-white border border-red-400 text-xs flex justify-center items-center rounded-full">
                             {tab.badge > 99 ? "99+" : tab.badge}
                         </span>
                     )}

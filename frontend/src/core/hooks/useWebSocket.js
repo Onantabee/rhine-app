@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { getApiBaseUrl } from "../config/env";
 
 export default function useWebSocket() {
   const [client, setClient] = useState(null);
@@ -10,7 +11,7 @@ export default function useWebSocket() {
   const [connectionError, setConnectionError] = useState(null);
 
   const connect = useCallback(() => {
-    const baseUrl = window.__env__?.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+    const baseUrl = getApiBaseUrl();
     const socket = new SockJS(baseUrl + '/ws');
 
     const stompClient = new Client({

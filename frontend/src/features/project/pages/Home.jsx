@@ -117,14 +117,14 @@ export default function Home() {
           <LoadingSpinner size="lg" />
         </div>
       ) : isCardView ? (
-        <div className="overflow-y-auto w-full h-full min-h-0">
+        <div className="overflow-y-auto w-full h-full min-h-0 pt-2 -mt-2">
 
 
 
           {filteredTasks.length === 0 ? (
-            <p className="text-gray-400 px-6 py-2">No tasks available</p>
+            <p className="text-gray-400 px-4 md:px-6 py-2">No tasks available</p>
           ) : (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-4 md:p-6 pt-3">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-4 md:p-6 pt-0 md:pt-0">
               {filteredTasks.map((task) => (
                 <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
                   <TaskCard
@@ -148,14 +148,14 @@ export default function Home() {
           )}
         </div>
       ) : (
-        <div className="h-full min-h-0 p-4 md:p-6 pt-0 md:pt-0 flex flex-col">
+        <div className="h-full min-h-0 p-4 pb-0 md:p-6 pt-0 md:pt-0 flex flex-col">
           <div className="bg-white dark:bg-[#1a1a1a] flex flex-col min-h-0 border-t md:border-y md:border border-gray-200 dark:border-[#404040] -mx-4 md:mx-0">
             {/* Mobile View */}
             <div className="block md:hidden overflow-y-auto">
               {filteredTasks.length === 0 ? (
                 <p className="text-gray-400 p-4 dark:bg-[#1a1a1a]">No tasks available</p>
               ) : (
-                filteredTasks.map((task) => (
+                filteredTasks.map((task, index) => (
                   <MobileTaskList
                     key={task.id}
                     task={task}
@@ -176,6 +176,7 @@ export default function Home() {
                     assignee={task.assigneeId}
                     createdBy={task.createdById}
                     searchTerm={searchTerm}
+                    isLastChild={index === filteredTasks.length - 1}
                   />
                 ))
               )}

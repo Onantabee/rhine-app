@@ -26,7 +26,7 @@ public class WebSecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
-    @Value("${application.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173}")
+    @Value("${application.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,http://10.23.119.114:5173}")
     private List<String> allowedOrigins;
 
     public WebSecurityConfig(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider) {

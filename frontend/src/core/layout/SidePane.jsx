@@ -62,13 +62,13 @@ const SidePane = ({ onLinkClick }) => {
 
             <div className="p-4 md:p-6 border-t border-gray-200 dark:border-[#404040] space-y-1">
                 <button
-                    onClick={() => handleNavClick("/profile")}
-                    className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive("/profile")
+                    onClick={() => handleNavClick(`/project/${projectId}/your-profile`)}
+                    className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive(`/project/${projectId}/your-profile`)
                         ? "bg-primary/10 text-primary"
                         : "text-gray-600 dark:text-[#d9d9d9] hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-[#262626] dark:hover:text-[#cccccc]"
                         }`}
                 >
-                    <User size={20} className={isActive("/profile") ? "text-primary" : "text-gray-600 dark:text-[#d9d9d9]"} />
+                    <User size={20} className={isActive(`/project/${projectId}/your-profile`) ? "text-primary" : "text-gray-600 dark:text-[#d9d9d9]"} />
                     Profile
                 </button>
                 {isAdmin && (
