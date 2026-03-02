@@ -2,9 +2,9 @@ import React from "react";
 import { ArrowLeft } from "lucide-react";
 import { LoadingSpinner, Tabs } from "../../../core/ui";
 
-import TaskDetails from './TaskDetails';
-import CommentsList from './CommentsList';
-import CommentInput from './CommentInput';
+import TaskDetails from '../components/TaskDetails';
+import CommentsList from '../components/CommentsList';
+import CommentInput from '../components/CommentInput';
 import NotFound from '../../../core/pages/NotFound';
 
 import { getCardBackground, getCardBorder } from '../utils/taskUtils';

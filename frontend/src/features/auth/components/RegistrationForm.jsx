@@ -24,14 +24,7 @@ const Form = ({ isSignup }) => {
   return (
     <>
       <div className="relative flex flex-col justify-center items-center lg:flex-row w-full p-2">
-        <div
-          style={{
-            padding: "20px",
-            width: "100%",
-            maxWidth: "500px",
-          }}
-          className="z-30 h-[500px] lg:h-auto"
-        >
+        <div className="z-30 h-[500px] lg:h-auto md:p-5 p-2 w-full max-w-[500px]">
 
           <div>
             <h2 className="text-3xl font-semibold text-center mb-5 text-gray-700 dark:text-[#cccccc]">
@@ -91,7 +84,7 @@ const Form = ({ isSignup }) => {
                   helperText={fieldErrors.password}
                 />
                 {isSignup && (
-                  <div className="space-y-1.5 mt-2 rounded-lg grid grid-cols-2">
+                  <div className="space-y-1.5 mt-2 rounded-lg grid grid-cols-1 md:grid-cols-2">
                     {checkPasswordStrength(password).requirements.map((req, index) => (
                       <div key={index} className={`flex items-center text-sm font-light transition-colors duration-200 ${req.valid
                         ? "text-green-600"

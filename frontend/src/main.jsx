@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <ThemeProvider>
         <ErrorBoundary>
-          <Suspense fallback={<div className="flex h-screen w-full items-center justify-center"><LoadingSpinner size="lg" /></div>}>
+          <Suspense fallback={<div className="flex h-[100dvh] w-full items-center justify-center"><LoadingSpinner size="lg" /></div>}>
             <App />
           </Suspense>
         </ErrorBoundary>

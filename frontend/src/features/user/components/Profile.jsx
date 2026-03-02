@@ -102,7 +102,7 @@ export default function Profile() {
                 helperText={fieldErrors.newPassword}
               />
 
-              <div className="space-y-1.5 mt-2 rounded-lg grid grid-cols-2">
+              <div className="space-y-1.5 mt-2 rounded-lg grid grid-cols-1 md:grid-cols-2">
                 {checkPasswordStrength(passwordDetails.newPassword).requirements.map((req, index) => (
                   <div key={index} className={`flex items-center text-sm font-light transition-colors duration-200 ${req.valid
                     ? "text-green-600"

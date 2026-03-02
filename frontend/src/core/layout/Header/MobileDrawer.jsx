@@ -25,7 +25,7 @@ const MobileDrawer = ({
                 className={`fixed top-0 right-0 h-full w-full md:w-[480px] bg-white dark:bg-[#1a1a1a] z-50 h-full ${open ? "translate-x-0" : "translate-x-full"
                     }`}
             >
-                <div className="flex justify-between items-center h-full max-h-[70px] px-5 py-3 sm:px-8 border-b border-gray-200 dark:border-[#404040]">
+                <div className="flex justify-between items-center h-full max-h-[70px] px-4 py-3 md:px-8 border-b border-gray-200 dark:border-[#404040]">
                     {isLoggedIn && isVerified ? <ProjectPicker /> : (
                         <div>
                             <h1

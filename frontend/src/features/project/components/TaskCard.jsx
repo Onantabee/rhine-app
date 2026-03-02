@@ -7,7 +7,7 @@ import {
   getCardBorder,
   dueDateStatusConfig,
   highlightSearchMatch,
-} from '../utils/taskUtils';
+} from '../../task/utils/taskUtils';
 import { useTaskCard } from '../hooks/useTaskCard';
 import { useTheme } from "../../../core/hooks/useTheme";
 
