@@ -33,7 +33,7 @@ const TeamMembers = () => {
 
     return (
         <div className="flex flex-col gap-3 h-full">
-            <div className="p-4 md:p-6 pb-0">
+            <div className="p-4 md:p-6 pb-0 md:pb-0">
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#404040] pb-3 flex-shrink-0">
                     <div className="flex justify-between gap-2">
                         <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-[#bfbfbf] truncate">Team Members</h1>
@@ -52,7 +52,7 @@ const TeamMembers = () => {
                 </div>
             </div>
 
-            <div className="w-full h-full p-4 md:p-6 pt-0">
+            <div className="w-full h-full p-4 md:p-6 pt-0 md:pt-0">
                 <TeamTable
                     members={filteredMembers}
                     userEmail={userEmail}

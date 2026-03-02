@@ -38,7 +38,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex flex-col shrink-0 p-4 md:p-6 pb-0">
+      <div className="flex flex-col shrink-0 p-4 md:p-6 pb-0 md:pb-0">
         <div className="border-b border-gray-200 dark:border-[#404040]">
           <div className="flex justify-between pb-3 gap-2">
             <div className="flex gap-3 items-center">
@@ -48,7 +48,7 @@ export default function Home() {
               </p>
               {assigneeEmailFilter && (
                 <div className="hidden md:flex items-center gap-2 ml-4">
-                  <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10 truncate">
                     Filtering by: {assigneeEmailFilter}
                   </span>
                   <button
@@ -147,7 +147,7 @@ export default function Home() {
           )}
         </div>
       ) : (
-        <div className="h-full min-h-0 p-4 md:p-6 pt-0 flex flex-col">
+        <div className="h-full min-h-0 p-4 md:p-6 pt-0 md:pt-0 flex flex-col">
           <div className="bg-white dark:bg-[#1a1a1a] flex flex-col min-h-0 border border-gray-200 dark:border-[#404040]">
             <div className="overflow-auto w-full h-fit">
               <table className="w-full min-w-[1000px] border-none text-left">
