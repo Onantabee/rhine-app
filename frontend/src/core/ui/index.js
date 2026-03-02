@@ -8,3 +8,4 @@ export { default as Chip } from './Chip';
 export { default as DatePicker } from './DatePicker';
 export { default as Snackbar } from './Snackbar';
 export { default as LoadingSpinner } from './LoadingSpinner';
+export { default as Tabs } from './Tabs';
