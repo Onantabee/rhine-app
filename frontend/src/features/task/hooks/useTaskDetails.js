@@ -31,6 +31,8 @@ export const useTaskDetails = () => {
     const [openDropdownId, setOpenDropdownId] = useState(null);
     const [editingComment, setEditingComment] = useState(null);
     const [dueDateStatus, setDueDateStatus] = useState(null);
+    const [activeTab, setActiveTab] = useState("details"); // "details" | "comments"
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
     const commentInputRef = useRef(null);
     const commentContainerRef = useRef(null);
@@ -83,12 +85,21 @@ export const useTaskDetails = () => {
     }, []);
 
     useEffect(() => {
-        if (task?.id && user?.email) {
-            const hasUnreadComments = comments.some(
-                (c) => !c.readByRecipient && c.recipientEmail === user.email
-            );
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
-            if (hasUnreadComments) {
+    const unreadCommentsCount = comments.filter(
+        (c) => !c.readByRecipient && c.recipientEmail === user?.email
+    ).length;
+
+    useEffect(() => {
+        if (task?.id && user?.email) {
+            const hasUnreadComments = unreadCommentsCount > 0;
+            const shouldMarkAsRead = hasUnreadComments && (!isMobile || activeTab === "comments");
+
+            if (shouldMarkAsRead) {
                 markCommentsAsRead({
                     taskId: task.id,
                     recipientEmail: user.email,
@@ -99,7 +110,7 @@ export const useTaskDetails = () => {
                 updateTaskNewState({ projectId, id: task.id, isNew: false });
             }
         }
-    }, [task?.id, user?.email, isAdmin, task?.assigneeId, markCommentsAsRead, updateTaskNewState, projectId, comments]);
+    }, [task?.id, user?.email, isAdmin, task?.assigneeId, markCommentsAsRead, updateTaskNewState, projectId, isMobile, activeTab, unreadCommentsCount]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -269,6 +280,9 @@ export const useTaskDetails = () => {
         handleCommentChange,
         handleCancelEdit,
         navigate,
-        projectId
+        projectId,
+        activeTab,
+        setActiveTab,
+        unreadCommentsCount
     };
 };

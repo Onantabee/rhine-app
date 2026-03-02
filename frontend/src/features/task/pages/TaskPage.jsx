@@ -1,10 +1,10 @@
 import React from "react";
 import { ArrowLeft } from "lucide-react";
-import { LoadingSpinner } from "../../../core/ui";
+import { LoadingSpinner, Tabs } from "../../../core/ui";
 
-import TaskDetails from './TaskDetails';
-import CommentsList from './CommentsList';
-import CommentInput from './CommentInput';
+import TaskDetails from '../components/TaskDetails';
+import CommentsList from '../components/CommentsList';
+import CommentInput from '../components/CommentInput';
 import NotFound from '../../../core/pages/NotFound';
 
 import { getCardBackground, getCardBorder } from '../utils/taskUtils';
@@ -41,7 +41,10 @@ export default function Task() {
         handleCommentChange,
         handleCancelEdit,
         navigate,
-        projectId
+        projectId,
+        activeTab,
+        setActiveTab,
+        unreadCommentsCount
     } = useTaskDetails();
     const { theme } = useTheme();
 
@@ -63,27 +66,40 @@ export default function Task() {
     }
 
     return (
-        <div className="flex flex-col text-gray-800 h-full gap-4 p-6">
-            <div>
+        <div className="flex flex-col text-gray-800 h-full gap-4 p-4 md:p-6">
+            <div className="hidden md:flex justify-between items-center w-full">
                 <button className="flex items-center gap-3 text-primary hover:text-primary-hover cursor-pointer" onClick={() => navigate(`/project/${projectId}`)}>
                     <ArrowLeft />
                     Back
                 </button>
             </div>
-            <div className="w-full max-w-full flex flex-col md:flex-row gap-6 flex-1 min-h-0">
-                <TaskDetails
-                    task={task}
-                    taskStatus={taskStatus}
-                    dueDateStatus={dueDateStatus}
-                    isAdmin={isAdmin}
-                    creatorName={creatorUser?.name}
-                    assigneeName={assigneeUser?.name}
-                    onStatusChange={handleStatusChange}
-                    cardBackground={getCardBackground(taskStatus, dueDateStatus, theme)}
-                    cardBorder={getCardBorder(taskStatus, dueDateStatus, theme)}
-                />
 
-                <div className="w-full flex flex-col flex-1 md:flex-initial min-h-0">
+            <Tabs
+                tabs={[
+                    { id: 'details', label: 'Task details' },
+                    { id: 'comments', label: 'Comments', badge: unreadCommentsCount },
+                ]}
+                activeTab={activeTab}
+                onChange={setActiveTab}
+                className="flex md:hidden"
+            />
+
+            <div className="w-full max-w-full flex flex-col md:flex-row gap-6 flex-1 min-h-0">
+                <div className={`w-full max-w-full h-fit ${activeTab === 'details' ? 'block' : 'hidden md:block'}`}>
+                    <TaskDetails
+                        task={task}
+                        taskStatus={taskStatus}
+                        dueDateStatus={dueDateStatus}
+                        isAdmin={isAdmin}
+                        creatorName={creatorUser?.name}
+                        assigneeName={assigneeUser?.name}
+                        onStatusChange={handleStatusChange}
+                        cardBackground={getCardBackground(taskStatus, dueDateStatus, theme)}
+                        cardBorder={getCardBorder(taskStatus, dueDateStatus, theme)}
+                    />
+                </div>
+
+                <div className={`w-full flex flex-col flex-1 md:flex-initial min-h-0 ${activeTab === 'comments' ? 'flex' : 'hidden md:flex'}`}>
                     <CommentsList
                         comments={comments}
                         currentUserEmail={user?.email}

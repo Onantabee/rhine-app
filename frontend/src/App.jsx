@@ -60,7 +60,7 @@ function App() {
 
   if (!sessionChecked) {
     return (
-      <div className="flex justify-center items-center h-screen w-full bg-white dark:bg-[#1a1a1a]">
+      <div className="flex justify-center items-center h-[100dvh] w-full bg-white dark:bg-[#1a1a1a]">
         <LoadingSpinner size="lg" />
       </div>
     );

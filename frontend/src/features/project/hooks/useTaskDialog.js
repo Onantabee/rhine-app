@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import {
     useCreateTaskMutation,
     useUpdateTaskMutation,
-} from '../api/tasksApi';
-import { useGetProjectMembersQuery } from '../../project/api/projectsApi';
+} from '../../task/api/tasksApi';
+import { useGetProjectMembersQuery } from '../api/projectsApi';
 import { useSnackbar } from "../../../core/context/SnackbarContext";
 
 export const useTaskDialog = ({ open, onClose, task, projectId }) => {

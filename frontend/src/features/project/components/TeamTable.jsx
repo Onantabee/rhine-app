@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import { Trash2, AlertCircle, CheckCircle, MoreVertical, Eye } from "lucide-react";
 import { highlightSearchMatch } from '../../task/utils/taskUtils';
 import { useTeamTable } from '../hooks/useTeamTable';
+import { MobileListItem } from '../../../core/ui';
 
 export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm }) => {
     const {
@@ -15,7 +16,55 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
 
     return (
         <div className="bg-white dark:bg-[#1a1a1a] h-fit flex flex-col min-h-0">
-            <div className="overflow-auto flex-1 border border-gray-200 dark:border-[#404040]">
+            {/* Mobile View */}
+            <div className="block md:hidden overflow-y-auto border-t md:border-y border-gray-200 dark:border-[#404040] -mx-4 md:mx-0">
+                {members.length === 0 ? (
+                    <p className="text-gray-400 p-4 dark:bg-[#1a1a1a]">No team members found.</p>
+                ) : (
+                    members.map((member) => (
+                        <MobileListItem
+                            key={member.email}
+                            title={
+                                <div className="flex items-center gap-2">
+                                    {highlightSearchMatch(member.name.replace(/\(Pending\)/g, "").trim(), searchTerm)}
+                                    {member.name.includes("(Pending)") && member.projectRole !== "PROJECT_ADMIN" ? (
+                                        <AlertCircle size={16} className="text-amber-500" />
+                                    ) : member.projectRole === "PROJECT_ADMIN" ? (
+                                        null
+                                    ) : (
+                                        <CheckCircle size={16} className="text-green-500" />
+                                    )}
+                                </div>
+                            }
+                            teamSubtitle={highlightSearchMatch(member.email, searchTerm)}
+                            avatarChar={member.name?.[0]?.toUpperCase() || "?"}
+                            chips={[
+                                <span key="role" className={`inline-flex items-center gap-1.5 text-xs capitalize font-medium px-2.5 py-1 rounded-[5px] ${member.projectRole === "PROJECT_ADMIN"
+                                    ? "bg-primary/10 text-primary border border-primary/40"
+                                    : "bg-gray-100 dark:bg-[#262626] text-gray-600 dark:text-[#bfbfbf] border border-gray-200 dark:border-[#404040]"
+                                    }`}>
+                                    {member.projectRole === "PROJECT_ADMIN" ? "Admin" : "Member"}
+                                </span>
+                            ]}
+                            details={[
+                                { label: "Active Tasks", value: member.activeTaskCount || 0 }
+                            ]}
+                            actions={isAdmin && (
+                                <button
+                                    onClick={(e) => toggleActionMenu(member.email, e)}
+                                    className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 dark:text-[#bfbfbf] rounded-lg transition-colors cursor-pointer"
+                                    aria-label="More actions"
+                                >
+                                    <MoreVertical size={18} />
+                                </button>
+                            )}
+                        />
+                    ))
+                )}
+            </div>
+
+            {/* Desktop View */}
+            <div className="hidden md:block overflow-auto flex-1 border border-gray-200 dark:border-[#404040]">
                 <table className="w-full text-left">
                     <thead className="bg-gray-50 dark:bg-[#262626]">
                         <tr className="border-b border-gray-200 dark:border-[#404040] text-xs uppercase text-gray-500 dark:text-[#bfbfbf] font-semibold">
@@ -88,7 +137,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                             </tr>
                         ))}
                         {members.length === 0 && (
-                            <tr className="text-gray-400  dark:bg-[#1a1a1a]">
+                            <tr className="hidden md:table-row text-gray-400 dark:bg-[#1a1a1a]">
                                 <td colSpan={5} className="p-4">
                                     No team members found.
                                 </td>

@@ -33,8 +33,8 @@ const SidePane = ({ onLinkClick }) => {
     }
 
     return (
-        <aside className="w-full md:w-[300px] h-full border-r border-gray-200 dark:border-[#404040] bg-white dark:bg-[#1a1a1a] flex flex-col justify-between">
-            <div className="p-6">
+        <aside className="w-full md:w-[300px] h-full border-r-0 md:border-r border-gray-200 dark:border-[#404040] bg-white dark:bg-[#1a1a1a] flex flex-col justify-between">
+            <div className="p-4 md:p-6">
                 <nav className="space-y-1">
                     {navItems.map((item) => (
                         <button
@@ -60,7 +60,7 @@ const SidePane = ({ onLinkClick }) => {
                 </nav>
             </div>
 
-            <div className="p-6 border-t border-gray-200 dark:border-[#404040] space-y-1">
+            <div className="p-4 md:p-6 border-t border-gray-200 dark:border-[#404040] space-y-1">
                 <button
                     onClick={() => handleNavClick("/profile")}
                     className={`w-full flex items-center gap-3 px-3 py-4 text-lg font-normal transition-colors cursor-pointer ${isActive("/profile")

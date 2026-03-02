@@ -37,7 +37,7 @@ const WorkspaceLayout = () => {
 
     if (projectId && isLoading) {
         return (
-            <div className="flex justify-center items-center h-screen w-full">
+            <div className="flex justify-center items-center h-[100dvh] w-full">
                 <LoadingSpinner size="lg" />
             </div>
         );

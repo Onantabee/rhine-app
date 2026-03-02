@@ -20,10 +20,10 @@ const CommentsList = ({
 
     return (
         <div className="flex-1 flex flex-col gap-3 min-h-0">
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-[#cccccc] shrink-0">Comments</h2>
+            <h2 className="md:block hidden text-lg font-semibold text-gray-700 dark:text-[#cccccc] shrink-0">Comments</h2>
             <div
                 ref={containerRef}
-                className="flex flex-col px-3 overflow-y-auto h-full"
+                className="flex flex-col px-0 md:px-3 overflow-y-auto h-full"
             >
                 {comments.length === 0 ? (
                     <div className="flex items-center justify-center flex-1 h-full">

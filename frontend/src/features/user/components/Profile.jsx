@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Input, LoadingSpinner } from "../../../core/ui";
+import { Button, Input, LoadingSpinner, Tabs } from "../../../core/ui";
 import { Check, X } from "lucide-react";
 import { useProfile } from '../hooks/useProfile';
 
@@ -29,31 +29,21 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-2xl flex flex-col gap-8 p-6">
+    <div className="max-w-2xl flex flex-col gap-8 p-4 md:p-6">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <h1 className="text-3xl text-gray-600 dark:text-[#bfbfbf] pb-3 border-b border-gray-200 dark:border-[#404040]">
+          <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-[#bfbfbf] pb-3 border-b border-gray-200 dark:border-[#404040]">
             Account Settings
           </h1>
 
-          <div className="flex gap-8 border-b border-gray-200 dark:border-[#404040]">
-            {[
+          <Tabs
+            tabs={[
               { id: "personal", label: "Personal Information" },
               { id: "password", label: "Change Password" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`pb-3 text-md font-medium transition-colors relative cursor-pointer ${activeTab === tab.id
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-gray-500 hover:text-gray-700 dark:hover:text-[#e6e6e6] dark:text-[#cccccc]"
-                  }`}
-                style={{ marginBottom: "-1px" }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+            ]}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+          />
         </div>
 
         {activeTab === "personal" && (
@@ -112,7 +102,7 @@ export default function Profile() {
                 helperText={fieldErrors.newPassword}
               />
 
-              <div className="space-y-1.5 mt-2 rounded-lg grid grid-cols-2">
+              <div className="space-y-1.5 mt-2 rounded-lg grid grid-cols-1 md:grid-cols-2">
                 {checkPasswordStrength(passwordDetails.newPassword).requirements.map((req, index) => (
                   <div key={index} className={`flex items-center text-sm font-light transition-colors duration-200 ${req.valid
                     ? "text-green-600"

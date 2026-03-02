@@ -13,7 +13,7 @@ const AcceptInvite = () => {
 
     if (!token) {
         return (
-            <div className="flex items-center justify-center h-screen">
+            <div className="flex items-center justify-center h-[100dvh]">
                 <div className="flex flex-col gap-2 items-center">
                     <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Invalid Invitation Link</h2>
                     <p className="text-red-400 font-light text-md text-center">No token provided.</p>
@@ -23,7 +23,7 @@ const AcceptInvite = () => {
     }
 
     return (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center h-[100dvh]">
             <div className="text-center bg-white dark:bg-[#1a1a1a] p-5 py-12 max-w-md border border-gray-200 dark:border-[#404040] w-full">
                 {isLoading && (
                     <div className="flex flex-col items-center gap-6">

@@ -2,15 +2,15 @@ import React from "react";
 import { Button, Chip } from "../../../core/ui";
 import { Pencil, Trash2, Eye } from "lucide-react";
 import { useGetUserByEmailQuery } from '../../user/api/usersApi';
-import { useGetTaskNewStateQuery } from '../api/tasksApi';
-import { useCountUnreadCommentsQuery } from '../api/commentsApi';
+import { useGetTaskNewStateQuery } from '../../task/api/tasksApi';
+import { useCountUnreadCommentsQuery } from '../../task/api/commentsApi';
 import {
   getDueDateStatus,
   formatDueDateText,
   dueDateStatusConfig,
   getCardBackground,
   highlightSearchMatch,
-} from '../utils/taskUtils';
+} from '../../task/utils/taskUtils';
 
 export const TaskListHeader = ({ isAdmin }) => (
   <thead className="bg-gray-50 dark:bg-[#262626] border-0">
