@@ -124,7 +124,7 @@ const MobileTaskList = ({
                                 {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
                             </span>
                         ) : (
-                            <span className="text-gray-600 dark:text-[#bfbfbf] italic uppercase text-xs line-clamp-1">Don't matter</span>
+                            <span className="px-2 py-1 text-xs font-medium italic border rounded-[5px] whitespace-nowrap text-gray-600 dark:text-[#bfbfbf] border-none">Don't matter</span>
                         )
                     },
                 ]}

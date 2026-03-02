@@ -122,7 +122,7 @@ export default function Home() {
 
 
           {filteredTasks.length === 0 ? (
-            <p className="text-gray-400 px-6 py-2">No tasks available</p>
+            <p className="text-gray-400 px-4 md:px-6 py-2">No tasks available</p>
           ) : (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-4 md:p-6 pt-3">
               {filteredTasks.map((task) => (

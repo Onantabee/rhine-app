@@ -48,7 +48,7 @@ const WorkspaceLayout = () => {
     }
 
     return (
-        <div className="flex w-full h-[calc(100dvh-70px)] overflow-hidden">
+        <div className="flex w-full h-full overflow-hidden">
             <div className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex w-full md:w-auto h-full`}>
                 <SidePane onLinkClick={() => dispatch(closeMobileMenu())} />
             </div>
