@@ -38,11 +38,11 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex flex-col shrink-0 p-6 pb-0">
+      <div className="flex flex-col shrink-0 p-4 md:p-6 pb-0">
         <div className="flex justify-between border-b border-gray-200 dark:border-[#404040] pb-3 gap-2">
           <div className="flex gap-3 items-center">
-            <h1 className="text-3xl text-gray-600 dark:text-[#bfbfbf]">Tasks</h1>
-            <p className="text-gray-500 dark:text-[#bfbfbf] text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-10 h-10 flex items-center justify-center">
+            <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-[#bfbfbf]">Tasks</h1>
+            <p className="text-gray-500 dark:text-[#bfbfbf] text-sm md:text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
               {filteredTasks.length}
             </p>
             {assigneeEmailFilter && (
@@ -68,7 +68,7 @@ export default function Home() {
               className={`relative ${hasOtherMembers ? 'bg-red-500 hover:bg-red-600 text-white' : ''}`}
             >
               <Plus size={20} />
-              Add Task
+              <span className="hidden md:block">Add Task</span>
             </Button>
           )}
         </div>
@@ -81,7 +81,7 @@ export default function Home() {
             className="flex items-center gap-2"
           >
             <Grid size={20} />
-            Card View
+            <span className="hidden md:block">Card View</span>
           </Button>
           <Button
             onClick={() => setIsCardView(false)}
@@ -90,7 +90,7 @@ export default function Home() {
             className="flex items-center gap-2"
           >
             <List size={20} />
-            List View
+            <span className="hidden md:block">List View</span>
           </Button>
         </div>
       </div>
@@ -107,7 +107,7 @@ export default function Home() {
           {filteredTasks.length === 0 ? (
             <p className="text-gray-400 px-6 py-2">No tasks available</p>
           ) : (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-6 pt-3">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-4 md:p-6 pt-3">
               {filteredTasks.map((task) => (
                 <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
                   <TaskCard
@@ -131,7 +131,7 @@ export default function Home() {
           )}
         </div>
       ) : (
-        <div className="h-full min-h-0 p-6 pt-0 flex flex-col">
+        <div className="h-full min-h-0 p-4 md:p-6 pt-0 flex flex-col">
           <div className="bg-white dark:bg-[#1a1a1a] flex flex-col min-h-0 border border-gray-200 dark:border-[#404040]">
             <div className="overflow-auto w-full h-fit">
               <table className="w-full min-w-[1000px] border-none text-left">

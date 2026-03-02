@@ -33,11 +33,11 @@ const TeamMembers = () => {
 
     return (
         <div className="flex flex-col gap-3 h-full">
-            <div className="p-6 pb-0">
+            <div className="p-4 md:p-6 pb-0">
                 <div className="flex items-center justify-between border-b border-gray-200 dark:border-[#404040] pb-3 flex-shrink-0">
                     <div className="flex justify-between gap-2">
-                        <h1 className="text-3xl text-gray-600 dark:text-[#bfbfbf] truncate">Team Members</h1>
-                        <span className="text-gray-500 dark:text-[#bfbfbf] text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-10 h-10 flex items-center justify-center">
+                        <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-[#bfbfbf] truncate">Team Members</h1>
+                        <span className="text-gray-500 dark:text-[#bfbfbf] text-sm md:text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                             {filteredMembers.length}
                         </span>
                     </div>
@@ -46,13 +46,13 @@ const TeamMembers = () => {
                         size="md"
                         onClick={() => setInviteDialogOpen(true)}
                     >
-                        <UserPlus size={16} />
-                        Invite
+                        <UserPlus size={20} />
+                        <span className="hidden md:block">Invite</span>
                     </Button>
                 </div>
             </div>
 
-            <div className="w-full h-full p-6 pt-0">
+            <div className="w-full h-full p-4 md:p-6 pt-0">
                 <TeamTable
                     members={filteredMembers}
                     userEmail={userEmail}
