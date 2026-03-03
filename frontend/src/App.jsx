@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from './core/layout/Layout';
-import RegistrationForm from './features/auth/components/RegistrationForm';
+import AuthForm from './features/auth/components/AuthForm';
 import VerifyEmail from './features/auth/pages/VerifyEmail';
 import Home from './features/project/pages/Home';
 import Task from './features/task/pages/TaskPage';
@@ -72,7 +72,14 @@ function App() {
         <Layout setIsSignup={setIsSignup}>
           <Routes>
             <Route path="/accept-invite" element={<AcceptInvite />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route
+              path="/verify-email"
+              element={
+                <ProtectedRoute>
+                  {!isVerified ? <VerifyEmail /> : <NotFound />}
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/"
               element={
@@ -83,7 +90,7 @@ function App() {
                     <Navigate to={getDefaultRedirect()} replace />
                   )
                 ) : (
-                  <RegistrationForm isSignup={isSignup} />
+                  <AuthForm isSignup={isSignup} />
                 )
               }
             />
