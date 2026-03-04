@@ -23,7 +23,7 @@ export const getDueDateStatus = (dueDate, currentStatus) => {
 export const dueDateStatusConfig = {
     OVERDUE: {
         text: "Overdue",
-        className: "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500 dark:bg-[#404040]/50 dark:text-gray-400",
+        className: "bg-gray-100 border-gray-200 dark:border-[#404040] text-gray-500 dark:bg-[#333333] dark:text-gray-400",
     },
     DUE_TODAY: {
         text: "Due",

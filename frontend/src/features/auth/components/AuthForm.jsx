@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Check, X } from "lucide-react";
 import { Button, Input } from "../../../core/ui";
 import { useAuthForm } from '../hooks/useAuthForm';
@@ -102,6 +103,13 @@ const Form = ({ isSignup }) => {
                         {req.label}
                       </div>
                     ))}
+                  </div>
+                )}
+                {!isSignup && (
+                  <div className="flex justify-end mt-1 px-1">
+                    <Link to="/reset-password" className="text-sm text-primary hover:text-primary-hover transition-colors">
+                      Forgot password?
+                    </Link>
                   </div>
                 )}
               </div>

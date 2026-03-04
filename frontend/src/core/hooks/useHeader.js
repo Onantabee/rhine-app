@@ -26,12 +26,14 @@ export const useHeader = ({ setIsSignup }) => {
     const handleDrawerToggle = () => dispatch(toggleMobileMenu());
 
     const handleLoginClick = () => {
+        navigate("/");
         setIsSignup(false);
         dispatch(closeMobileMenu());
     };
 
     const handleSignupClick = () => {
         setIsSignup(true);
+        navigate("/");
         dispatch(closeMobileMenu());
     };
 

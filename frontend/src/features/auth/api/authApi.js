@@ -39,6 +39,25 @@ const authApi = baseApi.injectEndpoints({
                 method: 'POST',
             }),
         }),
+        forgotPassword: builder.mutation({
+            query: (data) => ({
+                url: 'api/users/forgot-password',
+                method: 'POST',
+                body: data,
+            }),
+        }),
+        validateResetToken: builder.query({
+            query: (token) => `api/users/validate-reset-token?token=${encodeURIComponent(token)}`,
+            // Provide a short cache or disable it if it expires quickly
+            keepUnusedDataFor: 0,
+        }),
+        resetPassword: builder.mutation({
+            query: (data) => ({
+                url: 'api/users/reset-password',
+                method: 'POST',
+                body: data,
+            }),
+        }),
     }),
 });
 
@@ -50,6 +69,9 @@ export const {
     useLogoutMutation,
     useVerifyEmailMutation,
     useResendOtpMutation,
+    useForgotPasswordMutation,
+    useValidateResetTokenQuery,
+    useResetPasswordMutation,
 } = authApi;
 
 export default authApi;

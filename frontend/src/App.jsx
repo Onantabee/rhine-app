@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Layout from './core/layout/Layout';
 import AuthForm from './features/auth/components/AuthForm';
 import VerifyEmail from './features/auth/pages/VerifyEmail';
+import ResetPassword from './features/auth/pages/ResetPassword';
 import Home from './features/project/pages/Home';
 import Task from './features/task/pages/TaskPage';
 import Profile from './features/user/components/Profile';
@@ -17,7 +18,6 @@ import NotFound from './core/pages/NotFound';
 import WorkspaceLayout from './core/layout/WorkspaceLayout';
 import { SnackbarProvider } from "./core/context/SnackbarContext";
 import { login, logout, setSessionChecked } from './features/auth/store/authSlice';
-import { setActiveProject } from './features/project/store/projectSlice';
 import { useLazyGetCurrentUserQuery } from './features/auth/api/authApi';
 import { LoadingSpinner } from "./core/ui";
 
@@ -72,6 +72,7 @@ function App() {
         <Layout setIsSignup={setIsSignup}>
           <Routes>
             <Route path="/accept-invite" element={<AcceptInvite />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
               path="/verify-email"
               element={

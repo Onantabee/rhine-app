@@ -135,4 +135,54 @@ public class AuthController {
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok("Logged out successfully");
     }
+
+    @Operation(summary = "Request password reset link", tags = {"Authentication"})
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        if (email == null || email.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Email is required"));
+        }
+        
+        try {
+            authService.forgotPassword(email);
+            return ResponseEntity.ok(Map.of("message", "A password reset link has been sent."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("message", "An error occurred while processing your request."));
+        }
+    }
+
+    @Operation(summary = "Validate password reset token", tags = {"Authentication"})
+    @GetMapping("/validate-reset-token")
+    public ResponseEntity<?> validateResetToken(@RequestParam String token) {
+        try {
+            authService.validateResetToken(token);
+            return ResponseEntity.ok(Map.of("message", "Token is valid."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "Reset password using token", tags = {"Authentication"})
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String encodedNewPassword = request.get("newPassword");
+        
+        if (token == null || token.isBlank() || encodedNewPassword == null || encodedNewPassword.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Token and new password are required"));
+        }
+
+        try {
+            String newPassword = new String(Base64.getDecoder().decode(encodedNewPassword));
+            authService.resetPassword(token, newPassword);
+            return ResponseEntity.ok(Map.of("message", "Password has been successfully reset."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("message", "An error occurred during password reset."));
+        }
+    }
 }

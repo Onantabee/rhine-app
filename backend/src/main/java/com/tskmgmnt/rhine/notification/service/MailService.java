@@ -57,4 +57,21 @@ public class MailService {
             logger.error("Failed to send Invite email to {}: {}", to, e.getMessage());
         }
     }
+
+    @Async
+    public void sendPasswordResetEmail(String to, String token) {
+        String resetLink = frontendUrl + "/reset-password?token=" + token;
+        logger.info("Preparing to send password reset email to {} with link: {}", to, resetLink);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(mailFrom);
+            message.setTo(to);
+            message.setSubject("Rhine Password Reset Request");
+            message.setText("Hello,\n\nWe received a request to reset your Rhine account password.\n\nPlease click the link below to set a new password:\n" + resetLink + "\n\nThis link will expire in 1 hour.\nIf you did not request this, please ignore this email.");
+            mailSender.send(message);
+            logger.info("Password reset email successfully sent to {}", to);
+        } catch (Exception e) {
+            logger.error("Failed to send Password Reset email to {}: {}", to, e.getMessage());
+        }
+    }
 }

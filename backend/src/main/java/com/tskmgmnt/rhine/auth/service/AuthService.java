@@ -5,11 +5,12 @@ import com.tskmgmnt.rhine.user.repository.UserRepository;
 import com.tskmgmnt.rhine.project.repository.ProjectMemberRepository;
 import com.tskmgmnt.rhine.auth.dto.UserRegReq;
 import com.tskmgmnt.rhine.auth.dto.LoginResponse;
+import com.tskmgmnt.rhine.auth.entity.UserResetToken;
+import com.tskmgmnt.rhine.auth.repository.UserResetTokenRepository;
+import com.tskmgmnt.rhine.notification.service.MailService;
 
-
-
-
-
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,13 +23,18 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;
     private final ProjectMemberRepository projectMemberRepository;
+    private final UserResetTokenRepository userResetTokenRepository;
+    private final MailService mailService;
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, 
-                       OtpService otpService, ProjectMemberRepository projectMemberRepository) {
+                       OtpService otpService, ProjectMemberRepository projectMemberRepository,
+                       UserResetTokenRepository userResetTokenRepository, MailService mailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.otpService = otpService;
         this.projectMemberRepository = projectMemberRepository;
+        this.userResetTokenRepository = userResetTokenRepository;
+        this.mailService = mailService;
     }
 
     public LoginResponse loginUser(String email, String rawPassword) {
@@ -67,5 +73,47 @@ public class AuthService {
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public void forgotPassword(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            throw new IllegalArgumentException("No account found with that email address.");
+        }
+
+        userResetTokenRepository.findByUser(user).ifPresent(userResetTokenRepository::delete);
+
+        String token = UUID.randomUUID().toString();
+        
+        UserResetToken resetToken = new UserResetToken(token, user, LocalDateTime.now().plusHours(1));
+        userResetTokenRepository.save(resetToken);
+
+        mailService.sendPasswordResetEmail(user.getEmail(), token);
+    }
+
+    public void validateResetToken(String token) {
+        UserResetToken resetToken = userResetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid or non-existent token"));
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            userResetTokenRepository.delete(resetToken);
+            throw new IllegalArgumentException("Token has expired");
+        }
+    }
+
+    public void resetPassword(String token, String newRawPassword) {
+        UserResetToken resetToken = userResetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            userResetTokenRepository.delete(resetToken);
+            throw new IllegalArgumentException("Token has expired");
+        }
+
+        User user = resetToken.getUser();
+        user.setPwd(passwordEncoder.encode(newRawPassword));
+        userRepository.save(user);
+
+        userResetTokenRepository.delete(resetToken);
     }
 }

@@ -1,3 +1,4 @@
+import { AlertCircle, Check } from "lucide-react";
 import { Button, LoadingSpinner } from "../../../core/ui";
 import { useAcceptInvite } from '../hooks/useAcceptInvite';
 
@@ -15,6 +16,9 @@ const AcceptInvite = () => {
         return (
             <div className="flex items-center justify-center h-[100dvh]">
                 <div className="flex flex-col gap-2 items-center">
+                    <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+                        <AlertCircle size={50} className="text-red-500" />
+                    </div>
                     <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Invalid Invitation Link!!</h2>
                     <p className="text-red-400 font-light text-md text-center">No token provided.</p>
                 </div>
@@ -34,6 +38,9 @@ const AcceptInvite = () => {
                 )}
                 {isSuccess && (
                     <div className="flex flex-col items-center gap-6">
+                        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                            <Check size={50} className="text-green-500" />
+                        </div>
                         <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Welcome Aboard!</h2>
                         <p className="text-green-600 font-light text-md text-center">You have successfully joined the project.</p>
                         <span className="flex items-center gap-2">
@@ -42,8 +49,11 @@ const AcceptInvite = () => {
                         </span>
                     </div>
                 )}
-                {!isError && (
+                {isError && (
                     <div className="flex flex-col items-center gap-6">
+                        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                            <AlertCircle size={50} className="text-red-500" />
+                        </div>
                         <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Invitation Failed</h2>
                         <p className="text-red-400 font-light text-md text-center">{error?.data?.message || 'Unable to accept invitation. It may be invalid or expired.'}</p>
                         <Button onClick={() => navigate('/')} className="w-fit">
