@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
-import { Check, X, ArrowLeft } from "lucide-react";
+import { Check, X, ArrowLeft, AlertCircle } from "lucide-react";
 import { Button, Input, LoadingSpinner } from "../../../core/ui";
 import { useForgotPasswordMutation, useResetPasswordMutation, useValidateResetTokenQuery } from "../api/authApi";
 import { checkPasswordStrength } from "../../../core/utils/validationUtils";
