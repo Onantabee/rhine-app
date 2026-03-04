@@ -11,7 +11,7 @@ const AcceptInvite = () => {
         navigate
     } = useAcceptInvite();
 
-    if (token) {
+    if (!token) {
         return (
             <div className="flex items-center justify-center h-[100dvh]">
                 <div className="flex flex-col gap-2 items-center">
