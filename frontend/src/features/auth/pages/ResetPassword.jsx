@@ -19,7 +19,6 @@ const ResetPassword = () => {
     const [forgotPassword, { isLoading: isRequesting }] = useForgotPasswordMutation();
     const [resetPassword, { isLoading: isResetting }] = useResetPasswordMutation();
 
-    // Proactively validate the token if it exists in the URL
     const {
         data: validationData,
         isLoading: isValidating,

@@ -48,7 +48,6 @@ const authApi = baseApi.injectEndpoints({
         }),
         validateResetToken: builder.query({
             query: (token) => `api/users/validate-reset-token?token=${encodeURIComponent(token)}`,
-            // Provide a short cache or disable it if it expires quickly
             keepUnusedDataFor: 0,
         }),
         resetPassword: builder.mutation({

@@ -72,8 +72,6 @@ export const useHeader = ({ setIsSignup }) => {
 
     const isTaskListPage = /^\/project\/\d+(\/team)?\/?$/.test(location.pathname);
     
-    // A single, strong logic flag determining if we are rendering the full Workspace GUI
-    // or if we are in Auth/Setup/Interstitial views.
     const isWorkspaceView = isLoggedIn && isVerified && hasProjects && location.pathname.match(/^\/project(\/|$)/);
 
 

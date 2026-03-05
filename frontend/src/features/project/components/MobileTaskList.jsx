@@ -68,7 +68,7 @@ const MobileTaskList = ({
         } else {
             const rect = e.currentTarget.getBoundingClientRect();
             const spaceBelow = window.innerHeight - rect.bottom;
-            const menuHeight = 116; // Approx px height for the 3 menu items + padding
+            const menuHeight = 116;
             const isDropUp = isLastChild || spaceBelow < menuHeight;
 
             setDropDirection(isDropUp ? "up" : "down");
