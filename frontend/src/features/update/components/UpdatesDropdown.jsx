@@ -33,17 +33,6 @@ const UpdatesDropdown = () => {
 
     const unreadCount = updates.filter(u => !u.isRead).length;
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
     if (!parsedProjectId) return null;
 
     const toggleDropdown = () => {
@@ -73,59 +62,68 @@ const UpdatesDropdown = () => {
             </button>
 
             {isOpen && (
-                <div className="absolute -right-14 md:right-0 top-full mt-2.5 w-80 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] shadow-lg overflow-hidden z-50 origin-top-right">
-                    <div className="px-4 py-3 border-b border-gray-200 dark:border-[#404040] flex justify-between items-center bg-gray-100 dark:bg-[#262626]">
-                        <h3 className="font-semibold text-gray-800 dark:text-[#bfbfbf]">Updates</h3>
-                    </div>
+                <>
+                    <div
+                        className="fixed inset-0 z-40 bg-transparent cursor-default"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsOpen(false);
+                        }}
+                    />
+                    <div className="absolute -right-14 md:right-0 top-full mt-2.5 w-80 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] shadow-lg overflow-hidden z-50 origin-top-right">
+                        <div className="px-4 py-3 border-b border-gray-200 dark:border-[#404040] flex justify-between items-center bg-gray-100 dark:bg-[#262626]">
+                            <h3 className="font-semibold text-gray-800 dark:text-[#bfbfbf]">Updates</h3>
+                        </div>
 
-                    <div className="max-h-[70vh] overflow-y-auto">
-                        {totalUnreadMessages > 0 && (
-                            <div className="flex items-center gap-3 px-4 py-3 bg-red-50 dark:bg-red-900/20 border-b border-gray-100 dark:border-[#2a2a2a]">
-                                <MessageSquare size={16} className="text-red-500 flex-shrink-0" />
-                                <p className="text-sm text-red-700 dark:text-red-300 font-medium">
-                                    You have{' '}
-                                    <span className="font-bold">{totalUnreadMessages}</span>
-                                    {' '}unread {totalUnreadMessages === 1 ? 'message' : 'messages'}
-                                </p>
-                            </div>
-                        )}
-                        {isLoading ? (
-                            <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                                Loading updates...
-                            </div>
-                        ) : updates.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500 dark:text-gray-400 flex flex-col items-center">
-                                <Bell className="w-8 h-8 mb-3 opacity-20" />
-                                <p>No updates yet</p>
-                            </div>
-                        ) : (
-                            <ul className="divide-y divide-gray-100 dark:divide-[#2a2a2a] max-h-[250px] overflow-y-auto">
-                                {updates.map((update) => (
-                                    <li
-                                        key={update.id}
-                                        className={`p-4 hover:bg-gray-50 dark:hover:bg-[#222] transition-colors ${!update.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}`}
-                                    >
-                                        <div className="flex gap-3">
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm text-gray-800 dark:text-gray-200 line-clamp-2">
-                                                    {update.message}
-                                                </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                    {formatDistanceToNow(new Date(update.createdAt), { addSuffix: true })}
-                                                </p>
-                                            </div>
-                                            {!update.isRead && (
-                                                <div className="flex-shrink-0 mt-1.5 flex justify-center w-2 h-2">
-                                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div className="max-h-[70vh] overflow-y-auto">
+                            {totalUnreadMessages > 0 && (
+                                <div className="flex items-center gap-3 px-4 py-3 bg-red-50 dark:bg-red-900/20 border-b border-gray-100 dark:border-[#2a2a2a]">
+                                    <MessageSquare size={16} className="text-red-500 flex-shrink-0" />
+                                    <p className="text-sm text-red-700 dark:text-red-300 font-medium">
+                                        You have{' '}
+                                        <span className="font-bold">{totalUnreadMessages}</span>
+                                        {' '}unread {totalUnreadMessages === 1 ? 'message' : 'messages'}
+                                    </p>
+                                </div>
+                            )}
+                            {isLoading ? (
+                                <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                                    Loading updates...
+                                </div>
+                            ) : updates.length === 0 ? (
+                                <div className="p-8 text-center text-gray-500 dark:text-gray-400 flex flex-col items-center">
+                                    <Bell className="w-8 h-8 mb-3 opacity-20" />
+                                    <p>No updates yet</p>
+                                </div>
+                            ) : (
+                                <ul className="divide-y divide-gray-100 dark:divide-[#2a2a2a] max-h-[250px] overflow-y-auto">
+                                    {updates.map((update) => (
+                                        <li
+                                            key={update.id}
+                                            className={`p-4 hover:bg-gray-50 dark:hover:bg-[#222] transition-colors ${!update.isRead ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}`}
+                                        >
+                                            <div className="flex gap-3">
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm text-gray-800 dark:text-gray-200 line-clamp-2">
+                                                        {update.message}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                        {formatDistanceToNow(new Date(update.createdAt), { addSuffix: true })}
+                                                    </p>
                                                 </div>
-                                            )}
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                                                {!update.isRead && (
+                                                    <div className="flex-shrink-0 mt-1.5 flex justify-center w-2 h-2">
+                                                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                     </div>
-                </div>
+                </>
             )}
         </div>
     );

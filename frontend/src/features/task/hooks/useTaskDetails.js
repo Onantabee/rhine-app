@@ -111,18 +111,6 @@ export const useTaskDetails = () => {
         }
     }, [task?.id, user?.email, isAdmin, task?.assigneeId, markCommentsAsRead, updateTaskNewState, projectId, isMobile, activeTab, unreadCommentsCount]);
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setOpenDropdownId(null);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-
     useLayoutEffect(() => {
         if (commentContainerRef.current) {
             commentContainerRef.current.scrollTop =

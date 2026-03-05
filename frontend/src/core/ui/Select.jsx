@@ -23,17 +23,6 @@ const Select = forwardRef(
         const [isOpen, setIsOpen] = useState(false);
         const containerRef = useRef(null);
 
-        useEffect(() => {
-            const handleClickOutside = (event) => {
-                if (containerRef.current && !containerRef.current.contains(event.target)) {
-                    setIsOpen(false);
-                }
-            };
-
-            document.addEventListener("mousedown", handleClickOutside);
-            return () => document.removeEventListener("mousedown", handleClickOutside);
-        }, []);
-
         const handleSelect = (optionValue) => {
             if (!disabled) {
                 const event = {
@@ -87,26 +76,35 @@ const Select = forwardRef(
                 </div>
 
                 {isOpen && (
-                    <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] overflow-hidden z-50 max-h-60 overflow-y-auto">
-                        {options.map((option) => (
-                            <div
-                                key={option.value}
-                                onClick={() => handleSelect(option.value)}
-                                className={`${size === "sm" ? "px-3 py-2 text-sm" : "px-4 py-3"} flex items-center justify-between cursor-pointer ${value === option.value
-                                    ? "bg-primary/10 text-primary"
-                                    : "text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626]"
-                                    }`}
-                            >
-                                <span className="truncate">{option.label}</span>
-                                {value === option.value && <Check size={16} />}
-                            </div>
-                        ))}
-                        {options.length === 0 && (
-                            <div className="px-4 py-3 text-gray-400 text-center text-sm">
-                                No options available
-                            </div>
-                        )}
-                    </div>
+                    <>
+                        <div
+                            className="fixed inset-0 z-40 bg-transparent cursor-default"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsOpen(false);
+                            }}
+                        />
+                        <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] overflow-hidden z-50 max-h-60 overflow-y-auto">
+                            {options.map((option) => (
+                                <div
+                                    key={option.value}
+                                    onClick={() => handleSelect(option.value)}
+                                    className={`${size === "sm" ? "px-3 py-2 text-sm" : "px-4 py-3"} flex items-center justify-between cursor-pointer ${value === option.value
+                                        ? "bg-primary/10 text-primary"
+                                        : "text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626]"
+                                        }`}
+                                >
+                                    <span className="truncate">{option.label}</span>
+                                    {value === option.value && <Check size={16} />}
+                                </div>
+                            ))}
+                            {options.length === 0 && (
+                                <div className="px-4 py-3 text-gray-400 text-center text-sm">
+                                    No options available
+                                </div>
+                            )}
+                        </div>
+                    </>
                 )}
 
                 {(error || helperText) && (

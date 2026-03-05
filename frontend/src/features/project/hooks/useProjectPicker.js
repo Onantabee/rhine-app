@@ -18,16 +18,6 @@ export const useProjectPicker = () => {
     const { data: projects = [], isLoading: isLoadingProjects } = useGetProjectsQuery();
     const [updateLastProject] = useUpdateLastProjectMutation();
 
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (ref.current && !ref.current.contains(e.target)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
     const handleSelectProject = (project) => {
         dispatch(
             setActiveProject({

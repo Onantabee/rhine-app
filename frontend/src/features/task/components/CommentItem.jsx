@@ -73,38 +73,47 @@ const CommentItem = ({
                 </div>
             </div>
             {isDropdownOpen && createPortal(
-                <div
-                    ref={dropdownRef}
-                    style={{
-                        top: dropdownPosition.top,
-                        left: dropdownPosition.left,
-                    }}
-                    className="absolute py-1 gap-1 w-36 bg-white dark:bg-[#1a1a1a] border border-gray-400 dark:border-[#404040] z-50"
-                >
-                    <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-t border-l border-gray-400 dark:border-[#404040] z-[-1]" />
-                    {canEdit ? (
-                        <button
-                            onClick={() => onEdit(comment)}
-                            onMouseDown={(e) => e.preventDefault()}
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626] w-full text-left cursor-pointer"
-                        >
-                            <Pencil className="mr-3 h-4 w-4" />
-                            Edit
-                        </button>
+                <div className="fixed inset-0 z-[9999] flex flex-col">
+                    <div
+                        className="fixed inset-0 bg-transparent cursor-default"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onToggleDropdown(null);
+                        }}
+                    />
+                    <div
+                        ref={dropdownRef}
+                        style={{
+                            top: dropdownPosition.top,
+                            left: dropdownPosition.left,
+                        }}
+                        className="absolute py-1 gap-1 w-36 bg-white dark:bg-[#1a1a1a] border border-gray-400 dark:border-[#404040] z-[10000] shadow-lg"
+                    >
+                        <div className="absolute -top-[7px] right-[10px] w-3 h-3 rotate-45 bg-white dark:bg-[#1a1a1a] border-t border-l border-gray-400 dark:border-[#404040] z-[-1]" />
+                        {canEdit ? (
+                            <button
+                                onClick={() => onEdit(comment)}
+                                onMouseDown={(e) => e.preventDefault()}
+                                className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626] w-full text-left cursor-pointer"
+                            >
+                                <Pencil className="mr-3 h-4 w-4" />
+                                Edit
+                            </button>
 
-                    ) : (
-                        null
-                    )}
-                    {isCommentingAllowed && (
-                        <button
-                            onClick={() => onDelete(comment.id)}
-                            onMouseDown={(e) => e.preventDefault()}
-                            className="flex items-center px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500 dark:hover:text-white w-full text-left cursor-pointer"
-                        >
-                            <Trash2 className="mr-3 h-4 w-4" />
-                            Delete
-                        </button>
-                    )}
+                        ) : (
+                            null
+                        )}
+                        {isCommentingAllowed && (
+                            <button
+                                onClick={() => onDelete(comment.id)}
+                                onMouseDown={(e) => e.preventDefault()}
+                                className="flex items-center px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500 dark:hover:text-white w-full text-left cursor-pointer"
+                            >
+                                <Trash2 className="mr-3 h-4 w-4" />
+                                Delete
+                            </button>
+                        )}
+                    </div>
                 </div>,
                 document.body
             )}

@@ -35,16 +35,6 @@ const DatePicker = forwardRef(
         const containerRef = useRef(null);
 
         useEffect(() => {
-            const handleClickOutside = (e) => {
-                if (containerRef.current && !containerRef.current.contains(e.target)) {
-                    setOpen(false);
-                }
-            };
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => document.removeEventListener('mousedown', handleClickOutside);
-        }, []);
-
-        useEffect(() => {
             if (value) setViewDate(new Date(value + 'T00:00:00'));
         }, [value]);
 
@@ -128,79 +118,88 @@ const DatePicker = forwardRef(
                 </div>
 
                 {open && (
-                    <div className="absolute max-w-[350px] min-h-[300px] bottom-full left-0 mb-1 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] shadow-md z-50 select-none">
-                        <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-[#404040]">
-                            <button
-                                type="button"
-                                onClick={prevMonth}
-                                className="p-1 text-gray-500 hover:text-gray-800 cursor-pointer"
-                            >
-                                <ChevronLeft size={16} />
-                            </button>
-                            <span className="text-sm font-semibold text-gray-700 dark:text-[#cccccc]">
-                                {MONTHS[month]} {year}
-                            </span>
-                            <button
-                                type="button"
-                                onClick={nextMonth}
-                                className="p-1 text-gray-500 hover:text-gray-800 cursor-pointer"
-                            >
-                                <ChevronRight size={16} />
-                            </button>
-                        </div>
+                    <>
+                        <div
+                            className="fixed inset-0 z-40 bg-transparent cursor-default"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setOpen(false);
+                            }}
+                        />
+                        <div className="absolute max-w-[350px] min-h-[300px] bottom-full left-0 mb-1 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] shadow-md z-50 select-none">
+                            <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-[#404040]">
+                                <button
+                                    type="button"
+                                    onClick={prevMonth}
+                                    className="p-1 text-gray-500 hover:text-gray-800 cursor-pointer"
+                                >
+                                    <ChevronLeft size={16} />
+                                </button>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-[#cccccc]">
+                                    {MONTHS[month]} {year}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={nextMonth}
+                                    className="p-1 text-gray-500 hover:text-gray-800 cursor-pointer"
+                                >
+                                    <ChevronRight size={16} />
+                                </button>
+                            </div>
 
-                        <div className="grid grid-cols-7 px-2 pt-2">
-                            {DAYS.map((d) => (
-                                <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">
-                                    {d}
-                                </div>
-                            ))}
-                        </div>
+                            <div className="grid grid-cols-7 px-2 pt-2">
+                                {DAYS.map((d) => (
+                                    <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">
+                                        {d}
+                                    </div>
+                                ))}
+                            </div>
 
-                        <div className="grid grid-cols-7 px-2 pb-2">
-                            {Array.from({ length: firstDay }).map((_, i) => (
-                                <div key={`empty-${i}`} />
-                            ))}
+                            <div className="grid grid-cols-7 px-2 pb-2">
+                                {Array.from({ length: firstDay }).map((_, i) => (
+                                    <div key={`empty-${i}`} />
+                                ))}
 
-                            {Array.from({ length: daysInMonth }).map((_, i) => {
-                                const day = i + 1;
-                                const isSelected =
-                                    selectedDate &&
-                                    selectedDate.getFullYear() === year &&
-                                    selectedDate.getMonth() === month &&
-                                    selectedDate.getDate() === day;
-                                const isToday =
-                                    today.getFullYear() === year &&
-                                    today.getMonth() === month &&
-                                    today.getDate() === day;
-                                const isDayDisabled = isDateDisabled(day);
+                                {Array.from({ length: daysInMonth }).map((_, i) => {
+                                    const day = i + 1;
+                                    const isSelected =
+                                        selectedDate &&
+                                        selectedDate.getFullYear() === year &&
+                                        selectedDate.getMonth() === month &&
+                                        selectedDate.getDate() === day;
+                                    const isToday =
+                                        today.getFullYear() === year &&
+                                        today.getMonth() === month &&
+                                        today.getDate() === day;
+                                    const isDayDisabled = isDateDisabled(day);
 
-                                return (
-                                    <button
-                                        key={day}
-                                        type="button"
-                                        disabled={isDayDisabled}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleSelect(day);
-                                        }}
-                                        className={`
+                                    return (
+                                        <button
+                                            key={day}
+                                            type="button"
+                                            disabled={isDayDisabled}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleSelect(day);
+                                            }}
+                                            className={`
                                             aspect-square text-sm text-center cursor-pointer rounded-full flex items-center justify-center
                                             ${isSelected
-                                                ? 'bg-primary text-white font-semibold'
-                                                : isToday
-                                                    ? 'font-semibold text-primary'
-                                                    : 'text-gray-700 dark:text-[#cccccc] hover:bg-gray-100 dark:hover:bg-[#262626]'
-                                            }
+                                                    ? 'bg-primary text-white font-semibold'
+                                                    : isToday
+                                                        ? 'font-semibold text-primary'
+                                                        : 'text-gray-700 dark:text-[#cccccc] hover:bg-gray-100 dark:hover:bg-[#262626]'
+                                                }
                                             ${isDayDisabled ? 'opacity-30 cursor-not-allowed' : ''}
                                         `}
-                                    >
-                                        {day}
-                                    </button>
-                                );
-                            })}
+                                        >
+                                            {day}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
+                    </>
                 )}
 
                 {(error || helperText) && (
