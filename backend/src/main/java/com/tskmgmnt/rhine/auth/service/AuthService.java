@@ -1,5 +1,5 @@
 package com.tskmgmnt.rhine.auth.service;
-import com.tskmgmnt.rhine.notification.service.OtpService;
+import com.tskmgmnt.rhine.otp.service.OtpService;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.user.repository.UserRepository;
 import com.tskmgmnt.rhine.project.repository.ProjectMemberRepository;
@@ -7,7 +7,7 @@ import com.tskmgmnt.rhine.auth.dto.UserRegReq;
 import com.tskmgmnt.rhine.auth.dto.LoginResponse;
 import com.tskmgmnt.rhine.auth.entity.UserResetToken;
 import com.tskmgmnt.rhine.auth.repository.UserResetTokenRepository;
-import com.tskmgmnt.rhine.notification.service.MailService;
+import com.tskmgmnt.rhine.core.service.MailService;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

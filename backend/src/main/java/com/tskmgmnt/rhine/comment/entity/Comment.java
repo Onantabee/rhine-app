@@ -85,6 +85,12 @@ public class Comment {
         this.task = task;
     }
 
+    /** Exposes only the task ID in JSON so the frontend can filter by project without circular refs. */
+    @Transient
+    public Long getTaskId() {
+        return task != null ? task.getId() : null;
+    }
+
     public User getRecipient() {
         return recipient;
     }

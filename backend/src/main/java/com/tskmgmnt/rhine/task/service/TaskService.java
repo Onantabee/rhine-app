@@ -9,6 +9,7 @@ import com.tskmgmnt.rhine.project.enums.ProjectRole;
 import com.tskmgmnt.rhine.project.repository.ProjectMemberRepository;
 import com.tskmgmnt.rhine.project.entity.Project;
 import com.tskmgmnt.rhine.project.repository.ProjectRepository;
+import com.tskmgmnt.rhine.notification.service.UpdateService;
 import com.tskmgmnt.rhine.core.exception.ResourceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +28,21 @@ public class TaskService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final UpdateService updateService;
 
     @Autowired
     public TaskService(TaskRepository taskRepository,
                        UserRepository userRepository,
                        ProjectRepository projectRepository,
                        ProjectMemberRepository projectMemberRepository,
-                       SimpMessagingTemplate messagingTemplate) {
+                       SimpMessagingTemplate messagingTemplate,
+                       UpdateService updateService) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.messagingTemplate = messagingTemplate;
+        this.updateService = updateService;
     }
 
     public TaskDto createTask(Long projectId, TaskDto taskReq, String requestingUserEmail) {
@@ -77,6 +81,11 @@ public class TaskService {
 
         messagingTemplate.convertAndSend("/topic/task-created",
                 new NotificationDto<>("TASK_CREATED", mapToTaskResponse(savedTask)));
+
+        if (savedTask.getAssignee() != null && !savedTask.getAssignee().getEmail().equals(requestingUserEmail)) {
+            String message = String.format("You were assigned to %s", savedTask.getTitle());
+            updateService.createAndSendUpdate(projectId, savedTask.getAssignee().getEmail(), message);
+        }
 
         return mapToTaskResponse(savedTask);
     }
@@ -131,7 +140,7 @@ public class TaskService {
         return mapToTaskResponse(task);
     }
 
-    public TaskDto updateTaskById(Long id, TaskDto taskReq) {
+    public TaskDto updateTaskById(Long id, TaskDto taskReq, String modifierEmail) {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not Found!"));
 
@@ -146,8 +155,10 @@ public class TaskService {
             existingTask.setCreatedBy(createdBy);
         }
 
+        User formerAssignee = existingTask.getAssignee();
+        Long projectId = existingTask.getProject() != null ? existingTask.getProject().getId() : null;
+
         if (taskReq.getAssigneeId() != null) {
-            Long projectId = existingTask.getProject() != null ? existingTask.getProject().getId() : null;
             if (projectId != null && !projectMemberRepository.existsByUserEmailAndProjectId(taskReq.getAssigneeId(), projectId)) {
                 throw new RuntimeException("Assignee must be a member of this project");
             }
@@ -155,13 +166,27 @@ public class TaskService {
             User assignee = userRepository.findByEmail(taskReq.getAssigneeId())
                     .orElseThrow(() -> new RuntimeException("Assignee not Found!"));
 
-            if (existingTask.getAssignee() == null || !existingTask.getAssignee().getEmail().equals(assignee.getEmail())) {
+            if (formerAssignee == null || !formerAssignee.getEmail().equals(assignee.getEmail())) {
                 existingTask.setAssignee(assignee);
                 existingTask.setLastAssignedAt(Instant.now());
                 existingTask.setIsNew(true);
+
+                if (!assignee.getEmail().equals(modifierEmail)) {
+                     String message = String.format("You were assigned to %s", existingTask.getTitle());
+                     updateService.createAndSendUpdate(projectId, assignee.getEmail(), message);
+                }
+
+                if (formerAssignee != null && !formerAssignee.getEmail().equals(modifierEmail)) {
+                    String unassignedMsg = String.format("You were unassigned from %s", existingTask.getTitle());
+                    updateService.createAndSendUpdate(projectId, formerAssignee.getEmail(), unassignedMsg);
+                }
             }
         } else {
             existingTask.setAssignee(null);
+            if (formerAssignee != null && !formerAssignee.getEmail().equals(modifierEmail)) {
+                String unassignedMsg = String.format("You were unassigned from %s", existingTask.getTitle());
+                updateService.createAndSendUpdate(projectId, formerAssignee.getEmail(), unassignedMsg);
+            }
         }
         Task updatedTask = taskRepository.save(existingTask);
         TaskDto taskResponse = mapToTaskResponse(updatedTask);
@@ -170,7 +195,7 @@ public class TaskService {
         return taskResponse;
     }
 
-    public TaskDto updateStatusById(Long id, TaskDto taskReq) {
+    public TaskDto updateStatusById(Long id, TaskDto taskReq, String modifierEmail) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task not Found!"));
 
@@ -179,6 +204,44 @@ public class TaskService {
 
         messagingTemplate.convertAndSend("/topic/task-status-updated",
                 new NotificationDto<>("TASK_STATUS_UPDATED", mapToTaskResponse(updatedTask)));
+
+        Long projectId = task.getProject() != null ? task.getProject().getId() : null;
+        if (projectId != null) {
+            User creator = task.getCreatedBy();
+            User assignee = task.getAssignee();
+            
+            String modifierName = modifierEmail.split("@")[0];
+            if (creator != null && creator.getEmail().equals(modifierEmail)) {
+                modifierName = creator.getName();
+            } else if (assignee != null && assignee.getEmail().equals(modifierEmail)) {
+                modifierName = assignee.getName();
+            } else {
+                modifierName = userRepository.findByEmail(modifierEmail)
+                        .map(User::getName)
+                        .orElse(modifierName);
+            }
+            String firstName = modifierName.split(" ")[0];
+
+            String message = String.format("%s set %s status to %s",
+                    firstName,
+                    task.getTitle(),
+                    taskReq.getTaskStatus().name());
+
+            if (assignee != null && assignee.getEmail().equals(modifierEmail) && creator != null) {
+                updateService.createAndSendUpdate(projectId, creator.getEmail(), message);
+            } 
+            else if (creator != null && creator.getEmail().equals(modifierEmail) && assignee != null) {
+                updateService.createAndSendUpdate(projectId, assignee.getEmail(), message);
+            }
+            else {
+                 if (creator != null && !creator.getEmail().equals(modifierEmail)) {
+                     updateService.createAndSendUpdate(projectId, creator.getEmail(), message);
+                 }
+                 if (assignee != null && !assignee.getEmail().equals(modifierEmail)) {
+                     updateService.createAndSendUpdate(projectId, assignee.getEmail(), message);
+                 }
+            }
+        }
 
         return mapToTaskResponse(updatedTask);
     }

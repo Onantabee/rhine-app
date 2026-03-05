@@ -1,6 +1,6 @@
 package com.tskmgmnt.rhine.auth.controller;
 
-import com.tskmgmnt.rhine.notification.service.OtpService;
+import com.tskmgmnt.rhine.otp.service.OtpService;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.auth.dto.UserRegReq;
 import com.tskmgmnt.rhine.auth.dto.UserLogReq;

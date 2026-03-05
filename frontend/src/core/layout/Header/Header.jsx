@@ -6,6 +6,7 @@ import UserAvatar from './UserAvatar';
 import SearchBar from './SearchBar';
 import ThemeToggle from "../../ui/ThemeToggle";
 import ProjectPicker from '../../../features/project/components/ProjectPicker';
+import UpdatesDropdown from '../../../features/update/components/UpdatesDropdown';
 
 import { useHeader } from '../../hooks/useHeader';
 
@@ -79,6 +80,7 @@ const Header = ({ setIsSignup }) => {
 
                     <div className="flex items-center gap-4">
                         <div className="hidden md:flex items-center gap-3">
+                            {isLoggedIn && isWorkspaceView && <UpdatesDropdown />}
                             <ThemeToggle />
                             {!isLoggedIn ? (
                                 <>
@@ -93,6 +95,7 @@ const Header = ({ setIsSignup }) => {
                         </div>
 
                         <div className="flex md:hidden items-center gap-3">
+                            {isLoggedIn && isWorkspaceView && <UpdatesDropdown />}
                             <ThemeToggle />
                             {isHamburgerValid && (
                                 <button onClick={handleDrawerToggle} className="p-0.5 text-gray-600 dark:text-[#bfbfbf] hover:text-gray-800 dark:hover:text-gray-300 cursor-pointer">

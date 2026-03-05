@@ -1,6 +1,6 @@
-package com.tskmgmnt.rhine.notification.repository;
-import com.tskmgmnt.rhine.notification.entity.Otp;
+package com.tskmgmnt.rhine.otp.repository;
 
+import com.tskmgmnt.rhine.otp.entity.Otp;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

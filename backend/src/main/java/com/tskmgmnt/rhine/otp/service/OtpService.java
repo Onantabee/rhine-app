@@ -1,6 +1,8 @@
-package com.tskmgmnt.rhine.notification.service;
-import com.tskmgmnt.rhine.notification.repository.OtpRepository;
-import com.tskmgmnt.rhine.notification.entity.Otp;
+package com.tskmgmnt.rhine.otp.service;
+
+import com.tskmgmnt.rhine.core.service.MailService;
+import com.tskmgmnt.rhine.otp.entity.Otp;
+import com.tskmgmnt.rhine.otp.repository.OtpRepository;
 
 import org.springframework.stereotype.Service;
 

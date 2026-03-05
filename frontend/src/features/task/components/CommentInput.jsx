@@ -63,12 +63,12 @@ const CommentInput = ({
                         onClick={onSubmit}
                         onPointerDown={(e) => e.preventDefault()}
                         disabled={newComment.trim() === ""}
-                        className={`flex justify-center items-center border h-10 font-semibold cursor-pointer rounded-full ${newComment.trim() !== ""
-                            ? "bg-primary border-primary w-11 text-white hover:bg-primary-hover"
-                            : "bg-gray-200 dark:bg-[#4d4d4d] border-gray-200 dark:border-[#404040] w-11 text-gray-400"
+                        className={`flex justify-center items-center border h-10 border-green font-semibold cursor-pointer rounded-full ${newComment.trim() !== ""
+                            ? "bg-primary border-primary w-12 text-white hover:bg-primary-hover"
+                            : "bg-gray-200 dark:bg-[#595959] border-gray-400 dark:border-[#666666] w-12 text-gray-400"
                             }`}
                     >
-                        <ArrowUp size={24} />
+                        <ArrowUp className={` ${newComment.trim() !== "" ? "text-white" : "text-gray-400 dark:text-[#333333]"}`} size={24} />
                     </button>
                 </div>
             </div>

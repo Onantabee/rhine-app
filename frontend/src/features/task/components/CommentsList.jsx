@@ -27,7 +27,7 @@ const CommentsList = ({
             >
                 {comments.length === 0 ? (
                     <div className="flex items-center justify-center flex-1 h-full">
-                        <p className="text-gray-300 text-5xl font-semibold">No comments yet.</p>
+                        <p className="text-gray-300 dark:text-[#333333] md:text-5xl text-4xl font-semibold">No comments yet.</p>
                     </div>
                 ) : (
                     sortedComments.map((comment) => (

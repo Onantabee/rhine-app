@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAcceptInviteMutation } from '../../project/api/projectsApi';
@@ -13,8 +13,10 @@ export const useAcceptInvite = () => {
     const [acceptInvite, { isLoading, isSuccess, isError, error }] = useAcceptInviteMutation();
     const { showSnackbar } = useSnackbar();
 
+    const hasRequested = useRef(false);
     useEffect(() => {
-        if (token) {
+        if (token && !hasRequested.current) {
+            hasRequested.current = true;
             acceptInvite(token)
                 .unwrap()
                 .then((projectId) => {

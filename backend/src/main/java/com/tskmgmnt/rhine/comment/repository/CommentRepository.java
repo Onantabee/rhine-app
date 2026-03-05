@@ -11,12 +11,19 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findByTaskId(Long taskId);
+
+    @Query("SELECT c FROM Comment c WHERE c.task.id = :taskId")
+    List<Comment> findByTaskId(@Param("taskId") Long taskId);
 
     List<Comment> findByRecipientEmail(String recipientEmail);
 
-    List<Comment> findByTaskIdAndRecipientEmailAndIsReadByRecipientFalse(Long taskId, String recipientEmail);
+    @Query("SELECT c FROM Comment c WHERE c.task.id = :taskId AND c.recipient.email = :recipientEmail AND c.isReadByRecipient = false")
+    List<Comment> findByTaskIdAndRecipientEmailAndIsReadByRecipientFalse(
+            @Param("taskId") Long taskId,
+            @Param("recipientEmail") String recipientEmail);
 
-    long countByTaskIdAndRecipientEmailAndIsReadByRecipientFalse(Long taskId, String recipientEmail);
+    @Query("SELECT COUNT(c) FROM Comment c WHERE c.task.id = :taskId AND c.recipient.email = :recipientEmail AND c.isReadByRecipient = false")
+    long countByTaskIdAndRecipientEmailAndIsReadByRecipientFalse(
+            @Param("taskId") Long taskId,
+            @Param("recipientEmail") String recipientEmail);
 }
-

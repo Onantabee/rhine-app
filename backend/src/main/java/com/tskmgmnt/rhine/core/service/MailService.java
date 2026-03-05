@@ -1,4 +1,5 @@
-package com.tskmgmnt.rhine.notification.service;
+package com.tskmgmnt.rhine.core.service;
+
 import com.tskmgmnt.rhine.project.enums.ProjectRole;
 
 import org.slf4j.Logger;

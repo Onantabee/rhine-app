@@ -1,5 +1,5 @@
 package com.tskmgmnt.rhine.project.service;
-import com.tskmgmnt.rhine.notification.service.MailService;
+import com.tskmgmnt.rhine.core.service.MailService;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.user.repository.UserRepository;
 import com.tskmgmnt.rhine.task.enums.TaskStatus;
@@ -15,11 +15,14 @@ import com.tskmgmnt.rhine.project.dto.CreateProjectReq;
 import com.tskmgmnt.rhine.project.dto.ProjectDto;
 import com.tskmgmnt.rhine.project.entity.Project;
 import com.tskmgmnt.rhine.project.repository.ProjectRepository;
+import com.tskmgmnt.rhine.notification.service.UpdateService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,17 +37,20 @@ public class ProjectService {
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
     private final MailService mailService;
+    private final UpdateService updateService;
 
     public ProjectService(ProjectRepository projectRepository,
                           ProjectMemberRepository projectMemberRepository,
                           UserRepository userRepository,
                           TaskRepository taskRepository,
-                          MailService mailService) {
+                          MailService mailService,
+                          UpdateService updateService) {
         this.projectRepository = projectRepository;
         this.projectMemberRepository = projectMemberRepository;
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
         this.mailService = mailService;
+        this.updateService = updateService;
     }
 
     public ProjectDto createProject(String ownerEmail, CreateProjectReq req) {
@@ -144,6 +150,7 @@ public class ProjectService {
     }
 
 
+    @Transactional
     public Long acceptInvite(String token) {
         ProjectMember membership = projectMemberRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid invitation token"));
@@ -156,6 +163,18 @@ public class ProjectService {
         user.setLastProjectId(membership.getProject().getId());
         userRepository.save(user);
         
+        try {
+            Long projectId = membership.getProject().getId();
+            User admin = membership.getProject().getOwner();
+            if (admin != null) {
+                String message = String.format("%s Accepted invite", user.getName());
+                updateService.createAndSendUpdate(projectId, admin.getEmail(), message);
+            }
+            updateService.sendProjectBroadcast(projectId, "MEMBER_JOINED");
+        } catch (Exception e) {
+            logger.warn("Failed to send accept invite update: {}", e.getMessage());
+        }
+
         return membership.getProject().getId();
     }
 
@@ -181,6 +200,12 @@ public class ProjectService {
         }
 
         projectMemberRepository.delete(memberToRemove);
+        
+        try {
+            updateService.sendProjectBroadcast(projectId, "MEMBER_REMOVED");
+        } catch (Exception e) {
+            logger.warn("Failed to send member removed broadcast: {}", e.getMessage());
+        }
     }
 
     public List<ProjectMemberDto> getMembers(Long projectId, String email) {

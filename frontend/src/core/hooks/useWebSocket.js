@@ -1,14 +1,17 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { getApiBaseUrl } from "../config/env";
+import { useDispatch } from "react-redux";
+import { updateApi } from "../../features/update/api/updateApi";
 
-export default function useWebSocket() {
+export default function useWebSocket(projectId, userEmail) {
   const [client, setClient] = useState(null);
   const [messages, setMessages] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionError, setConnectionError] = useState(null);
+  const dispatch = useDispatch();
 
   const connect = useCallback(() => {
     const baseUrl = getApiBaseUrl();
@@ -75,6 +78,24 @@ export default function useWebSocket() {
             console.error("Error parsing task update:", error);
           }
         });
+
+        if (projectId && userEmail) {
+          const updateTopic = `/topic/project/${projectId}/updates/${userEmail}`;
+          stompClient.subscribe(updateTopic, (message) => {
+            try {
+              const newUpdate = JSON.parse(message.body);
+              console.log("Received realtime project update:", newUpdate);
+              
+              dispatch(
+                updateApi.util.updateQueryData('getProjectUpdates', parseInt(projectId, 10), (draft) => {
+                  draft.unshift(newUpdate);
+                })
+              );
+            } catch (error) {
+              console.error("Error parsing project update:", error);
+            }
+          });
+        }
       },
 
       onStompError: (frame) => {
@@ -96,7 +117,7 @@ export default function useWebSocket() {
     });
 
     stompClient.activate();
-  }, []);
+  }, [dispatch, projectId, userEmail]);
 
   useEffect(() => {
     const stompClient = connect();

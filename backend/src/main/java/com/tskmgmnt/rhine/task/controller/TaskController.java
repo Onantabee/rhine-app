@@ -63,16 +63,18 @@ public class TaskController {
     @PutMapping("/{id}")
     public TaskDto updateTask(@PathVariable Long projectId,
                               @PathVariable Long id,
-                              @Valid @RequestBody TaskDto taskReq) {
-        return taskService.updateTaskById(id, taskReq);
+                              @Valid @RequestBody TaskDto taskReq,
+                              Authentication auth) {
+        return taskService.updateTaskById(id, taskReq, auth.getName());
     }
 
     @Operation(summary = "Update task status")
     @PutMapping("/{id}/status")
     public TaskDto updateTaskStatus(@PathVariable Long projectId,
                                     @PathVariable Long id,
-                                    @RequestBody TaskDto taskReq) {
-        return taskService.updateStatusById(id, taskReq);
+                                    @RequestBody TaskDto taskReq,
+                                    Authentication auth) {
+        return taskService.updateStatusById(id, taskReq, auth.getName());
     }
 
     @Operation(summary = "Update task 'is new' state")

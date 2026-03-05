@@ -50,7 +50,7 @@ const Select = forwardRef(
             ? "px-3 py-1.5 text-sm"
             : "px-4 py-3";
         const baseStyles =
-            `w-full text-gray-800 dark:text-[#cccccc] border border-gray-200 dark:border-[#404040] flex justify-between items-center outline-none cursor-pointer relative z-10 ${sizeStyles}`;
+            `w-full text-gray-800 dark:text-[#cccccc] border border-gray-300 dark:border-[#404040] flex justify-between items-center outline-none cursor-pointer relative z-10 ${sizeStyles}`;
         const bgStyle = className.includes("bg-") ? "" : "bg-white dark:bg-[#1a1a1a]";
         const focusStyles = isOpen
             ? "border-primary dark:border-primary"

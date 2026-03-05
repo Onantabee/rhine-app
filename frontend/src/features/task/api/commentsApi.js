@@ -8,7 +8,7 @@ export const commentsApi = baseApi.injectEndpoints({
         }),
         getCommentsByRecipient: builder.query({
             query: (recipientEmail) => `/api/comments/recipient/${recipientEmail}`,
-            providesTags: ['Comment'],
+            providesTags: ['Comment', { type: 'Comment', id: 'RECIPIENT' }],
         }),
         countUnreadComments: builder.query({
             query: ({ taskId, recipientEmail }) =>
@@ -70,6 +70,7 @@ export const commentsApi = baseApi.injectEndpoints({
             invalidatesTags: (result, error, { taskId, recipientEmail }) => [
                 { type: 'Comment', id: taskId },
                 { type: 'UnreadCount', id: `${taskId}-${recipientEmail}` },
+                { type: 'Comment', id: 'RECIPIENT' },
             ],
         }),
         markCommentAsRead: builder.mutation({
