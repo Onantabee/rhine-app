@@ -5,6 +5,7 @@ import TaskCard from "../components/TaskCard.jsx";
 import TaskDialog from "../components/TaskDialog.jsx";
 import TaskList, { TaskListHeader } from "../components/TaskList.jsx";
 import MobileTaskList from "../components/MobileTaskList.jsx";
+import MobileTaskCard from "../components/MobileTaskCard.jsx";
 import { useHome } from "../hooks/useHome.js";
 
 export default function Home() {
@@ -25,6 +26,8 @@ export default function Home() {
     handleDeleteTask,
     searchTerm,
     assigneeEmailFilter,
+    statusFilter,
+    dueFilter,
     navigate,
     hasOtherMembers
   } = useHome();
@@ -47,13 +50,13 @@ export default function Home() {
               <p className="text-gray-500 dark:text-[#bfbfbf] text-md md:text-2xl p-2 rounded-full bg-gray-100 dark:bg-[#404040] w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                 {filteredTasks.length}
               </p>
-              {assigneeEmailFilter && (
+              {(assigneeEmailFilter || statusFilter || dueFilter) && (
                 <div className="hidden md:flex items-center gap-2 ml-4">
                   <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10 truncate">
-                    Filtering by: {assigneeEmailFilter}
+                    Filtering by: {statusFilter || dueFilter?.replace('_', ' ') || assigneeEmailFilter}
                   </span>
                   <button
-                    onClick={() => navigate(`/project/${projectId}`)}
+                    onClick={() => navigate(`/project/${projectId}/tasks`)}
                     className="text-xs text-red-500 hover:text-red-800 underline cursor-pointer hover:bg-gray-300 p-1.5 rounded-full dark:hover:bg-[#262626] dark:hover:text-red-400"
                   >
                     <X size={16} />
@@ -75,13 +78,13 @@ export default function Home() {
             )}
           </div>
 
-          {assigneeEmailFilter && (
+          {(assigneeEmailFilter || statusFilter || dueFilter) && (
             <div className="md:hidden flex items-center gap-2 pb-3">
               <span className="text-sm text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-500/10">
-                Filtering by: {assigneeEmailFilter}
+                Filtering by: {statusFilter || dueFilter?.replace('_', ' ') || assigneeEmailFilter}
               </span>
               <button
-                onClick={() => navigate(`/project/${projectId}`)}
+                onClick={() => navigate(`/project/${projectId}/tasks`)}
                 className="text-xs text-red-500 underline cursor-pointer bg-gray-100 p-1.5 rounded-full dark:bg-[#262626] dark:text-red-400"
               >
                 <X size={16} />
@@ -118,30 +121,47 @@ export default function Home() {
         </div>
       ) : isCardView ? (
         <div className="overflow-y-auto w-full h-full min-h-0 pt-2 -mt-2">
-
-
-
           {filteredTasks.length === 0 ? (
             <p className="text-gray-400 px-4 md:px-6 py-2">No tasks available</p>
           ) : (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4 p-4 md:p-6 pt-0 md:pt-0">
-              {filteredTasks.map((task) => (
-                <div key={task.id} onClick={!isAdmin ? () => navigate(`/project/${projectId}/task/${task.id}`) : undefined} className={!isAdmin ? "cursor-pointer" : ""}>
-                  <TaskCard
-                    task={task}
-                    onEdit={() => handleOpenDialog(task)}
-                    onDelete={() => setTaskToDelete(task.id)}
-                    onView={() =>
-                      navigate(`/project/${projectId}/task/${task.id}`, {
-                        state: { task, isAdmin, user },
-                      })
-                    }
-                    loggedInUser={user}
-                    isAdmin={isAdmin}
-                    assignee={task.assigneeId}
-                    createdBy={task.createdById}
-                    searchTerm={searchTerm}
-                  />
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(250px,1fr))] [grid-template-rows:masonry] gap-3 md:gap-4 p-4 md:p-6 pt-0 md:pt-0">
+              {filteredTasks.map((task, index) => (
+                <div key={task.id} className="h-full">
+                  <div className="md:hidden h-full">
+                    <MobileTaskCard
+                      task={task}
+                      onEdit={() => handleOpenDialog(task)}
+                      onDelete={() => setTaskToDelete(task.id)}
+                      onView={() =>
+                        navigate(`/project/${projectId}/task/${task.id}`, {
+                          state: { task, isAdmin, user },
+                        })
+                      }
+                      loggedInUser={user}
+                      isAdmin={isAdmin}
+                      assignee={task.assigneeId}
+                      createdBy={task.createdById}
+                      searchTerm={searchTerm}
+                      isLastChild={index === filteredTasks.length - 1}
+                    />
+                  </div>
+                  <div className="hidden md:block h-full">
+                    <TaskCard
+                      task={task}
+                      onEdit={() => handleOpenDialog(task)}
+                      onDelete={() => setTaskToDelete(task.id)}
+                      onView={() =>
+                        navigate(`/project/${projectId}/task/${task.id}`, {
+                          state: { task, isAdmin, user },
+                        })
+                      }
+                      loggedInUser={user}
+                      isAdmin={isAdmin}
+                      assignee={task.assigneeId}
+                      createdBy={task.createdById}
+                      searchTerm={searchTerm}
+                    />
+                  </div>
                 </div>
               ))}
             </div>

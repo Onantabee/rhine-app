@@ -45,6 +45,10 @@ public class AuthService {
             throw new IllegalStateException("Invalid email or password");
         }
         
+        if (!user.isVerified()) {
+            otpService.generateOtp(user.getEmail());
+        }
+
         boolean hasProjects = !projectMemberRepository.findByUserEmail(email).isEmpty();
         return new LoginResponse("Login successful", user.getEmail(), user.getName(), hasProjects, user.getLastProjectId(), user.isVerified(), null);
     }

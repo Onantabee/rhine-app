@@ -70,11 +70,11 @@ const TeamMembers = () => {
                 title="Invite Team Member"
                 size="sm"
             >
-                <form onSubmit={handleInvite} className="space-y-4">
+                <form onSubmit={handleInvite} className="space-y-4" noValidate>
                     <div>
                         <Input
                             label="Email Address"
-                            type="email"
+                            type="text"
                             placeholder="colleague@example.com"
                             value={inviteEmail}
                             onChange={(e) => {

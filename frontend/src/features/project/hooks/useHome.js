@@ -8,6 +8,8 @@ import { useGetUserByEmailQuery } from '../../user/api/usersApi';
 import { setActiveProject } from '../store/projectSlice';
 import { setSearchTerm, setAssigneeEmailFilter } from '../../auth/store/authSlice';
 
+import { getDueDateStatus } from "../../task/utils/taskUtils";
+
 export const useHome = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -58,6 +60,8 @@ export const useHome = () => {
 
     const query = new URLSearchParams(location.search);
     const assigneeEmailFilter = query.get("assigneeEmail");
+    const statusFilter = query.get("filter");
+    const dueFilter = query.get("dueFilter");
 
     const filterTasks = (tasks) => {
         let filtered = tasks;
@@ -70,6 +74,28 @@ export const useHome = () => {
 
         if (assigneeEmailFilter) {
             filtered = filtered.filter((task) => task.assigneeId === assigneeEmailFilter && task.taskStatus !== "CANCELLED");
+        }
+
+        if (statusFilter) {
+            filtered = filtered.filter((task) => {
+                if (statusFilter === 'PENDING' || statusFilter === 'ONGOING') {
+                    const dueStatus = getDueDateStatus(task.dueDate, task.taskStatus);
+                    return task.taskStatus === statusFilter && dueStatus !== 'OVERDUE' && dueStatus !== 'DUE_TODAY';
+                }
+                return task.taskStatus === statusFilter;
+            });
+        }
+
+        if (dueFilter) {
+            if (dueFilter === 'OVERDUE') {
+                filtered = filtered.filter((task) => 
+                    getDueDateStatus(task.dueDate, task.taskStatus) === 'OVERDUE'
+                );
+            } else if (dueFilter === 'DUE_TODAY') {
+                filtered = filtered.filter((task) => 
+                    getDueDateStatus(task.dueDate, task.taskStatus) === 'DUE_TODAY'
+                );
+            }
         }
 
         if (!isAdmin && user) {
@@ -119,6 +145,8 @@ export const useHome = () => {
         handleDeleteTask,
         searchTerm,
         assigneeEmailFilter,
+        statusFilter,
+        dueFilter,
         navigate,
         hasOtherMembers
     };

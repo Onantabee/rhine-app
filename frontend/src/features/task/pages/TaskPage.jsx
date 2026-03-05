@@ -68,7 +68,7 @@ export default function Task() {
     return (
         <div className="flex flex-col text-gray-800 h-full gap-4 p-4 md:p-6">
             <div className="hidden md:flex justify-between items-center w-full">
-                <button className="flex items-center gap-3 text-primary hover:text-primary-hover cursor-pointer" onClick={() => navigate(`/project/${projectId}`)}>
+                <button className="flex items-center gap-3 text-primary hover:text-primary-hover cursor-pointer" onClick={() => navigate(`/project/${projectId}/tasks`)}>
                     <span className="bg-gray-100 dark:bg-[#262626] hover:bg-gray-200 hover:dark:bg-[#333333] p-2 rounded-full"><ArrowLeft /></span>
                     Back
                 </button>

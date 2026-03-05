@@ -33,15 +33,23 @@ export const useTeamMembers = () => {
 
     const handleInvite = async (e) => {
         e.preventDefault();
-        if (!inviteEmail.trim()) {
+        const trimmedEmail = inviteEmail.trim();
+
+        if (!trimmedEmail) {
             setInviteError({ email: "Email is required" });
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(trimmedEmail)) {
+            setInviteError({ email: "Please enter a valid email address" });
             return;
         }
 
         try {
             await inviteMember({
                 projectId,
-                email: inviteEmail.trim(),
+                email: trimmedEmail,
             }).unwrap();
             showSnackbar(`Invited ${inviteEmail}`, "success");
             setInviteEmail("");

@@ -40,7 +40,7 @@ export const useTeamTable = ({ members, userEmail, onRemove }) => {
     const closeMenu = () => setActionMenuOpen(null);
 
     const handleViewTasks = () => {
-         navigate(`/project/${projectId}?assigneeEmail=${actionMenuOpen}`);
+         navigate(`/project/${projectId}/tasks?assigneeEmail=${actionMenuOpen}`);
          closeMenu();
     };
 

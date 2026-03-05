@@ -25,6 +25,8 @@ const Chip = ({
         COMPLETED: 'bg-green-100 text-green-800 border border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-300/50',
         CANCELLED: 'text-gray-500 border border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50',
         OVERDUE: 'text-gray-500 border border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50',
+        DUE_TODAY: 'border bg-red-50 border-red-300 text-red-600 dark:bg-red-900/20 dark:text-red-400 dark:border-red-300/50',
+        DEFAULT: 'text-primary border border-[#aa80ff] bg-primary/10 dark:bg-primary/10 dark:text-[#aa80ff] dark:border-[#aa80ff]/50',
     };
 
     const priorityVariants = {

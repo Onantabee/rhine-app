@@ -74,7 +74,7 @@ const UpdatesDropdown = () => {
 
             {isOpen && (
                 <div className="absolute -right-14 md:right-0 top-full mt-2.5 w-80 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] shadow-lg overflow-hidden z-50 origin-top-right">
-                    <div className="px-4 py-3 border-b border-gray-200 dark:border-[#404040] flex justify-between items-center bg-gray-50 dark:bg-[#262626]">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-[#404040] flex justify-between items-center bg-gray-100 dark:bg-[#262626]">
                         <h3 className="font-semibold text-gray-800 dark:text-[#bfbfbf]">Updates</h3>
                     </div>
 

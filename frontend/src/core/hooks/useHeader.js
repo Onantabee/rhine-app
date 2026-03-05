@@ -70,7 +70,7 @@ export const useHeader = ({ setIsSignup }) => {
     
     const handleCloseMobileMenu = () => dispatch(closeMobileMenu());
 
-    const isTaskListPage = /^\/project\/\d+(\/team)?\/?$/.test(location.pathname);
+    const isTaskListPage = /^\/project\/\d+(\/tasks|\/team)\/?$/.test(location.pathname);
     
     const isWorkspaceView = isLoggedIn && isVerified && hasProjects && location.pathname.match(/^\/project(\/|$)/);
 

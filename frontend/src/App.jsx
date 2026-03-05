@@ -21,6 +21,8 @@ import { login, logout, setSessionChecked } from './features/auth/store/authSlic
 import { useLazyGetCurrentUserQuery } from './features/auth/api/authApi';
 import { LoadingSpinner } from "./core/ui";
 
+import Dashboard from './features/project/pages/Dashboard';
+
 function App() {
   const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch();
@@ -113,7 +115,8 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Home />} />
+              <Route index element={<Dashboard />} />
+              <Route path="tasks" element={<Home />} />
               <Route path="task/:taskId" element={<Task />} />
               <Route element={<RequireProjectAdmin />}>
                 <Route path="team" element={<TeamMembers />} />

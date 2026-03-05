@@ -31,25 +31,25 @@ const MobileDrawer = ({
                 </div>
 
                 {!isLoggedIn ? (
-                    <div className="flex flex-col gap-2 mt-4 p-4">
+                    <div className="flex flex-col gap-2 p-4">
                         <button
                             onClick={onLogin}
-                            className="w-full px-5 py-3 text-left text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626] cursor-pointer rounded-md transition-colors"
+                            className="w-full px-5 py-3 text-left text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626] cursor-pointer transition-colors"
                         >
                             Login
                         </button>
                         <button
                             onClick={onSignup}
-                            className="w-full px-5 py-3 text-left text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626] cursor-pointer rounded-md transition-colors"
+                            className="w-full px-5 py-3 text-left text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626] cursor-pointer transition-colors"
                         >
                             Signup
                         </button>
                     </div>
                 ) : (
-                    <div className="flex flex-col gap-2 mt-4 p-4">
+                    <div className="flex flex-col gap-2 p-4">
                         <button
                             onClick={onLogout}
-                            className="w-full px-5 py-3 text-left text-red-700 dark:text-red-500 hover:bg-red-50 dark:hover:bg-[#262626] cursor-pointer rounded-md transition-colors"
+                            className="w-full px-5 py-3 text-left text-red-700 dark:text-red-500 hover:bg-red-50 dark:hover:bg-[#262626] cursor-pointer transition-colors"
                         >
                             Logout
                         </button>

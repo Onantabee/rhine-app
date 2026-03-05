@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Settings, User, LogOut } from "lucide-react";
+import { LayoutDashboard, ListTodo, Users, Settings, User, LogOut } from "lucide-react";
 import { Button, Dialog } from "../ui";
 import { useSidePane } from '../hooks/useSidePane';
 
@@ -18,9 +18,14 @@ const SidePane = ({ onLinkClick }) => {
 
     if (projectId) {
         navItems.push({
-            label: "Tasks",
+            label: "Dashboard",
             icon: <LayoutDashboard size={20} />,
             path: `/project/${projectId}`,
+        });
+        navItems.push({
+            label: "Tasks",
+            icon: <ListTodo size={20} />,
+            path: `/project/${projectId}/tasks`,
         });
     }
 

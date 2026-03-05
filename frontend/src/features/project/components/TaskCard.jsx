@@ -65,11 +65,12 @@ const TaskCard = ({
 
       <Card
         padding="default"
-        className="hover:!bg-gray-50 dark:hover:!bg-[#262626] hover:!border-gray-200 dark:hover:!border-[#404040]"
+        className={`hover:!bg-gray-50 dark:hover:!bg-[#262626] hover:!border-gray-200 dark:hover:!border-[#404040] ${!isAdmin ? "cursor-pointer" : ""}`}
         style={{
           backgroundColor: getCardBackground(taskStatus, dueDateStatus, theme),
           border: getCardBorder(taskStatus, dueDateStatus, theme),
         }}
+        onClick={!isAdmin ? onView : undefined}
       >
         <h3
           className={`text-base font-bold mb-3 truncate ${taskStatus === "CANCELLED"

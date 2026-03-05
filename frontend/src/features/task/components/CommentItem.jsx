@@ -63,6 +63,7 @@ const CommentItem = ({
                             <button
                                 ref={triggerRef}
                                 onClick={() => onToggleDropdown(comment.id)}
+                                onMouseDown={(e) => e.preventDefault()}
                                 className="cursor-pointer p-1 text-gray-400 hover:text-primary"
                             >
                                 <MoreVerticalIcon size={25} />
@@ -84,6 +85,7 @@ const CommentItem = ({
                     {canEdit ? (
                         <button
                             onClick={() => onEdit(comment)}
+                            onMouseDown={(e) => e.preventDefault()}
                             className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-[#cccccc] hover:bg-gray-50 dark:hover:bg-[#262626] w-full text-left cursor-pointer"
                         >
                             <Pencil className="mr-3 h-4 w-4" />
@@ -96,6 +98,7 @@ const CommentItem = ({
                     {isCommentingAllowed && (
                         <button
                             onClick={() => onDelete(comment.id)}
+                            onMouseDown={(e) => e.preventDefault()}
                             className="flex items-center px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500 dark:hover:text-white w-full text-left cursor-pointer"
                         >
                             <Trash2 className="mr-3 h-4 w-4" />

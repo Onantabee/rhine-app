@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -123,14 +123,12 @@ export const useTaskDetails = () => {
         };
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (commentContainerRef.current) {
-            setTimeout(() => {
-                commentContainerRef.current.scrollTop =
-                    commentContainerRef.current.scrollHeight;
-            }, 100);
+            commentContainerRef.current.scrollTop =
+                commentContainerRef.current.scrollHeight;
         }
-    }, [comments]);
+    }, [comments, activeTab]);
 
     const getAuthorName = (authorEmail) => {
         if (authorEmail === user?.email) return "You";

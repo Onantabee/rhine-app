@@ -65,6 +65,7 @@ export const getCardBackground = (status, dueStatus, theme = 'light') => {
 
     if (status === "COMPLETED") return isDark ? "rgba(6, 78, 59, 0.05)" : "rgba(220, 252, 231, 0.5)";
     if (status === "CANCELLED") return isDark ? "rgba(38, 38, 38, 0.05)" : "rgba(243, 244, 246, 0.5)";
+    if (status === "TOTAL") return isDark ? "rgba(153, 102, 255, 0.05)" : "rgba(119, 51, 255, 0.05)";
 
     switch (dueStatus) {
         case "DUE_IN_2_DAYS":
@@ -84,6 +85,7 @@ export const getCardBorder = (status, dueStatus, theme = 'light') => {
     const isDark = theme === 'dark';
 
     if (status === "COMPLETED") return isDark ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(34, 197, 94, 0.3)";
+    if (status === "TOTAL") return isDark ? "1px solid rgba(153, 102, 255, 0.2)" : "1px solid rgba(119, 51, 255, 0.3)";
 
     switch (dueStatus) {
         case "DUE_TODAY":
