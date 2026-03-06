@@ -66,10 +66,14 @@ export default function Task() {
     }
 
     return (
-        <div className="flex flex-col text-gray-800 h-full gap-4 p-4 md:p-6">
-            <div className="hidden md:flex justify-between items-center w-full">
+        <div className="flex flex-col text-gray-800 h-full"
+            style={{
+                backgroundColor: getCardBackground(taskStatus, dueDateStatus, theme),
+            }}
+        >
+            <div className="hidden md:flex justify-between items-center w-full px-8 pt-4">
                 <button className="flex items-center gap-3 text-primary hover:text-primary-hover cursor-pointer" onClick={() => navigate(`/project/${projectId}/tasks`)}>
-                    <span className="bg-gray-100 dark:bg-[#262626] hover:bg-gray-200 hover:dark:bg-[#333333] p-2 rounded-full"><ArrowLeft /></span>
+                    <span className="bg-gray-200 dark:bg-[#262626] hover:bg-gray-200 hover:dark:bg-[#333333] p-2 rounded-full"><ArrowLeft /></span>
                     Back
                 </button>
             </div>
@@ -81,10 +85,10 @@ export default function Task() {
                 ]}
                 activeTab={activeTab}
                 onChange={setActiveTab}
-                className="flex md:hidden"
+                className="flex md:hidden bg-gray-200 dark:bg-[#1a1a1a] px-4 pt-2"
             />
 
-            <div className="w-full max-w-full flex flex-col md:flex-row gap-6 flex-1 min-h-0">
+            <div className="w-full max-w-full flex flex-col md:flex-row gap-6 flex-1 min-h-0 p-4 md:p-6">
                 <div className={`w-full max-w-full h-fit ${activeTab === 'details' ? 'block' : 'hidden md:block'}`}>
                     <TaskDetails
                         task={task}
@@ -94,8 +98,7 @@ export default function Task() {
                         creatorName={creatorUser?.name}
                         assigneeName={assigneeUser?.name}
                         onStatusChange={handleStatusChange}
-                        cardBackground={getCardBackground(taskStatus, dueDateStatus, theme)}
-                        cardBorder={getCardBorder(taskStatus, dueDateStatus, theme)}
+                        backgroundColor={getCardBackground(taskStatus, dueDateStatus, theme)}
                     />
                 </div>
 

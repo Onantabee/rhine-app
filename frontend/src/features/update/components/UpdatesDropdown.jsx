@@ -55,7 +55,7 @@ const UpdatesDropdown = () => {
             >
                 <Bell size={20} />
                 {unreadCount > 0 && (
-                    <span className="absolute h-5 w-5 bg-red-500 text-white text-xs border border-red-400 flex justify-center items-center -right-0.5 -top-0.5 cursor-pointer z-10 rounded-full">
+                    <span className={`absolute bg-red-500 text-white text-xs border border-red-400 flex justify-center items-center -right-0.5 -top-0.5 cursor-pointer z-10 rounded-full ${unreadCount > 9 ? 'w-6 h-6' : 'w-5 h-5'}`}>
                         {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                 )}
