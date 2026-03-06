@@ -65,7 +65,7 @@ const MobileTaskCard = ({
 
             <Card
                 padding="default"
-                className={`hover:!bg-gray-50 dark:hover:!bg-[#262626] hover:!border-gray-200 dark:hover:!border-[#404040] !p-3 h-full flex flex-col gap-2 ${!isAdmin ? "cursor-pointer" : ""}`}
+                className={`group hover:!bg-gray-50 dark:hover:!bg-[#262626] hover:!border-gray-200 dark:hover:!border-[#404040] !p-3 h-full flex flex-col gap-2 ${!isAdmin ? "cursor-pointer" : ""}`}
                 style={{
                     backgroundColor: getCardBackground(taskStatus, dueDateStatus, theme),
                     border: getCardBorder(taskStatus, dueDateStatus, theme),
@@ -99,7 +99,12 @@ const MobileTaskCard = ({
                 </div>
 
                 {!isAdmin && (
-                    <div className="flex flex-col gap-2 items-start">
+                    <div
+                        className="flex flex-col gap-2 items-start border p-2 group-hover:!bg-gray-50 dark:group-hover:!bg-[#262626] group-hover:!border-gray-200 dark:group-hover:!border-[#404040] rounded-[5px]"
+                        style={{
+                            backgroundColor: getCardBackground(taskStatus, dueDateStatus, theme),
+                            border: getCardBorder(taskStatus, dueDateStatus, theme),
+                        }}>
                         <span className="text-sm text-gray-500 dark:text-[#bfbfbf] truncate mt-0.5">Creator</span>
                         <div className="flex items-center gap-2">
                             <div className="flex flex-col">
@@ -115,7 +120,8 @@ const MobileTaskCard = ({
                             <span className="text-sm text-gray-500 dark:text-[#bfbfbf] truncate mt-0.5">{adminUser?.name}</span>
                         </div>
                     </div>
-                )}
+                )
+                }
 
                 <div className="w-full flex items-center gap-2 ">
                     {isAdmin ? (
@@ -145,7 +151,7 @@ const MobileTaskCard = ({
                         null
                     )}
 
-                    {!(taskStatus === "COMPLETED" || taskStatus === "CANCELLED") ? (
+                    {!(taskStatus === "CANCELLED" || taskStatus === "COMPLETED") ? (
                         <>
                             <div className="flex flex-col w-full">
                                 <span
@@ -160,40 +166,51 @@ const MobileTaskCard = ({
                         </>
                     ) : (
                         !isAdmin && (
-                            <div className="flex flex-col w-full flex">
-                                <span
-                                    className={`py-1 w-full  whitespace-nowrap text-gray-600 dark:text-[#bfbfbf] text-start border border-transparent uppercase text-sm font-medium italic rounded-[5px] line-clamp-1`}>
-                                    Don't matter
-                                </span>
-                            </div>
+                            taskStatus === "COMPLETED" ? (
+                                <div className="flex flex-col w-full flex">
+                                    <span
+                                        className={`py-1 w-full  whitespace-nowrap text-gray-600 dark:text-[#bfbfbf] text-start border border-transparent uppercase text-xs font-medium italic rounded-[5px] line-clamp-1`}>
+                                        {formatDueDateText(dueDate, taskStatus, dueDateStatus)}
+                                    </span>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col w-full flex">
+                                    <span
+                                        className={`py-1 w-full  whitespace-nowrap text-gray-600 dark:text-[#bfbfbf] text-start border border-transparent uppercase text-xs font-medium italic rounded-[5px] line-clamp-1`}>
+                                        Don't matter
+                                    </span>
+                                </div>
+                            )
                         )
                     )}
                 </div>
 
-                {isAdmin && (
-                    <div className="flex justify-end items-center gap-2">
-                        <button
-                            onClick={onView}
-                            className="p-2 text-gray-400 hover:text-blue-500 cursor-pointer"
-                        >
-                            <Eye size={18} />
-                        </button>
-                        <button
-                            onClick={onEdit}
-                            className="p-2 text-gray-400 hover:text-primary cursor-pointer"
-                        >
-                            <Pencil size={18} />
-                        </button>
-                        <button
-                            onClick={onDelete}
-                            className="p-2 text-red-400 hover:text-red-600 cursor-pointer"
-                        >
-                            <Trash2 size={18} />
-                        </button>
-                    </div>
-                )}
-            </Card>
-        </div>
+                {
+                    isAdmin && (
+                        <div className="flex justify-end items-center gap-2">
+                            <button
+                                onClick={onView}
+                                className="p-2 text-gray-400 hover:text-blue-500 cursor-pointer"
+                            >
+                                <Eye size={18} />
+                            </button>
+                            <button
+                                onClick={onEdit}
+                                className="p-2 text-gray-400 hover:text-primary cursor-pointer"
+                            >
+                                <Pencil size={18} />
+                            </button>
+                            <button
+                                onClick={onDelete}
+                                className="p-2 text-red-400 hover:text-red-600 cursor-pointer"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </div>
+                    )
+                }
+            </Card >
+        </div >
     );
 };
 

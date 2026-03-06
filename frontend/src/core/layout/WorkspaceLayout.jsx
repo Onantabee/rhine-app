@@ -28,8 +28,14 @@ const WorkspaceLayout = () => {
                     role: project.currentUserRole,
                 })
             );
+        } else if (error) {
+            // If project fetch fails, clear the active project state and set error
+            import('../../features/project/store/projectSlice').then(({ clearActiveProject, setProjectError }) => {
+                dispatch(clearActiveProject());
+                dispatch(setProjectError(true));
+            });
         }
-    }, [project, activeProject, dispatch]);
+    }, [project, activeProject, dispatch, error]);
 
     if (sessionChecked && !hasProjects) {
         return <Navigate to="/create-project" replace />;

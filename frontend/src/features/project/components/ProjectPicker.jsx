@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { ChevronDown, Plus, Search } from "lucide-react";
 import { Button } from "../../../core/ui";
 import CreateProjectDialog from './CreateProjectDialog';
@@ -11,12 +12,17 @@ const ProjectPicker = () => {
         setCreateDialogOpen,
         ref,
         activeProject,
+        projectError,
         projects,
         isLoadingProjects,
         handleSelectProject,
         handleCreateNew,
         toggleOpen
     } = useProjectPicker();
+
+    const { pathname } = useLocation();
+    const isProjectContext = pathname.startsWith('/project/');
+    const showLoading = isLoadingProjects || (isProjectContext && !activeProject && !projectError);
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -32,7 +38,7 @@ const ProjectPicker = () => {
                     className="flex items-center gap-2 py-1.5 transition-colors text-sm font-medium text-gray-700 dark:text-[#cccccc] cursor-pointer"
                 >
                     <span className="max-w-[150px] truncate text-xl">
-                        {isLoadingProjects ? "Loading..." : (activeProject?.name || "Select Project")}
+                        {showLoading ? "Loading..." : (activeProject?.name || "Select Project")}
                     </span>
                     <ChevronDown
                         size={24}

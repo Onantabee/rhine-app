@@ -15,6 +15,7 @@ export const useProjectPicker = () => {
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
     const ref = useRef(null);
     const activeProject = useSelector((state) => state.project.activeProject);
+    const projectError = useSelector((state) => state.project.projectError);
     const { data: projects = [], isLoading: isLoadingProjects } = useGetProjectsQuery();
     const [updateLastProject] = useUpdateLastProjectMutation();
 
@@ -45,6 +46,7 @@ export const useProjectPicker = () => {
         setCreateDialogOpen,
         ref,
         activeProject,
+        projectError,
         projects,
         isLoadingProjects,
         handleSelectProject,
