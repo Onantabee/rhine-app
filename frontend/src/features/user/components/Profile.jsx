@@ -55,6 +55,7 @@ export default function Profile() {
               value={userDetails.name}
               onChange={handleChange}
               error={!!fieldErrors.name}
+              maxLength={20}
               helperText={fieldErrors.name}
             />
             <div>

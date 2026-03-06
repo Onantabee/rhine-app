@@ -16,6 +16,7 @@ import com.tskmgmnt.rhine.project.dto.ProjectDto;
 import com.tskmgmnt.rhine.project.entity.Project;
 import com.tskmgmnt.rhine.project.repository.ProjectRepository;
 import com.tskmgmnt.rhine.notification.service.UpdateService;
+import com.tskmgmnt.rhine.core.exception.ResourceNotFoundException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,10 +80,10 @@ public class ProjectService {
 
     public ProjectDto getProjectById(Long id, String email) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         ProjectMember membership = projectMemberRepository.findByUserEmailAndProjectId(email, id)
-                .orElseThrow(() -> new RuntimeException("You are not a member of this project"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (membership.getStatus() != com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.ACTIVE) {
             throw new RuntimeException("You have not accepted the invitation to this project yet.");
@@ -93,10 +94,10 @@ public class ProjectService {
 
     public ProjectDto updateProject(Long id, String email, CreateProjectReq req) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         ProjectMember membership = projectMemberRepository.findByUserEmailAndProjectId(email, id)
-                .orElseThrow(() -> new RuntimeException("You are not a member of this project"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (membership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
             throw new RuntimeException("Only project admins can update project settings");
@@ -109,10 +110,10 @@ public class ProjectService {
 
     public void deleteProject(Long id, String email) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         ProjectMember membership = projectMemberRepository.findByUserEmailAndProjectId(email, id)
-                .orElseThrow(() -> new RuntimeException("You are not a member of this project"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (membership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
             throw new RuntimeException("Only project admins can delete a project");
@@ -123,7 +124,7 @@ public class ProjectService {
 
     public ProjectMemberDto inviteMember(Long projectId, String adminEmail, InviteMemberReq req) {
         ProjectMember adminMembership = projectMemberRepository.findByUserEmailAndProjectId(adminEmail, projectId)
-                .orElseThrow(() -> new RuntimeException("You are not a member of this project"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (adminMembership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
             throw new RuntimeException("Only project admins can invite members");
@@ -137,7 +138,7 @@ public class ProjectService {
                 .orElseThrow(() -> new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found. They must register first."));
 
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         ProjectRole role = req.getProjectRole() != null ? req.getProjectRole() : ProjectRole.PROJECT_EMPLOYEE;
         String token = java.util.UUID.randomUUID().toString();
@@ -180,7 +181,7 @@ public class ProjectService {
 
     public void removeMember(Long projectId, String adminEmail, String memberEmail) {
         ProjectMember adminMembership = projectMemberRepository.findByUserEmailAndProjectId(adminEmail, projectId)
-                .orElseThrow(() -> new RuntimeException("You are not a member of this project"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (adminMembership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
             throw new RuntimeException("Only project admins can remove members");
@@ -210,7 +211,7 @@ public class ProjectService {
 
     public List<ProjectMemberDto> getMembers(Long projectId, String email) {
         if (!projectMemberRepository.existsByUserEmailAndProjectId(email, projectId)) {
-            throw new RuntimeException("You are not a member of this project");
+            throw new ResourceNotFoundException("Project not found");
         }
 
         return projectMemberRepository.findByProjectId(projectId).stream()
@@ -235,7 +236,7 @@ public class ProjectService {
 
     public ProjectRole getUserRoleInProject(String email, Long projectId) {
         ProjectMember membership = projectMemberRepository.findByUserEmailAndProjectId(email, projectId)
-                .orElseThrow(() -> new RuntimeException("You are not a member of this project"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
         return membership.getProjectRole();
     }
 

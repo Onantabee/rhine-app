@@ -133,12 +133,12 @@ const MobileTaskCard = ({
                             <div>
                                 {taskStatus === "COMPLETED" || taskStatus === "CANCELLED" ? (
                                     <div
-                                        className={`px-3 py-1.5 font-semibold border text-sm rounded-[5px] ${taskStatus === "CANCELLED"
+                                        className={`px-3 py-1.5 font-semibold border text-sm rounded-[5px] truncate ${taskStatus === "CANCELLED"
                                             ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
                                             : "bg-primary/10 border-primary/30 text-primary"
                                             }`}
                                     >
-                                        {firstName || "User"} {lastName ? lastName : ""}
+                                        {firstName || "User"} {lastName ? lastName.charAt(0) + "." : ""}
                                     </div>
                                 ) : (
                                     <div className="w-8 h-8 rounded-full border border-primary/30 bg-primary/10 text-primary flex justify-center items-center text-sm">

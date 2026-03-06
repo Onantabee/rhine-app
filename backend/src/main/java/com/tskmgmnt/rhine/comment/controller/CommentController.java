@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,8 +43,8 @@ public class CommentController {
             }
     )
     @GetMapping("/task/{taskId}")
-    public List<CommentDto> getCommentsByTask(@PathVariable Long taskId) {
-        return commentService.getCommentsByTask(taskId);
+    public List<CommentDto> getCommentsByTask(@PathVariable Long taskId, Authentication auth) {
+        return commentService.getCommentsByTask(taskId, auth.getName());
     }
 
     @Operation(
@@ -73,10 +74,10 @@ public class CommentController {
             }
     )
     @PostMapping("/task/{taskId}")
-    public Comment addComment(@PathVariable Long taskId, @RequestBody Map<String, String> payload) {
+    public Comment addComment(@PathVariable Long taskId, @RequestBody Map<String, String> payload, Authentication auth) {
         return commentService.addComment(
                 taskId,
-                payload.get("authorEmail"),
+                auth.getName(),
                 payload.get("content"),
                 payload.get("recipientEmail")
         );

@@ -4,6 +4,8 @@ import com.tskmgmnt.rhine.notification.entity.ProjectUpdate;
 import com.tskmgmnt.rhine.notification.service.UpdateService;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.user.repository.UserRepository;
+import com.tskmgmnt.rhine.core.exception.ResourceNotFoundException;
+import com.tskmgmnt.rhine.project.repository.ProjectMemberRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,20 +23,21 @@ import java.util.Map;
 public class UpdateController {
 
     private final UpdateService updateService;
-    private final UserRepository userRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
-    public UpdateController(UpdateService updateService, UserRepository userRepository) {
+    public UpdateController(UpdateService updateService, ProjectMemberRepository projectMemberRepository) {
         this.updateService = updateService;
-        this.userRepository = userRepository;
+        this.projectMemberRepository = projectMemberRepository;
     }
 
     @Operation(summary = "Get historical unpurged updates for the requesting user in a specific project")
     @GetMapping
     public ResponseEntity<List<ProjectUpdate>> getProjectUpdates(@PathVariable Long projectId, Authentication auth) {
-        User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("User not Found!"));
+        if (!projectMemberRepository.existsByUserEmailAndProjectId(auth.getName(), projectId)) {
+            throw new ResourceNotFoundException("Project not found");
+        }
                 
-        List<ProjectUpdate> updates = updateService.getUpdatesForUserInProject(user.getEmail(), projectId);
+        List<ProjectUpdate> updates = updateService.getUpdatesForUserInProject(auth.getName(), projectId);
         return ResponseEntity.ok(updates);
     }
 
@@ -44,13 +47,14 @@ public class UpdateController {
             @PathVariable Long projectId,
             @RequestBody Map<String, List<Long>> request,
             Authentication auth) {
-                
-        User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("User not Found!"));
+        
+        if (!projectMemberRepository.existsByUserEmailAndProjectId(auth.getName(), projectId)) {
+            throw new ResourceNotFoundException("Project not found");
+        }
                 
         List<Long> updateIds = request.get("updateIds");
         if (updateIds != null && !updateIds.isEmpty()) {
-            updateService.markUpdatesAsRead(updateIds, user.getEmail());
+            updateService.markUpdatesAsRead(updateIds, auth.getName());
         }
         
         return ResponseEntity.ok().build();

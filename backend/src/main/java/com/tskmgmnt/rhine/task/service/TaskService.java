@@ -48,10 +48,10 @@ public class TaskService {
     public TaskDto createTask(Long projectId, TaskDto taskReq, String requestingUserEmail) {
         projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, projectId)
                 .filter(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
-                .orElseThrow(() -> new RuntimeException("Only project admins can create tasks"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         Task task = new Task();
         task.setTitle(taskReq.getTitle());
@@ -92,7 +92,7 @@ public class TaskService {
 
     public List<TaskDto> getTasksByProject(Long projectId, String requestingUserEmail) {
         if (!projectMemberRepository.existsByUserEmailAndProjectId(requestingUserEmail, projectId)) {
-            throw new RuntimeException("You are not a member of this project");
+            throw new ResourceNotFoundException("Project not found");
         }
 
         List<Task> tasks = taskRepository.findByProjectId(projectId);
@@ -121,7 +121,7 @@ public class TaskService {
     }
 
     public TaskDto getTaskById(Long id, String requestingUserEmail) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not Found!"));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         boolean isCreator = task.getCreatedBy().getEmail().equals(requestingUserEmail);
         boolean isAssignee = task.getAssignee() != null && task.getAssignee().getEmail().equals(requestingUserEmail);
@@ -134,7 +134,7 @@ public class TaskService {
         }
 
         if (!isCreator && !isAssignee && !isAdmin) {
-             throw new ResourceNotFoundException("Task not Found!");
+             throw new ResourceNotFoundException("Task not found");
         }
 
         return mapToTaskResponse(task);
@@ -142,7 +142,7 @@ public class TaskService {
 
     public TaskDto updateTaskById(Long id, TaskDto taskReq, String modifierEmail) {
         Task existingTask = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not Found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         existingTask.setTitle(taskReq.getTitle());
         existingTask.setDescription(taskReq.getDescription());
@@ -197,7 +197,7 @@ public class TaskService {
 
     public TaskDto updateStatusById(Long id, TaskDto taskReq, String modifierEmail) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not Found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         task.setTaskStatus(taskReq.getTaskStatus());
         Task updatedTask = taskRepository.save(task);
@@ -248,7 +248,7 @@ public class TaskService {
 
     public TaskDto updateIsNewState(Long id, TaskDto taskReq) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not Found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
         task.setIsNew(taskReq.getIsNew());
         Task updatedTaskState = taskRepository.save(task);
         
@@ -263,7 +263,7 @@ public class TaskService {
 
     public TaskDto getIsNewState(Long id) {
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         TaskDto response = new TaskDto();
         response.setIsNew(task.getIsNew());
@@ -282,7 +282,7 @@ public class TaskService {
                         new NotificationDto<>("TASK_DELETED", response.getId()));
                 return task;
             } else {
-                throw new RuntimeException("Task not found");
+                throw new ResourceNotFoundException("Task not found");
             }
         } catch (Exception e) {
             System.err.println("Error deleting task: " + e.getMessage());
