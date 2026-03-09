@@ -120,7 +120,7 @@ const TaskDetails = ({
                                     <span
                                         className={`px-3 py-1 border rounded-[5px] text-sm flex md:justify-center items-center font-medium ${taskStatus === "CANCELLED"
                                             ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
-                                            : "bg-blue-50 dark:bg-blue-500/10 border-blue-300 text-blue-700 dark:text-blue-200"
+                                            : "bg-blue-50 dark:bg-blue-500/10 border-blue-300 dark:border-blue-300/50 text-blue-700 dark:text-blue-200/80"
                                             }`}
                                     >
                                         {creatorName || "Loading..."}

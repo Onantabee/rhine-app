@@ -109,7 +109,10 @@ export default function useWebSocket(projectId, userEmail) {
               
               dispatch(
                 updateApi.util.updateQueryData('getProjectUpdates', String(projectId), (draft) => {
-                  draft.unshift(newUpdate);
+                  const exists = draft.some(u => u.id === newUpdate.id);
+                  if (!exists) {
+                    draft.unshift(newUpdate);
+                  }
                 })
               );
             } catch (error) {

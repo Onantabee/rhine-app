@@ -111,7 +111,7 @@ const MobileTaskCard = ({
                                 <span
                                     className={`flex justify-center items-center text-sm w-7.5 h-7.5 rounded-full border text-sm font-medium truncate max-w-[115px] ${taskStatus === "CANCELLED"
                                         ? "text-gray-500 border-gray-300 bg-gray-400/20 dark:bg-[#404040] dark:text-gray-400 dark:border-gray-400/50"
-                                        : "bg-blue-50 dark:bg-blue-500/10 border-blue-300 text-blue-700 dark:text-blue-200"
+                                        : "bg-blue-50 dark:bg-blue-500/10 border-blue-300 dark:border-blue-300/50 text-blue-700 dark:text-blue-200/80"
                                         }`}
                                 >
                                     {adminUser?.name ? `${adminUser.name.split(" ")[0].charAt(0)}`.trim() : "Loading..."}

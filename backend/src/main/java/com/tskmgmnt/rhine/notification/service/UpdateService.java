@@ -48,4 +48,9 @@ public class UpdateService {
         String destination = String.format("/topic/user/%s/eviction", userEmail);
         messagingTemplate.convertAndSend(destination, projectId);
     }
+
+    @Transactional
+    public void deleteUpdatesForUserInProject(String userEmail, Long projectId) {
+        projectUpdateRepository.deleteByProjectIdAndUserEmail(projectId, userEmail);
+    }
 }

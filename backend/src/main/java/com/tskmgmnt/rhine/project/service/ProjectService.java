@@ -171,6 +171,10 @@ public class ProjectService {
             throw new org.springframework.security.access.AccessDeniedException("Unauthorized: You cannot accept an invite intended for another user.");
         }
 
+        if (membership.getStatus() == ProjectMemberStatus.ACTIVE) {
+            return membership.getProject().getId();
+        }
+
         membership.setStatus(ProjectMemberStatus.ACTIVE);
         membership.setToken(null);
         projectMemberRepository.save(membership);
@@ -225,8 +229,9 @@ public class ProjectService {
         try {
             updateService.sendProjectBroadcast(projectId, "MEMBER_REMOVED");
             updateService.sendEvictionNotice(projectId, memberEmail);
+            updateService.deleteUpdatesForUserInProject(memberEmail, projectId);
         } catch (Exception e) {
-            logger.warn("Failed to send member removed broadcast or eviction notice: {}", e.getMessage());
+            logger.warn("Failed to send member removed broadcast, eviction notice, or cleanup updates: {}", e.getMessage());
         }
     }
 

@@ -101,7 +101,7 @@ export default function Home() {
             className="flex items-center gap-2"
           >
             <Grid size={20} />
-            <span className="hidden md:block">Card View</span>
+            <span className="hidden md:block">Card</span>
           </Button>
           <Button
             onClick={() => setIsCardView(false)}
@@ -110,7 +110,7 @@ export default function Home() {
             className="flex items-center gap-2"
           >
             <List size={20} />
-            <span className="hidden md:block">List View</span>
+            <span className="hidden md:block">List</span>
           </Button>
         </div>
       </div>

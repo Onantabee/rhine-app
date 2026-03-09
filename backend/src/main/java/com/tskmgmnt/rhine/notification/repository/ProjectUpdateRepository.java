@@ -22,4 +22,8 @@ public interface ProjectUpdateRepository extends JpaRepository<ProjectUpdate, Lo
     @Modifying
     @Query("DELETE FROM ProjectUpdate p WHERE p.createdAt < :cutoffDate")
     void deleteOlderThan(@Param("cutoffDate") LocalDateTime cutoffDate);
+
+    @Modifying
+    @Query("DELETE FROM ProjectUpdate p WHERE p.projectId = :projectId AND p.userEmail = :userEmail")
+    void deleteByProjectIdAndUserEmail(@Param("projectId") Long projectId, @Param("userEmail") String userEmail);
 }
