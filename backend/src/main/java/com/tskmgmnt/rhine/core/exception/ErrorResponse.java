@@ -4,6 +4,7 @@ public class ErrorResponse {
     private int status;
     private String message;
     private long timeStamp;
+    private Object data;
 
     public int getStatus() {
         return status;
@@ -27,5 +28,13 @@ public class ErrorResponse {
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
     }
 }

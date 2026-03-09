@@ -8,6 +8,9 @@ import com.tskmgmnt.rhine.auth.dto.LoginResponse;
 import com.tskmgmnt.rhine.auth.entity.UserResetToken;
 import com.tskmgmnt.rhine.auth.repository.UserResetTokenRepository;
 import com.tskmgmnt.rhine.core.service.MailService;
+import com.tskmgmnt.rhine.core.exception.ResourceNotFoundException;
+import com.tskmgmnt.rhine.core.exception.BadRequestException;
+import com.tskmgmnt.rhine.core.exception.ConflictException;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -39,10 +42,10 @@ public class AuthService {
 
     public LoginResponse loginUser(String email, String rawPassword) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("Invalid email or password"));
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid email or password"));
         
         if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new IllegalStateException("Invalid email or password");
+            throw new ResourceNotFoundException("Invalid email or password");
         }
         
         if (!user.isVerified()) {
@@ -55,7 +58,7 @@ public class AuthService {
 
     public User registerUser(UserRegReq userRegReq) {
         if (userRepository.findByEmail(userRegReq.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already in use");
+            throw new ConflictException("Email already in use");
         }
 
         User user = new User();
@@ -70,7 +73,7 @@ public class AuthService {
 
     public void verifyUser(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setVerified(true);
         userRepository.save(user);
     }
@@ -82,7 +85,7 @@ public class AuthService {
     public void forgotPassword(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
-            throw new IllegalArgumentException("No account found with that email address.");
+            throw new ResourceNotFoundException("No account found with that email address.");
         }
 
         userResetTokenRepository.findByUser(user).ifPresent(userResetTokenRepository::delete);
@@ -97,21 +100,21 @@ public class AuthService {
 
     public void validateResetToken(String token) {
         UserResetToken resetToken = userResetTokenRepository.findByToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid or non-existent token"));
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid or non-existent token"));
 
         if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             userResetTokenRepository.delete(resetToken);
-            throw new IllegalArgumentException("Token has expired");
+            throw new BadRequestException("Token has expired");
         }
     }
 
     public void resetPassword(String token, String newRawPassword) {
         UserResetToken resetToken = userResetTokenRepository.findByToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid token"));
 
         if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             userResetTokenRepository.delete(resetToken);
-            throw new IllegalArgumentException("Token has expired");
+            throw new BadRequestException("Token has expired");
         }
 
         User user = resetToken.getUser();

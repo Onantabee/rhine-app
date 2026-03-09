@@ -17,6 +17,8 @@ import com.tskmgmnt.rhine.project.entity.Project;
 import com.tskmgmnt.rhine.project.repository.ProjectRepository;
 import com.tskmgmnt.rhine.notification.service.UpdateService;
 import com.tskmgmnt.rhine.core.exception.ResourceNotFoundException;
+import com.tskmgmnt.rhine.core.exception.BadRequestException;
+import com.tskmgmnt.rhine.core.exception.ConflictException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import jakarta.transaction.Transactional;
-
+import java.util.Optional;
 import java.util.List;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,7 +61,7 @@ public class ProjectService {
 
     public ProjectDto createProject(String ownerEmail, CreateProjectReq req) {
         User owner = userRepository.findByEmail(ownerEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Project project = new Project(req.getName(), owner);
         project = projectRepository.save(project);
@@ -93,7 +96,7 @@ public class ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (membership.getStatus() != ProjectMemberStatus.ACTIVE) {
-            throw new RuntimeException("You have not accepted the invitation to this project yet.");
+            throw new BadRequestException("You have not accepted the invitation to this project yet.");
         }
 
         return mapToDto(project, membership.getProjectRole().name());
@@ -107,7 +110,7 @@ public class ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (membership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
-            throw new RuntimeException("Only project admins can update project settings");
+            throw new BadRequestException("Only project admins can update project settings");
         }
 
         project.setName(req.getName());
@@ -123,7 +126,7 @@ public class ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (membership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
-            throw new RuntimeException("Only project admins can delete a project");
+            throw new BadRequestException("Only project admins can delete a project");
         }
 
         projectRepository.delete(project);
@@ -134,18 +137,31 @@ public class ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         if (adminMembership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
-            throw new RuntimeException("Only project admins can invite members");
+            throw new BadRequestException("Only project admins can invite members");
         }
 
-        if (projectMemberRepository.existsByUserEmailAndProjectId(req.getEmail(), projectId)) {
-            throw new RuntimeException("User is already a member of this project");
+        Optional<ProjectMember> existingMembership = projectMemberRepository.findByUserEmailAndProjectId(req.getEmail(), projectId);
+        if (existingMembership.isPresent()) {
+            ProjectMember m = existingMembership.get();
+            if (m.getStatus() == ProjectMemberStatus.ACTIVE) {
+                throw new ConflictException("User is already a member of this project");
+            } else if (m.getStatus() == ProjectMemberStatus.PENDING) {
+                throw new ConflictException("An invitation is already pending for this user");
+            } else {
+                m.setStatus(ProjectMemberStatus.PENDING);
+                m.setToken(java.util.UUID.randomUUID().toString());
+                m.setProjectRole(req.getProjectRole() != null ? req.getProjectRole() : ProjectRole.PROJECT_EMPLOYEE);
+                projectMemberRepository.save(m);
+                mailService.sendInviteEmail(m.getUser().getEmail(), m.getProject().getName(), m.getProjectRole(), m.getToken());
+                return new ProjectMemberDto(m.getUser().getEmail(), m.getUser().getName(), m.getProjectRole(), m.getId().intValue());
+            }
         }
 
         User user = userRepository.findByEmail(req.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found. They must register first."));
 
         if (!user.isVerified()) {
-            throw new com.tskmgmnt.rhine.core.exception.BadRequestException("Cannot send invite to this user at this moment.");
+            throw new BadRequestException("Cannot send invite to this user at this moment.");
         }
 
         Project project = projectRepository.findById(projectId)
@@ -158,25 +174,39 @@ public class ProjectService {
 
         mailService.sendInviteEmail(user.getEmail(), project.getName(), role, token);
 
-        return new ProjectMemberDto(user.getEmail(), user.getName(), role, 0);
+        return new ProjectMemberDto(user.getEmail(), user.getName(), role, membership.getId().intValue());
     }
 
 
     @Transactional
     public Long acceptInvite(String token, String requestingUserEmail) {
+        logger.debug("Attempting to accept invite with token: {} for user: {}", token, requestingUserEmail);
+        
         ProjectMember membership = projectMemberRepository.findByToken(token)
-                .orElseThrow(() -> new ResourceNotFoundException("Invalid or revoked invitation token"));
+                .orElseThrow(() -> {
+                    logger.warn("Invitation link is invalid (token not found): {}", token);
+                    return new ResourceNotFoundException("This invitation link is invalid.");
+                });
 
-        if (!membership.getUser().getEmail().equals(requestingUserEmail)) {
-            throw new org.springframework.security.access.AccessDeniedException("Unauthorized: You cannot accept an invite intended for another user.");
+        String intendedEmail = membership.getUser().getEmail();
+        logger.debug("Found membership for token. Intended email: {}, Requesting email: {}", intendedEmail, requestingUserEmail);
+
+        if (!intendedEmail.equalsIgnoreCase(requestingUserEmail)) {
+            logger.warn("Unauthorized attempt to accept invite. Intended: {}, Requesting: {}", intendedEmail, requestingUserEmail);
+            throw new AccessDeniedException("This invitation was intended for another user account.");
+        }
+
+        if (membership.getStatus() == ProjectMemberStatus.REVOKED) {
+            logger.warn("Attempted to accept a revoked invite: {}", token);
+            throw new BadRequestException("Invitation has been revoked by the project admin.");
         }
 
         if (membership.getStatus() == ProjectMemberStatus.ACTIVE) {
-            return membership.getProject().getId();
+            logger.info("User {} is already an active member of project {}", requestingUserEmail, membership.getProject().getId());
+            throw new ConflictException("You are already active in this project.", membership.getProject().getId());
         }
 
         membership.setStatus(ProjectMemberStatus.ACTIVE);
-        membership.setToken(null);
         projectMemberRepository.save(membership);
 
         User user = membership.getUser();
@@ -198,49 +228,45 @@ public class ProjectService {
         return membership.getProject().getId();
     }
 
+    @Transactional
     public void removeMember(Long projectId, String adminEmail, String memberEmail) {
-        ProjectMember adminMembership = projectMemberRepository.findByUserEmailAndProjectId(adminEmail, projectId)
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
-
-        if (adminMembership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
-            throw new RuntimeException("Only project admins can remove members");
-        }
+        validateAdminAccess(projectId, adminEmail);
 
         if (adminEmail.equals(memberEmail)) {
-            throw new RuntimeException("You cannot remove yourself from the project");
+            throw new BadRequestException("You cannot remove yourself from the project");
         }
 
         ProjectMember memberToRemove = projectMemberRepository.findByUserEmailAndProjectId(memberEmail, projectId)
-                .orElseThrow(() -> new RuntimeException("Member not found in this project"));
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found in this project"));
 
         if (memberToRemove.getStatus() == ProjectMemberStatus.PENDING) {
+            memberToRemove.setStatus(ProjectMemberStatus.REVOKED);
+            projectMemberRepository.save(memberToRemove);
+            logger.info("Invitation for {} in project {} has been revoked by {}", memberEmail, projectId, adminEmail);
+        } else {
+            List<Task> tasks = taskRepository.findByProjectIdAndAssigneeEmail(projectId, memberEmail);
+            for (Task task : tasks) {
+                task.setAssignee(null);
+                taskRepository.save(task);
+            }
             projectMemberRepository.delete(memberToRemove);
-            return;
-        }
+            logger.info("Member {} has been removed from project {} by {}", memberEmail, projectId, adminEmail);
 
-        List<Task> tasks = taskRepository.findByProjectIdAndAssigneeEmail(projectId, memberEmail);
-        for (Task task : tasks) {
-            task.setAssignee(null);
-            taskRepository.save(task);
-        }
-
-        projectMemberRepository.delete(memberToRemove);
-        
-        try {
-            updateService.sendProjectBroadcast(projectId, "MEMBER_REMOVED");
-            updateService.sendEvictionNotice(projectId, memberEmail);
-            updateService.deleteUpdatesForUserInProject(memberEmail, projectId);
-        } catch (Exception e) {
-            logger.warn("Failed to send member removed broadcast, eviction notice, or cleanup updates: {}", e.getMessage());
+            try {
+                updateService.sendProjectBroadcast(projectId, "MEMBER_REMOVED");
+                updateService.sendEvictionNotice(projectId, memberEmail);
+                updateService.deleteUpdatesForUserInProject(memberEmail, projectId);
+            } catch (Exception e) {
+                logger.warn("Failed to send member removed broadcast, eviction notice, or cleanup updates: {}", e.getMessage());
+            }
         }
     }
 
-    public List<ProjectMemberDto> getMembers(Long projectId, String email) {
-        if (!projectMemberRepository.existsByUserEmailAndProjectId(email, projectId)) {
-            throw new ResourceNotFoundException("Project not found");
-        }
+    public List<ProjectMemberDto> getMembers(Long projectId, String requestingUserEmail) {
+        validateMemberAccess(projectId, requestingUserEmail);
 
         return projectMemberRepository.findByProjectId(projectId).stream()
+                .filter(m -> m.getStatus() != ProjectMemberStatus.REVOKED)
                 .map(m -> {
                     long activeTaskCount = taskRepository.countByProjectIdAndAssigneeEmailAndTaskStatusNot(
                             projectId,
@@ -294,5 +320,19 @@ public class ProjectService {
         dto.setCreatedAt(project.getCreatedAt());
         dto.setCurrentUserRole(currentUserRole);
         return dto;
+    }
+
+    private void validateAdminAccess(Long projectId, String email) {
+        ProjectMember membership = projectMemberRepository.findByUserEmailAndProjectId(email, projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+        if (membership.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
+            throw new BadRequestException("Only project admins can perform this action");
+        }
+    }
+
+    private void validateMemberAccess(Long projectId, String email) {
+        if (!projectMemberRepository.existsByUserEmailAndProjectId(email, projectId)) {
+            throw new ResourceNotFoundException("Project not found");
+        }
     }
 }

@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.tskmgmnt.rhine.core.dto.MessageResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,7 @@ import java.util.Base64;
 @Tag(name = "Users")
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
     private final ProjectService projectService;
 
@@ -91,11 +95,11 @@ public class UserController {
 
     @Operation(summary = "Update last accessed project")
     @PutMapping("/update-last-project/{projectId}")
-    public ResponseEntity<String> updateLastProject(@PathVariable Long projectId) {
+    public MessageResponse updateLastProject(@PathVariable Long projectId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        System.out.println("Updating last project for " + email + " to " + projectId);
+        logger.info("Updating last project for {} to {}", email, projectId);
         userService.updateLastProjectId(email, projectId);
-        return ResponseEntity.ok("Last project updated successfully");
+        return new MessageResponse("Last project updated successfully");
     }
 }

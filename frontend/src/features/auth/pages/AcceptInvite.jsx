@@ -1,4 +1,4 @@
-import { AlertCircle, Check } from "lucide-react";
+import { AlertCircle, Check, Info } from "lucide-react";
 import { Button, LoadingSpinner } from "../../../core/ui";
 import { useAcceptInvite } from '../hooks/useAcceptInvite';
 import { useSelector } from 'react-redux';
@@ -65,21 +65,68 @@ const AcceptInvite = () => {
                 )}
                 {isError && (
                     <div className="flex flex-col items-center gap-6">
-                        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                            <AlertCircle size={50} className="text-red-500" />
-                        </div>
-                        <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">
-                            {error?.status === 404 || error?.status === 400 ? 'Invite has been revoked' : error?.status === 403 ? 'Unauthorized Access' : 'Invitation Failed'}
-                        </h2>
-                        <p className="text-red-400 font-light text-md text-center">
-                            {error?.status === 404 || error?.status === 400
-                                ? 'Your invite has been revoked by the project administrator.'
-                                : error?.status === 403
-                                    ? (error?.data?.message || 'You cannot accept an invite intended for another user.')
-                                    : (error?.data?.message || 'Unable to accept invitation. It may be invalid or expired.')}
-                        </p>
-                        <Button onClick={handleGoHome} className="w-fit">
-                            Go to Home
+                        {error?.status === 409 ? (
+                            <>
+                                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                                    <Info size={50} className="text-blue-500" />
+                                </div>
+                                <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Already a Member</h2>
+                                <p className="text-gray-600 dark:text-[#bfbfbf] font-light text-md text-center">
+                                    You are already an active member of this project.
+                                </p>
+                                <span className="flex items-center gap-2">
+                                    <p className="text-md text-gray-500 dark:text-[#666666]">Redirecting </p>
+                                    <LoadingSpinner size="md" />
+                                </span>
+                            </>
+                        ) : error?.status === 404 ? (
+                            <>
+                                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                                    <AlertCircle size={50} className="text-red-500" />
+                                </div>
+                                <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Invalid Link</h2>
+                                <p className="text-red-400 font-light text-md text-center">
+                                    This invitation link is invalid or has never existed.
+                                </p>
+                            </>
+                        ) : error?.status === 400 ? (
+                            <>
+                                <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                                    <AlertCircle size={50} className="text-orange-500" />
+                                </div>
+                                <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Invite Revoked</h2>
+                                <p className="text-orange-400 font-light text-md text-center">
+                                    {error?.data?.message || 'Invitation has been revoked by the project admin.'}
+                                </p>
+                            </>
+                        ) : error?.status === 403 ? (
+                            <>
+                                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                                    <AlertCircle size={50} className="text-red-500" />
+                                </div>
+                                <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Unauthorized</h2>
+                                <p className="text-red-400 font-light text-md text-center">
+                                    {error?.data?.message || 'This invitation was intended for another user account.'}
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                                    <AlertCircle size={50} className="text-red-500" />
+                                </div>
+                                <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">Invitation Failed</h2>
+                                <p className="text-red-400 font-light text-md text-center">
+                                    Unable to accept invitation. It may be expired or invalid.
+                                </p>
+                            </>
+                        )}
+                        <Button
+                            onClick={error?.status === 409 && error?.data?.data
+                                ? () => navigate(`/project/${error.data.data}`)
+                                : handleGoHome}
+                            className="w-fit"
+                        >
+                            {error?.status === 409 ? 'Go to Dashboard' : 'Go to Home'}
                         </Button>
                     </div>
                 )}

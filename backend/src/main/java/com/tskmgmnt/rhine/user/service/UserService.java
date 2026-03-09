@@ -2,6 +2,8 @@ package com.tskmgmnt.rhine.user.service;
 import com.tskmgmnt.rhine.user.dto.UserRes;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.user.repository.UserRepository;
+import com.tskmgmnt.rhine.core.exception.ResourceNotFoundException;
+import com.tskmgmnt.rhine.core.exception.BadRequestException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,14 +27,14 @@ public class UserService {
 
     public UserRes getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         return new UserRes(user.getEmail(), user.getName(), user.isVerified(), user.getLastProjectId());
     }
 
     public UserRes updateUserDetails(String userEmail, UserRes user) {
         User existingUser = userRepository.findById(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not Found"));
 
         existingUser.setName(user.getName());
         User savedUser = userRepository.save(existingUser);
@@ -50,14 +52,14 @@ public class UserService {
 
     public String changePassword(String email, String currentPassword, String newPassword) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
 
         if (!passwordEncoder.matches(currentPassword, user.getPwd())) {
-            throw new IllegalArgumentException("Incorrect current password.");
+            throw new BadRequestException("Incorrect current password.");
         }
 
         if (passwordEncoder.matches(newPassword, user.getPwd())) {
-            throw new IllegalArgumentException("New password cannot be the same as the old password.");
+            throw new BadRequestException("New password cannot be the same as the old password.");
         }
 
         user.setPwd(passwordEncoder.encode(newPassword));
@@ -67,7 +69,7 @@ public class UserService {
 
     public void updateLastProjectId(String email, Long projectId) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setLastProjectId(projectId);
         userRepository.save(user);
     }

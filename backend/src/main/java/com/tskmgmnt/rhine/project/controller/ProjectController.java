@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import com.tskmgmnt.rhine.core.dto.MessageResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -57,8 +58,9 @@ public class ProjectController {
 
     @Operation(summary = "Delete a project (admin only)")
     @DeleteMapping("/{projectId}")
-    public void deleteProject(@PathVariable Long projectId, Authentication auth) {
+    public MessageResponse deleteProject(@PathVariable Long projectId, Authentication auth) {
         projectService.deleteProject(projectId, auth.getName());
+        return new MessageResponse("Project deleted successfully");
     }
 
     @Operation(summary = "Get all members of a project")
@@ -77,10 +79,11 @@ public class ProjectController {
 
     @Operation(summary = "Remove a member from a project (admin only)")
     @DeleteMapping("/{projectId}/members/{email}")
-    public void removeMember(@PathVariable Long projectId,
-                             @PathVariable String email,
-                             Authentication auth) {
+    public MessageResponse removeMember(@PathVariable Long projectId,
+                                     @PathVariable String email,
+                                     Authentication auth) {
         projectService.removeMember(projectId, auth.getName(), email);
+        return new MessageResponse("Member removed successfully");
     }
 
     @Operation(summary = "Accept an invitation to join a project")

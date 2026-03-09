@@ -40,7 +40,16 @@ export const useAcceptInvite = () => {
                 .catch((err) => {
                     console.error("Failed to accept invite:", err);
                     localStorage.removeItem('redirect_to');
-                    showSnackbar(err.data?.message || 'Invitation has expired or been revoked.', 'error');
+                    
+                    if (err.status === 409) {
+                        showSnackbar('You are already a member of this project.', 'info');
+                        const projectId = err.data?.data;
+                        if (projectId) {
+                            setTimeout(() => navigate(`/project/${projectId}`), 3000);
+                        }
+                    } else {
+                        showSnackbar(err.data?.message || 'Invitation has expired or been revoked.', 'error');
+                    }
                 });
         }
     }, [token, isLoggedIn, isVerified, acceptInvite, navigate, showSnackbar, dispatch]);

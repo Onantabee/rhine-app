@@ -63,7 +63,7 @@ const Header = ({ setIsSignup }) => {
                         )}
                     </div>
 
-                    {isWorkspaceView && isTaskListPage && (
+                    {isWorkspaceView && isTaskListPage && !!activeProject && String(activeProject.id) === String(urlProjectId) && (
                         <div className="hidden md:flex flex-1 justify-center px-4 max-w-xl">
                             <SearchBar
                                 value={searchTerm}

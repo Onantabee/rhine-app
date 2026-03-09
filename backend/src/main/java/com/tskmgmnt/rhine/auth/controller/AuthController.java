@@ -7,6 +7,7 @@ import com.tskmgmnt.rhine.auth.dto.UserLogReq;
 import com.tskmgmnt.rhine.auth.dto.LoginResponse;
 import com.tskmgmnt.rhine.auth.service.JwtService;
 import com.tskmgmnt.rhine.auth.service.AuthService;
+import com.tskmgmnt.rhine.core.dto.MessageResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -131,9 +132,9 @@ public class AuthController {
 
     @Operation(summary = "Logout user", tags = {"Authentication"})
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public MessageResponse logout(HttpServletRequest request) {
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("Logged out successfully");
+        return new MessageResponse("Logged out successfully");
     }
 
     @Operation(summary = "Request password reset link", tags = {"Authentication"})

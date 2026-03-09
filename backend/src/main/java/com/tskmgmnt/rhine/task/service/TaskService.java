@@ -11,6 +11,8 @@ import com.tskmgmnt.rhine.project.entity.Project;
 import com.tskmgmnt.rhine.project.repository.ProjectRepository;
 import com.tskmgmnt.rhine.notification.service.UpdateService;
 import com.tskmgmnt.rhine.core.exception.ResourceNotFoundException;
+import com.tskmgmnt.rhine.core.exception.BadRequestException;
+import com.tskmgmnt.rhine.core.exception.ConflictException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -62,7 +64,7 @@ public class TaskService {
         task.setProject(project);
 
         User createdBy = userRepository.findByEmail(taskReq.getCreatedById())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         task.setCreatedBy(createdBy);
         task.setCreatedAt(Instant.now());
         task.setIsNew(true);
@@ -70,10 +72,10 @@ public class TaskService {
 
         if (taskReq.getAssigneeId() != null) {
             if (!projectMemberRepository.existsByUserEmailAndProjectId(taskReq.getAssigneeId(), projectId)) {
-                throw new RuntimeException("Assignee must be a member of this project");
+                throw new BadRequestException("Assignee must be a member of this project");
             }
             User assignee = userRepository.findByEmail(taskReq.getAssigneeId())
-                    .orElseThrow(() -> new RuntimeException("Assignee not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Assignee not found"));
             task.setAssignee(assignee);
         }
 
@@ -156,7 +158,7 @@ public class TaskService {
         existingTask.setDueDate(taskReq.getDueDate());
         if (taskReq.getCreatedById() != null) {
             User createdBy = userRepository.findByEmail(taskReq.getCreatedById())
-                    .orElseThrow(() -> new RuntimeException("User not Found!"));
+                    .orElseThrow(() -> new ResourceNotFoundException("User not Found!"));
             existingTask.setCreatedBy(createdBy);
         }
 
@@ -165,11 +167,11 @@ public class TaskService {
 
         if (taskReq.getAssigneeId() != null) {
             if (projectId != null && !projectMemberRepository.existsByUserEmailAndProjectId(taskReq.getAssigneeId(), projectId)) {
-                throw new RuntimeException("Assignee must be a member of this project");
+                throw new BadRequestException("Assignee must be a member of this project");
             }
 
             User assignee = userRepository.findByEmail(taskReq.getAssigneeId())
-                    .orElseThrow(() -> new RuntimeException("Assignee not Found!"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Assignee not Found!"));
 
             if (formerAssignee == null || !formerAssignee.getEmail().equals(assignee.getEmail())) {
                 existingTask.setAssignee(assignee);
@@ -248,7 +250,8 @@ public class TaskService {
                  if (creator != null && !creator.getEmail().equals(modifierEmail)) {
                      updateService.createAndSendUpdate(projectId, creator.getEmail(), message);
                  }
-                 if (assignee != null && !assignee.getEmail().equals(modifierEmail)) {
+                 if (assignee != null && !assignee.getEmail().equals(modifierEmail) && 
+                     (creator == null || !assignee.getEmail().equals(creator.getEmail()))) {
                      updateService.createAndSendUpdate(projectId, assignee.getEmail(), message);
                  }
             }

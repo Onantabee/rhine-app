@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import java.time.Instant;
+
 @Service
 public class UpdateService {
 
@@ -30,13 +32,23 @@ public class UpdateService {
         }
     }
 
-    @Transactional
     public void createAndSendUpdate(Long projectId, String recipientEmail, String message) {
-        ProjectUpdate update = new ProjectUpdate(projectId, recipientEmail, message);
-        ProjectUpdate savedUpdate = projectUpdateRepository.save(update);
+        synchronized (this) {
+            Instant cutoff = Instant.now().minusSeconds(30);
+            List<ProjectUpdate> recent = projectUpdateRepository.findByProjectIdAndUserEmailOrderByCreatedAtDesc(projectId, recipientEmail);
+            boolean exists = recent.stream()
+                .anyMatch(u -> !u.getIsRead() && u.getMessage().equals(message) && u.getCreatedAt().isAfter(cutoff));
+            
+            if (exists) {
+                return;
+            }
 
-        String destination = String.format("/topic/project/%d/updates/%s", projectId, recipientEmail);
-        messagingTemplate.convertAndSend(destination, savedUpdate);
+            ProjectUpdate update = new ProjectUpdate(projectId, recipientEmail, message);
+            ProjectUpdate savedUpdate = projectUpdateRepository.save(update);
+
+            String destination = String.format("/topic/project/%d/updates/%s", projectId, recipientEmail);
+            messagingTemplate.convertAndSend(destination, savedUpdate);
+        }
     }
 
     public void sendProjectBroadcast(Long projectId, Object payload) {

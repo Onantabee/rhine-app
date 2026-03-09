@@ -38,7 +38,7 @@ public class ProjectMember {
     private Instant joinedAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private ProjectMemberStatus status = ProjectMemberStatus.PENDING;
 
     @Column
