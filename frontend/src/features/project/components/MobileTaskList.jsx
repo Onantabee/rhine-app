@@ -118,7 +118,7 @@ const MobileTaskList = ({
                 onClick={onClick}
                 titleClassName={taskStatus === "CANCELLED" ? "text-gray-400 line-through italic" : "text-gray-800 dark:text-[#cccccc]"}
                 title={highlightSearchMatch(title, searchTerm)}
-                subtitle={isAdmin ? `Assigned to ${assigneeName}` : `Created by ${creatorName}`}
+                subtitle={isAdmin ? (assignee ? `Assigned to ${assigneeName}` : "Unassigned") : `Created by ${creatorName}`}
                 avatarChar={avatarChar}
                 avatarColorClass={avatarColorClass}
 

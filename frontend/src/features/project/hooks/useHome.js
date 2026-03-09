@@ -73,12 +73,17 @@ export const useHome = () => {
         }
 
         if (assigneeEmailFilter) {
-            filtered = filtered.filter((task) => task.assigneeId === assigneeEmailFilter && task.taskStatus !== "CANCELLED");
+            if (assigneeEmailFilter === 'UNASSIGNED') {
+                filtered = filtered.filter((task) => !task.assigneeId && !task.assigneeEmail && task.taskStatus !== "CANCELLED");
+            } else {
+                filtered = filtered.filter((task) => task.assigneeId === assigneeEmailFilter && task.taskStatus !== "CANCELLED");
+            }
         }
 
         if (statusFilter) {
             filtered = filtered.filter((task) => {
                 if (statusFilter === 'PENDING' || statusFilter === 'ONGOING') {
+                    if (!task.assigneeId && !task.assigneeEmail) return false;
                     const dueStatus = getDueDateStatus(task.dueDate, task.taskStatus);
                     return task.taskStatus === statusFilter && dueStatus !== 'OVERDUE' && dueStatus !== 'DUE_TODAY';
                 }
@@ -88,13 +93,15 @@ export const useHome = () => {
 
         if (dueFilter) {
             if (dueFilter === 'OVERDUE') {
-                filtered = filtered.filter((task) => 
-                    getDueDateStatus(task.dueDate, task.taskStatus) === 'OVERDUE'
-                );
+                filtered = filtered.filter((task) => {
+                    if (!task.assigneeId && !task.assigneeEmail) return false;
+                    return getDueDateStatus(task.dueDate, task.taskStatus) === 'OVERDUE';
+                });
             } else if (dueFilter === 'DUE_TODAY') {
-                filtered = filtered.filter((task) => 
-                    getDueDateStatus(task.dueDate, task.taskStatus) === 'DUE_TODAY'
-                );
+                filtered = filtered.filter((task) => {
+                    if (!task.assigneeId && !task.assigneeEmail) return false;
+                    return getDueDateStatus(task.dueDate, task.taskStatus) === 'DUE_TODAY';
+                });
             }
         }
 

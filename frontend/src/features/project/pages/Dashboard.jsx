@@ -56,21 +56,26 @@ export default function Dashboard() {
     const stats = {
         total: relevantTasks.length,
         pending: relevantTasks.filter(t => {
+            if (!t.assigneeId && !t.assigneeEmail) return false;
             const dueStatus = getDueDateStatus(t.dueDate, t.taskStatus);
             return t.taskStatus === 'PENDING' && dueStatus !== 'OVERDUE' && dueStatus !== 'DUE_TODAY';
         }).length,
         ongoing: relevantTasks.filter(t => {
+            if (!t.assigneeId && !t.assigneeEmail) return false;
             const dueStatus = getDueDateStatus(t.dueDate, t.taskStatus);
             return t.taskStatus === 'ONGOING' && dueStatus !== 'OVERDUE' && dueStatus !== 'DUE_TODAY';
         }).length,
         completed: relevantTasks.filter(t => t.taskStatus === 'COMPLETED').length,
         cancelled: relevantTasks.filter(t => t.taskStatus === 'CANCELLED').length,
-        overdue: relevantTasks.filter(t =>
-            getDueDateStatus(t.dueDate, t.taskStatus) === 'OVERDUE'
-        ).length,
-        due: relevantTasks.filter(t =>
-            getDueDateStatus(t.dueDate, t.taskStatus) === 'DUE_TODAY'
-        ).length
+        overdue: relevantTasks.filter(t => {
+            if (!t.assigneeId && !t.assigneeEmail) return false;
+            return getDueDateStatus(t.dueDate, t.taskStatus) === 'OVERDUE';
+        }).length,
+        due: relevantTasks.filter(t => {
+            if (!t.assigneeId && !t.assigneeEmail) return false;
+            return getDueDateStatus(t.dueDate, t.taskStatus) === 'DUE_TODAY';
+        }).length,
+        unassigned: relevantTasks.filter(t => !t.assigneeId && !t.assigneeEmail).length
     };
 
     const cardData = [
@@ -122,6 +127,14 @@ export default function Dashboard() {
             variant: 'DUE_TODAY',
             onClick: () => navigate(`/project/${projectId}/tasks?dueFilter=DUE_TODAY`)
         },
+        ...(isAdmin ? [{
+            title: 'Unassigned',
+            count: stats.unassigned,
+            status: 'UNASSIGNED',
+            dueStatus: null,
+            variant: 'CANCELLED',
+            onClick: () => navigate(`/project/${projectId}/tasks?assigneeEmail=UNASSIGNED`)
+        }] : []),
         {
             title: 'Cancelled',
             count: stats.cancelled,

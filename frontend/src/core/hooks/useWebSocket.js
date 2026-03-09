@@ -97,27 +97,6 @@ export default function useWebSocket(projectId, userEmail) {
             }
           });
         }
-
-        if (projectId) {
-          const membersTopic = `/topic/project/${projectId}/members`;
-          stompClient.subscribe(membersTopic, (message) => {
-            try {
-              const payload = message.body;
-              if (payload.includes("MEMBER_REMOVED") || payload.includes("MEMBER_JOINED")) {
-                console.log("Received realtime project member update:", payload);
-                dispatch(
-                  projectsApi.util.invalidateTags([
-                    { type: "ProjectMember", id: parseInt(projectId, 10) },
-                    { type: "Project", id: parseInt(projectId, 10) },
-                    "Project"
-                  ])
-                );
-              }
-            } catch (error) {
-              console.error("Error parsing project member update:", error);
-            }
-          });
-        }
       },
 
       onStompError: (frame) => {

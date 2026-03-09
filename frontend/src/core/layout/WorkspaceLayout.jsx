@@ -7,14 +7,16 @@ import { useGetProjectByIdQuery } from '../../features/project/api/projectsApi';
 import { setActiveProject } from '../../features/project/store/projectSlice';
 import NotFound from '../pages/NotFound';
 import { LoadingSpinner } from "../ui";
+import useWebSocket from '../hooks/useWebSocket';
 
 const WorkspaceLayout = () => {
     const dispatch = useDispatch();
     const mobileMenuOpen = useSelector((state) => state.ui.mobileMenuOpen);
     const location = useLocation();
-    const { hasProjects, sessionChecked } = useSelector((state) => state.auth);
+    const { hasProjects, sessionChecked, userEmail } = useSelector((state) => state.auth);
     const activeProject = useSelector((state) => state.project.activeProject);
     const { projectId } = useParams();
+    useWebSocket(projectId, userEmail);
     const { data: project, error, isLoading } = useGetProjectByIdQuery(projectId, {
         skip: !projectId,
     });
@@ -29,7 +31,6 @@ const WorkspaceLayout = () => {
                 })
             );
         } else if (error) {
-            // If project fetch fails, clear the active project state and set error
             import('../../features/project/store/projectSlice').then(({ clearActiveProject, setProjectError }) => {
                 dispatch(clearActiveProject());
                 dispatch(setProjectError(true));

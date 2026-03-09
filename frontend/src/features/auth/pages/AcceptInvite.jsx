@@ -1,6 +1,7 @@
 import { AlertCircle, Check } from "lucide-react";
 import { Button, LoadingSpinner } from "../../../core/ui";
 import { useAcceptInvite } from '../hooks/useAcceptInvite';
+import { useSelector } from 'react-redux';
 
 const AcceptInvite = () => {
     const {
@@ -11,6 +12,19 @@ const AcceptInvite = () => {
         error,
         navigate
     } = useAcceptInvite();
+
+    const { lastProjectId } = useSelector((state) => state.auth);
+    const activeProject = useSelector((state) => state.project.activeProject);
+
+    const handleGoHome = () => {
+        if (activeProject) {
+            navigate(`/project/${activeProject.id}`);
+        } else if (lastProjectId) {
+            navigate(`/project/${lastProjectId}`);
+        } else {
+            navigate('/create-project');
+        }
+    };
 
     if (!token) {
         return (
@@ -64,7 +78,7 @@ const AcceptInvite = () => {
                                     ? (error?.data?.message || 'You cannot accept an invite intended for another user.')
                                     : (error?.data?.message || 'Unable to accept invitation. It may be invalid or expired.')}
                         </p>
-                        <Button onClick={() => navigate('/')} className="w-fit">
+                        <Button onClick={handleGoHome} className="w-fit">
                             Go to Home
                         </Button>
                     </div>
