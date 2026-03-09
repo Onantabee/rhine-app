@@ -1,10 +1,13 @@
 package com.tskmgmnt.rhine.notification.entity;
 
+import com.tskmgmnt.rhine.core.config.TsidGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.Instant;
 
 @Entity
@@ -12,7 +15,8 @@ import java.time.Instant;
 public class ProjectUpdate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "tsid-generator")
+    @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
     private Long id;
 
     private Long projectId;

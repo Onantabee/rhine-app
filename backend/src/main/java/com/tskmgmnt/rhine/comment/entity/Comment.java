@@ -1,12 +1,14 @@
 package com.tskmgmnt.rhine.comment.entity;
 
+import com.tskmgmnt.rhine.core.config.TsidGenerator;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.task.entity.Task;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.Instant;
 
 @Entity
@@ -14,7 +16,8 @@ import java.time.Instant;
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "tsid-generator")
+    @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
     private Long id;
 
     @Column(nullable = false, length = 1000)

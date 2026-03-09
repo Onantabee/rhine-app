@@ -1,6 +1,9 @@
 package com.tskmgmnt.rhine.otp.entity;
 
+import com.tskmgmnt.rhine.core.config.TsidGenerator;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -8,7 +11,8 @@ import java.time.LocalDateTime;
 public class Otp {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "tsid-generator")
+    @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
     private Long id;
 
     @Column(nullable = false)

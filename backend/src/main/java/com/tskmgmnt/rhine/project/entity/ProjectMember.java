@@ -1,11 +1,13 @@
 package com.tskmgmnt.rhine.project.entity;
 
+import com.tskmgmnt.rhine.core.config.TsidGenerator;
 import com.tskmgmnt.rhine.project.entity.Project;
 import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.project.enums.ProjectRole;
 import com.tskmgmnt.rhine.project.enums.ProjectMemberStatus;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.Instant;
 
@@ -16,7 +18,8 @@ import java.time.Instant;
 public class ProjectMember {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "tsid-generator")
+    @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

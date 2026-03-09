@@ -1,7 +1,10 @@
 package com.tskmgmnt.rhine.auth.entity;
 
+import com.tskmgmnt.rhine.core.config.TsidGenerator;
 import com.tskmgmnt.rhine.user.entity.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -9,7 +12,8 @@ import java.time.LocalDateTime;
 public class UserResetToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "tsid-generator")
+    @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
     private Long id;
 
     @Column(nullable = false, unique = true)
