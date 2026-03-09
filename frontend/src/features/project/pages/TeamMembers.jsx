@@ -116,19 +116,28 @@ const TeamMembers = () => {
             <Dialog
                 open={!!removeTarget}
                 onClose={() => setRemoveTarget(null)}
-                title="Remove Member?"
+                title={removeTarget?.name?.includes("(Pending)") ? "Revoke Invite?" : "Remove Member?"}
                 size="sm"
             >
                 <p className="text-gray-600 dark:text-[#bfbfbf] mb-6">
-                    Remove <strong>{removeTarget?.name}</strong> from this project?
-                    They will lose access to all tasks and data.
+                    {removeTarget?.name?.includes("(Pending)") ? (
+                        <>
+                            Revoke invitation for <strong>{removeTarget?.name?.replace(/\(Pending\)/g, "").trim()}</strong>?
+                            They will no longer be able to join this project.
+                        </>
+                    ) : (
+                        <>
+                            Remove <strong>{removeTarget?.name}</strong> from this project?
+                            They will lose access to all tasks and data.
+                        </>
+                    )}
                 </p>
                 <div className="flex gap-3 justify-end">
                     <Button variant="secondary" onClick={() => setRemoveTarget(null)}>
                         Cancel
                     </Button>
                     <Button variant="danger" onClick={handleRemove}>
-                        Remove
+                        {removeTarget?.name?.includes("(Pending)") ? "Revoke" : "Remove"}
                     </Button>
                 </div>
             </Dialog>

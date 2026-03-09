@@ -48,16 +48,20 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                                 </span>
                             ]}
                             details={[
-                                { label: "Active Tasks", value: member.activeTaskCount || 0 }
+                                { label: "Active Tasks", value: member.projectRole === "PROJECT_ADMIN" ? "—" : (member.activeTaskCount || 0) }
                             ]}
                             actions={isAdmin && (
-                                <button
-                                    onClick={(e) => toggleActionMenu(member.email, e, index === members.length - 1)}
-                                    className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 dark:text-[#bfbfbf] rounded-lg transition-colors cursor-pointer"
-                                    aria-label="More actions"
-                                >
-                                    <MoreVertical size={18} />
-                                </button>
+                                member.projectRole === "PROJECT_ADMIN" ? (
+                                    <span className="p-2 mr-1 text-gray-400 dark:text-[#bfbfbf] font-medium">—</span>
+                                ) : (
+                                    <button
+                                        onClick={(e) => toggleActionMenu(member.email, e, index === members.length - 1)}
+                                        className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 dark:text-[#bfbfbf] rounded-lg transition-colors cursor-pointer"
+                                        aria-label="More actions"
+                                    >
+                                        <MoreVertical size={18} />
+                                    </button>
+                                )
                             )}
                         />
                     ))
@@ -120,19 +124,23 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                                 </td>
                                 <td className="px-6 py-4 text-center">
                                     <span className="inline-flex items-center justify-center min-w-[30px] h-[30px] text-gray-700 dark:text-[#cccccc] text-sm font-medium">
-                                        {member.activeTaskCount || 0}
+                                        {member.projectRole === "PROJECT_ADMIN" ? "—" : (member.activeTaskCount || 0)}
                                     </span>
                                 </td>
                                 {isAdmin && (
                                     <td className="px-6 py-4 text-right relative">
-                                        <div className="relative inline-block text-left">
-                                            <button
-                                                onClick={(e) => toggleActionMenu(member.email, e, index === members.length - 1)}
-                                                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 dark:text-[#bfbfbf] rounded-lg transition-colors cursor-pointer"
-                                            >
-                                                <MoreVertical size={18} />
-                                            </button>
-                                        </div>
+                                        {member.projectRole === "PROJECT_ADMIN" ? (
+                                            <span className="inline-block p-2 mr-2 text-gray-400 dark:text-[#bfbfbf]">—</span>
+                                        ) : (
+                                            <div className="relative inline-block text-left">
+                                                <button
+                                                    onClick={(e) => toggleActionMenu(member.email, e, index === members.length - 1)}
+                                                    className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 dark:text-[#bfbfbf] rounded-lg transition-colors cursor-pointer"
+                                                >
+                                                    <MoreVertical size={18} />
+                                                </button>
+                                            </div>
+                                        )}
                                     </td>
                                 )}
                             </tr>
@@ -163,7 +171,7 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                         {(() => {
                             const member = members.find(m => m.email === actionMenuOpen);
                             const isPending = member?.name?.includes("(Pending)");
-                            if (!isPending) {
+                            if (!isPending && (member?.activeTaskCount || 0) > 0) {
                                 return (
                                     <button
                                         onClick={handleViewTasks}

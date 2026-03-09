@@ -140,7 +140,7 @@ public class ProjectService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found. They must register first."));
 
         if (!user.isVerified()) {
-            throw new IllegalArgumentException("Cannot send invite to this user at this moment.");
+            throw new com.tskmgmnt.rhine.core.exception.BadRequestException("Cannot send invite to this user at this moment.");
         }
 
         Project project = projectRepository.findById(projectId)
