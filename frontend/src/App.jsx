@@ -55,6 +55,10 @@ function App() {
   }, []);
 
   const getDefaultRedirect = () => {
+    const redirectTo = localStorage.getItem('redirect_to');
+    if (redirectTo) {
+      return redirectTo;
+    }
     if (activeProject) return `/project/${activeProject.id}`;
     if (lastProjectId) return `/project/${lastProjectId}`;
     return "/create-project";

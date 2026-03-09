@@ -4,6 +4,7 @@ import { Client } from "@stomp/stompjs";
 import { getApiBaseUrl } from "../config/env";
 import { useDispatch } from "react-redux";
 import { updateApi } from "../../features/update/api/updateApi";
+import projectsApi from "../../features/project/api/projectsApi";
 
 export default function useWebSocket(projectId, userEmail) {
   const [client, setClient] = useState(null);
@@ -93,6 +94,27 @@ export default function useWebSocket(projectId, userEmail) {
               );
             } catch (error) {
               console.error("Error parsing project update:", error);
+            }
+          });
+        }
+
+        if (projectId) {
+          const membersTopic = `/topic/project/${projectId}/members`;
+          stompClient.subscribe(membersTopic, (message) => {
+            try {
+              const payload = message.body;
+              if (payload.includes("MEMBER_REMOVED") || payload.includes("MEMBER_JOINED")) {
+                console.log("Received realtime project member update:", payload);
+                dispatch(
+                  projectsApi.util.invalidateTags([
+                    { type: "ProjectMember", id: parseInt(projectId, 10) },
+                    { type: "Project", id: parseInt(projectId, 10) },
+                    "Project"
+                  ])
+                );
+              }
+            } catch (error) {
+              console.error("Error parsing project member update:", error);
             }
           });
         }
