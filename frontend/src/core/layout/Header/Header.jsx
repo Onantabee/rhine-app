@@ -38,8 +38,8 @@ const Header = ({ setIsSignup }) => {
     } = useHeader({ setIsSignup });
 
     const match = location.pathname.match(/^\/project\/(\d+)/);
-    const urlProjectId = match ? parseInt(match[1]) : null;
-    const isHamburgerValid = !isWorkspaceView || (isWorkspaceView && activeProject?.id === urlProjectId);
+    const urlProjectId = match ? match[1] : null;
+    const isHamburgerValid = !isWorkspaceView || (isWorkspaceView && String(activeProject?.id) === String(urlProjectId));
 
     return (
         <>
