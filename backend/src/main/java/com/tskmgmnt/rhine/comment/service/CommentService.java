@@ -69,6 +69,13 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    public List<CommentDto> getCommentsByRecipientAndProject(String recipientEmail, Long projectId) {
+        List<Comment> comments = commentRepository.findByRecipientEmailAndProjectId(recipientEmail, projectId);
+        return comments.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
     public List<Comment> getCommentsByRecipient(String recipientEmail) {
         return commentRepository.findByRecipientEmail(recipientEmail);
     }
@@ -140,8 +147,13 @@ public class CommentService {
         return commentRepository.countByTaskIdAndRecipientEmailAndIsReadByRecipientFalse(taskId, recipientEmail);
     }
 
-    public Comment updateCommentById(Long id, CommentUpdateDto commentUpdateDto) {
+    public Comment updateCommentById(Long id, CommentUpdateDto commentUpdateDto, String modifierEmail) {
         Comment existingComment = commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+        
+        if (!existingComment.getAuthor().getEmail().equals(modifierEmail)) {
+            throw new ResourceNotFoundException("Not authorized to update this comment");
+        }
+        
         existingComment.setContent(commentUpdateDto.getContent());
         Comment updatedComment = commentRepository.save(existingComment);
 
@@ -149,9 +161,13 @@ public class CommentService {
         return commentRepository.save(existingComment);
     }
 
-    public Comment deleteCommentById(Long id) {
+    public Comment deleteCommentById(Long id, String modifierEmail) {
         Comment commentToDelete = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+        
+        if (!commentToDelete.getAuthor().getEmail().equals(modifierEmail)) {
+            throw new ResourceNotFoundException("Not authorized to delete this comment");
+        }
         
         Long taskId = commentToDelete.getTask().getId();
         String recipientEmail = commentToDelete.getRecipient() != null ? 

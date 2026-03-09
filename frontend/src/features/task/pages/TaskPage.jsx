@@ -80,7 +80,7 @@ export default function Task() {
 
             <Tabs
                 tabs={[
-                    { id: 'details', label: 'Task details' },
+                    { id: 'details', label: 'Details' },
                     { id: 'comments', label: 'Comments', badge: unreadCommentsCount },
                 ]}
                 activeTab={activeTab}

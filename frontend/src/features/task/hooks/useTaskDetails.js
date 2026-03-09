@@ -24,7 +24,7 @@ export const useTaskDetails = () => {
     const activeProject = useSelector((state) => state.project.activeProject);
 
     const isAdmin = activeProject?.role === "PROJECT_ADMIN";
-    const [taskStatus, setTaskStatus] = useState(state?.task?.taskStatus || "PENDING");
+    const [taskStatus, setTaskStatus] = useState("PENDING");
     const [newComment, setNewComment] = useState("");
     const [now, setNow] = useState(new Date());
     const [openDropdownId, setOpenDropdownId] = useState(null);

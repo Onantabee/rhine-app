@@ -81,19 +81,20 @@ public class TaskController {
     @PutMapping("/{id}/is-new")
     public TaskDto updateTaskNewState(@PathVariable Long projectId,
                                       @PathVariable Long id,
-                                      @RequestBody TaskDto taskReq) {
-        return taskService.updateIsNewState(id, taskReq);
+                                      @RequestBody TaskDto taskReq,
+                                      Authentication auth) {
+        return taskService.updateIsNewState(id, taskReq, auth.getName());
     }
 
     @Operation(summary = "Get task 'is new' state")
     @GetMapping("/{id}/is-new")
-    public TaskDto getIsNewState(@PathVariable Long projectId, @PathVariable Long id) {
-        return taskService.getIsNewState(id);
+    public TaskDto getIsNewState(@PathVariable Long projectId, @PathVariable Long id, Authentication auth) {
+        return taskService.getIsNewState(id, auth.getName());
     }
 
     @Operation(summary = "Delete a task")
     @DeleteMapping("/{id}")
-    public Task deleteTask(@PathVariable Long projectId, @PathVariable Long id) {
-        return taskService.deleteTaskById(id);
+    public Task deleteTask(@PathVariable Long projectId, @PathVariable Long id, Authentication auth) {
+        return taskService.deleteTaskById(id, auth.getName());
     }
 }

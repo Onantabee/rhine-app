@@ -48,18 +48,18 @@ public class CommentController {
     }
 
     @Operation(
-            summary = "Get comments by recipient email",
-            description = "Retrieves all comments where the specified user is the recipient",
+            summary = "Get comments by recipient email and project ID",
+            description = "Retrieves all comments where the specified user is the recipient within a specific project",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved comments"),
-                    @ApiResponse(responseCode = "404", description = "Recipient not found"),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
-
             }
     )
-    @GetMapping("/recipient/{recipientEmail}")
-    public List<Comment> getCommentsByRecipient(@PathVariable String recipientEmail) {
-        return commentService.getCommentsByRecipient(recipientEmail);
+    @GetMapping("/recipient/{recipientEmail}/project/{projectId}")
+    public List<CommentDto> getCommentsByRecipientAndProject(
+            @PathVariable String recipientEmail,
+            @PathVariable Long projectId) {
+        return commentService.getCommentsByRecipientAndProject(recipientEmail, projectId);
     }
 
     @Operation(
@@ -154,8 +154,8 @@ public class CommentController {
             }
     )
     @PutMapping("/{commentId}")
-    public Comment updateCommentById(@PathVariable Long commentId, @RequestBody CommentUpdateDto commentUpdateDto) {
-        return commentService.updateCommentById(commentId, commentUpdateDto);
+    public Comment updateCommentById(@PathVariable Long commentId, @RequestBody CommentUpdateDto commentUpdateDto, Authentication auth) {
+        return commentService.updateCommentById(commentId, commentUpdateDto, auth.getName());
     }
 
     @Operation(
@@ -169,7 +169,7 @@ public class CommentController {
             }
     )
     @DeleteMapping("/{commentId}")
-    public Comment deleteCommentById(@PathVariable Long commentId) {
-        return commentService.deleteCommentById(commentId);
+    public Comment deleteCommentById(@PathVariable Long commentId, Authentication auth) {
+        return commentService.deleteCommentById(commentId, auth.getName());
     }
 }

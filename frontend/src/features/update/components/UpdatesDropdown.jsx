@@ -3,7 +3,7 @@ import { Bell, MessageSquare } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { formatDistanceToNow } from 'date-fns';
 import { useGetProjectUpdatesQuery, useMarkUpdatesAsReadMutation } from '../api/updateApi';
-import { useGetCommentsByRecipientQuery } from '../../task/api/commentsApi';
+import { useGetCommentsByRecipientAndProjectQuery } from '../../task/api/commentsApi';
 import { useGetTasksQuery } from '../../task/api/tasksApi';
 
 const UpdatesDropdown = () => {
@@ -18,8 +18,11 @@ const UpdatesDropdown = () => {
     });
     const [markAsRead] = useMarkUpdatesAsReadMutation();
 
-    const { data: receivedComments = [] } = useGetCommentsByRecipientQuery(userEmail, {
-        skip: !userEmail,
+    const { data: receivedComments = [] } = useGetCommentsByRecipientAndProjectQuery({
+        recipientEmail: userEmail,
+        projectId: parsedProjectId
+    }, {
+        skip: !userEmail || !parsedProjectId,
     });
 
     const { data: projectTasks = [] } = useGetTasksQuery(parsedProjectId, {

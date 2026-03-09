@@ -73,10 +73,15 @@ public class ProjectService {
     }
 
     public List<ProjectDto> getProjectsForUser(String email) {
-        List<ProjectMember> memberships = projectMemberRepository.findByUserEmail(email);
-        return memberships.stream()
-                .filter(m -> m.getStatus() == ProjectMemberStatus.ACTIVE)
-                .map(m -> mapToDto(m.getProject(), m.getProjectRole().name()))
+        List<Object[]> results = projectRepository.findProjectsWithMemberCountByUserEmail(email);
+        return results.stream()
+                .map(res -> {
+                    Project p = (Project) res[0];
+                    Long count = (Long) res[1];
+                    ProjectMember membership = projectMemberRepository.findByUserEmailAndProjectId(email, p.getId()).orElse(null);
+                    String role = membership != null ? membership.getProjectRole().name() : ProjectRole.PROJECT_EMPLOYEE.name();
+                    return mapToDto(p, role, count.intValue());
+                })
                 .collect(Collectors.toList());
     }
 
@@ -261,12 +266,25 @@ public class ProjectService {
     }
 
     private ProjectDto mapToDto(Project project, String currentUserRole) {
+        return mapToDto(project, currentUserRole, null);
+    }
+
+    private ProjectDto mapToDto(Project project, String currentUserRole, Integer memberCount) {
         ProjectDto dto = new ProjectDto();
         dto.setId(project.getId());
         dto.setName(project.getName());
         dto.setOwnerEmail(project.getOwner().getEmail());
         dto.setOwnerName(project.getOwner().getName());
-        dto.setMemberCount(project.getMembers() != null ? (int) project.getMembers().stream().filter(m -> m.getStatus() == com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.ACTIVE).count() : 0);
+        
+        if (memberCount != null) {
+            dto.setMemberCount(memberCount);
+        } else {
+            dto.setMemberCount(project.getMembers() != null ? 
+                (int) project.getMembers().stream()
+                    .filter(m -> m.getStatus() == com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.ACTIVE)
+                    .count() : 0);
+        }
+        
         dto.setCreatedAt(project.getCreatedAt());
         dto.setCurrentUserRole(currentUserRole);
         return dto;

@@ -17,6 +17,11 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findByRecipientEmail(String recipientEmail);
 
+    @Query("SELECT c FROM Comment c WHERE c.recipient.email = :recipientEmail AND c.task.project.id = :projectId")
+    List<Comment> findByRecipientEmailAndProjectId(
+            @Param("recipientEmail") String recipientEmail,
+            @Param("projectId") Long projectId);
+
     @Query("SELECT c FROM Comment c WHERE c.task.id = :taskId AND c.recipient.email = :recipientEmail AND c.isReadByRecipient = false")
     List<Comment> findByTaskIdAndRecipientEmailAndIsReadByRecipientFalse(
             @Param("taskId") Long taskId,

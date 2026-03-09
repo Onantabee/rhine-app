@@ -123,18 +123,17 @@ public class TaskService {
     public TaskDto getTaskById(Long id, String requestingUserEmail) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
-        boolean isCreator = task.getCreatedBy().getEmail().equals(requestingUserEmail);
-        boolean isAssignee = task.getAssignee() != null && task.getAssignee().getEmail().equals(requestingUserEmail);
-        boolean isAdmin = false;
-
         if (task.getProject() != null) {
-            isAdmin = projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId())
-                    .map(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
-                    .orElse(false);
-        }
-
-        if (!isCreator && !isAssignee && !isAdmin) {
-             throw new ResourceNotFoundException("Task not found");
+            boolean isMember = projectMemberRepository.existsByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId());
+            if (!isMember) {
+                 throw new ResourceNotFoundException("Task not found");
+            }
+        } else {
+            boolean isCreator = task.getCreatedBy().getEmail().equals(requestingUserEmail);
+            boolean isAssignee = task.getAssignee() != null && task.getAssignee().getEmail().equals(requestingUserEmail);
+            if (!isCreator && !isAssignee) {
+                throw new ResourceNotFoundException("Task not found");
+            }
         }
 
         return mapToTaskResponse(task);
@@ -143,6 +142,12 @@ public class TaskService {
     public TaskDto updateTaskById(Long id, TaskDto taskReq, String modifierEmail) {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if (existingTask.getProject() != null) {
+            projectMemberRepository.findByUserEmailAndProjectId(modifierEmail, existingTask.getProject().getId())
+                    .filter(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
+                    .orElseThrow(() -> new ResourceNotFoundException("Not authorized to update tasks in this project"));
+        }
 
         existingTask.setTitle(taskReq.getTitle());
         existingTask.setDescription(taskReq.getDescription());
@@ -199,6 +204,12 @@ public class TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
+        if (task.getProject() != null) {
+            if (!projectMemberRepository.existsByUserEmailAndProjectId(modifierEmail, task.getProject().getId())) {
+                throw new ResourceNotFoundException("Not authorized");
+            }
+        }
+
         task.setTaskStatus(taskReq.getTaskStatus());
         Task updatedTask = taskRepository.save(task);
 
@@ -246,9 +257,16 @@ public class TaskService {
         return mapToTaskResponse(updatedTask);
     }
 
-    public TaskDto updateIsNewState(Long id, TaskDto taskReq) {
+    public TaskDto updateIsNewState(Long id, TaskDto taskReq, String modifierEmail) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if (task.getProject() != null) {
+            if (!projectMemberRepository.existsByUserEmailAndProjectId(modifierEmail, task.getProject().getId())) {
+                throw new ResourceNotFoundException("Not authorized");
+            }
+        }
+
         task.setIsNew(taskReq.getIsNew());
         Task updatedTaskState = taskRepository.save(task);
         
@@ -261,22 +279,34 @@ public class TaskService {
         return response;
     }
 
-    public TaskDto getIsNewState(Long id) {
+    public TaskDto getIsNewState(Long id, String requestingUserEmail) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        if (task.getProject() != null) {
+            if (!projectMemberRepository.existsByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId())) {
+                throw new ResourceNotFoundException("Task not found");
+            }
+        }
 
         TaskDto response = new TaskDto();
         response.setIsNew(task.getIsNew());
         return response;
     }
 
-    public Task deleteTaskById(Long id) {
+    public Task deleteTaskById(Long id, String requestingUserEmail) {
         try {
-            Optional<Task> taskToDelete = taskRepository.findById(id);
-            if (taskToDelete.isPresent()) {
-                Task task = taskToDelete.get();
-                TaskDto response = mapToTaskResponse(task);
-                taskRepository.delete(task);
+            Task task = taskRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+            if (task.getProject() != null) {
+                projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId())
+                        .filter(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
+                        .orElseThrow(() -> new ResourceNotFoundException("Not authorized to delete tasks"));
+            }
+
+            TaskDto response = mapToTaskResponse(task);
+            taskRepository.delete(task);
                 System.out.println("Task deleted successfully: " + task.getId());
                 messagingTemplate.convertAndSend("/topic/task-deleted",
                         new NotificationDto<>("TASK_DELETED", response.getId()));
