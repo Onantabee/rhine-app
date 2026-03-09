@@ -295,28 +295,26 @@ public class TaskService {
     }
 
     public Task deleteTaskById(Long id, String requestingUserEmail) {
-        try {
-            Task task = taskRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
-            if (task.getProject() != null) {
-                projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId())
-                        .filter(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
-                        .orElseThrow(() -> new ResourceNotFoundException("Not authorized to delete tasks"));
-            }
-
-            TaskDto response = mapToTaskResponse(task);
-            taskRepository.delete(task);
-                System.out.println("Task deleted successfully: " + task.getId());
-                messagingTemplate.convertAndSend("/topic/task-deleted",
-                        new NotificationDto<>("TASK_DELETED", response.getId()));
-                return task;
-            } else {
-                throw new ResourceNotFoundException("Task not found");
-            }
-        } catch (Exception e) {
-            System.err.println("Error deleting task: " + e.getMessage());
-            throw e;
+        if (task.getProject() != null) {
+            projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId())
+                    .filter(m -> m.getProjectRole() == ProjectRole.PROJECT_ADMIN)
+                    .orElseThrow(() -> new ResourceNotFoundException("Not authorized to delete tasks"));
         }
+
+        TaskDto response = mapToTaskResponse(task);
+        taskRepository.delete(task);
+        
+        try {
+            System.out.println("Task deleted successfully: " + task.getId());
+            messagingTemplate.convertAndSend("/topic/task-deleted",
+                    new NotificationDto<>("TASK_DELETED", response.getId()));
+        } catch (Exception e) {
+            System.err.println("Error sending delete notification: " + e.getMessage());
+        }
+        
+        return task;
     }
 }
