@@ -55,12 +55,14 @@ const AcceptInvite = () => {
                             <AlertCircle size={50} className="text-red-500" />
                         </div>
                         <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc]">
-                            {error?.status === 404 || error?.status === 400 ? 'Invite has been revoked' : 'Invitation Failed'}
+                            {error?.status === 404 || error?.status === 400 ? 'Invite has been revoked' : error?.status === 403 ? 'Unauthorized Access' : 'Invitation Failed'}
                         </h2>
                         <p className="text-red-400 font-light text-md text-center">
                             {error?.status === 404 || error?.status === 400
                                 ? 'Your invite has been revoked by the project administrator.'
-                                : (error?.data?.message || 'Unable to accept invitation. It may be invalid or expired.')}
+                                : error?.status === 403
+                                    ? (error?.data?.message || 'You cannot accept an invite intended for another user.')
+                                    : (error?.data?.message || 'Unable to accept invitation. It may be invalid or expired.')}
                         </p>
                         <Button onClick={() => navigate('/')} className="w-fit">
                             Go to Home
