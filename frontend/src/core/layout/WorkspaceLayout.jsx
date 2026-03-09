@@ -7,7 +7,6 @@ import { useGetProjectByIdQuery } from '../../features/project/api/projectsApi';
 import { setActiveProject } from '../../features/project/store/projectSlice';
 import NotFound from '../pages/NotFound';
 import { LoadingSpinner } from "../ui";
-import useWebSocket from '../hooks/useWebSocket';
 
 const WorkspaceLayout = () => {
     const dispatch = useDispatch();
@@ -16,7 +15,6 @@ const WorkspaceLayout = () => {
     const { hasProjects, sessionChecked, userEmail } = useSelector((state) => state.auth);
     const activeProject = useSelector((state) => state.project.activeProject);
     const { projectId } = useParams();
-    useWebSocket(projectId, userEmail);
     const { data: project, error, isLoading } = useGetProjectByIdQuery(projectId, {
         skip: !projectId,
     });
