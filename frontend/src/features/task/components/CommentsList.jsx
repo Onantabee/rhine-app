@@ -35,7 +35,7 @@ const CommentsList = ({
                             key={comment.id}
                             comment={comment}
                             currentUserEmail={currentUserEmail}
-                            authorName={getAuthorName(comment.authorEmail)}
+                            authorName={comment.authorEmail === currentUserEmail ? "You" : comment.authorName}
                             now={now}
                             isCommentingAllowed={isCommentingAllowed}
                             isDropdownOpen={openDropdownId === comment.id}

@@ -7,14 +7,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Service
 public class MailService {
 
     private static final Logger logger = LoggerFactory.getLogger(MailService.class);
     private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
 
     @Value("${application.frontend.url}")
     private String frontendUrl;
@@ -22,57 +27,84 @@ public class MailService {
     @Value("${spring.mail.from}")
     private String mailFrom;
 
-    public MailService(JavaMailSender mailSender) {
+    public MailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
     }
 
     @Async
     public void sendOtpEmail(String to, String otpCode) {
-        logger.info("PREPARING TO SEND OTP TO {}: {}", to, otpCode);
+        logger.info("PREPARING TO SEND HTML OTP TO {}: {}", to, otpCode);
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(mailFrom);
-            message.setTo(to);
-            message.setSubject("Rhine Verification Code");
-            message.setText("Your verification code is: " + otpCode + "\n\nThis code expires in 15 minutes.");
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            
+            helper.setFrom(mailFrom);
+            helper.setTo(to);
+            helper.setSubject("Rhine Verification Code");
+
+            Context context = new Context();
+            context.setVariable("otpCode", otpCode);
+
+            String htmlContent = templateEngine.process("otp-email", context);
+
+            helper.setText(htmlContent, true);
             mailSender.send(message);
-            logger.info("OTP email successfully sent to {}", to);
+            logger.info("HTML OTP email successfully sent to {}", to);
         } catch (Exception e) {
-            logger.error("Failed to send OTP email to {}: {}", to, e.getMessage());
+            logger.error("Failed to send HTML OTP email to {}: {}", to, e.getMessage());
         }
     }
 
     @Async
     public void sendInviteEmail(String to, String projectName, ProjectRole role, String token) {
         String inviteLink = frontendUrl + "/accept-invite?token=" + token;
-        logger.info("Preparing to send invite email to {} with link: {}", to, inviteLink);
+        logger.info("Preparing to send HTML invite email to {} with link: {}", to, inviteLink);
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(mailFrom);
-            message.setTo(to);
-            message.setSubject("You've been invited to join " + projectName);
-            message.setText("Hello,\n\nYou have been invited to join the project '" + projectName + "' as a " + role + ".\n\nPlease click the link below to accept the invitation:\n" + inviteLink);
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            
+            helper.setFrom(mailFrom);
+            helper.setTo(to);
+            helper.setSubject("You've been invited to join " + projectName);
+
+            Context context = new Context();
+            context.setVariable("projectName", projectName);
+            context.setVariable("role", role.name());
+            context.setVariable("inviteLink", inviteLink);
+
+            String htmlContent = templateEngine.process("invite-email", context);
+
+            helper.setText(htmlContent, true);
             mailSender.send(message);
-            logger.info("Invite email successfully sent to {} with link: {}", to, inviteLink);
+            logger.info("HTML Invite email successfully sent to {}", to);
         } catch (Exception e) {
-            logger.error("Failed to send Invite email to {}: {}", to, e.getMessage());
+            logger.error("Failed to send HTML Invite email to {}: {}", to, e.getMessage());
         }
     }
 
     @Async
     public void sendPasswordResetEmail(String to, String token) {
         String resetLink = frontendUrl + "/reset-password?token=" + token;
-        logger.info("Preparing to send password reset email to {} with link: {}", to, resetLink);
+        logger.info("Preparing to send HTML password reset email to {} with link: {}", to, resetLink);
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(mailFrom);
-            message.setTo(to);
-            message.setSubject("Rhine Password Reset Request");
-            message.setText("Hello,\n\nWe received a request to reset your Rhine account password.\n\nPlease click the link below to set a new password:\n" + resetLink + "\n\nThis link will expire in 1 hour.\nIf you did not request this, please ignore this email.");
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(mailFrom);
+            helper.setTo(to);
+            helper.setSubject("Rhine Password Reset Request");
+
+            Context context = new Context();
+            context.setVariable("resetLink", resetLink);
+
+            String htmlContent = templateEngine.process("reset-password", context);
+
+            helper.setText(htmlContent, true);
             mailSender.send(message);
-            logger.info("Password reset email successfully sent to {}", to);
+            logger.info("HTML Password reset email successfully sent to {}", to);
         } catch (Exception e) {
-            logger.error("Failed to send Password Reset email to {}: {}", to, e.getMessage());
+            logger.error("Failed to send HTML Password Reset email to {}: {}", to, e.getMessage());
         }
     }
 }

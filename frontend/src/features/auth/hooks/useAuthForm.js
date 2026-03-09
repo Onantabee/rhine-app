@@ -113,7 +113,13 @@ export const useAuthForm = (isSignup) => {
             dispatch(login(userData));
             setEmail("");
             setPassword("");
-            navigate("/");
+            
+            const redirectTo = localStorage.getItem('redirect_to');
+            if (redirectTo) {
+                navigate(redirectTo);
+            } else {
+                navigate("/");
+            }
         } catch (error) {
             console.error("Login failed:", error);
             const errorMessage = error.data?.message || "Couldn't Connect to Server";

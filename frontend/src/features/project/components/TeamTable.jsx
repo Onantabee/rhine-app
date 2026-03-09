@@ -179,13 +179,14 @@ export const TeamTable = ({ members, userEmail, isAdmin, onRemove, searchTerm })
                         {(() => {
                             const member = members.find(m => m.email === actionMenuOpen);
                             if (member && member.email !== userEmail) {
+                                const isPending = member?.name?.includes("(Pending)");
                                 return (
                                     <button
                                         onClick={handleRemoveMember}
                                         className="flex w-full items-center px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500 dark:hover:text-white"
                                     >
                                         <Trash2 className="mr-3 h-4 w-4" />
-                                        Remove Member
+                                        {isPending ? "Revoke Invite" : "Remove Member"}
                                     </button>
                                 );
                             }

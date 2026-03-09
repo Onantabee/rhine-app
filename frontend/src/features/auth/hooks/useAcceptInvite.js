@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAcceptInviteMutation } from '../../project/api/projectsApi';
 import { setHasProjects } from '../store/authSlice';
 import { useSnackbar } from '../../../core/context/SnackbarContext';
+import { useSelector } from 'react-redux';
 
 export const useAcceptInvite = () => {
     const dispatch = useDispatch();
@@ -13,23 +14,36 @@ export const useAcceptInvite = () => {
     const [acceptInvite, { isLoading, isSuccess, isError, error }] = useAcceptInviteMutation();
     const { showSnackbar } = useSnackbar();
 
+    const { isLoggedIn, isVerified } = useSelector((state) => state.auth);
+
     const hasRequested = useRef(false);
+
     useEffect(() => {
-        if (token && !hasRequested.current) {
+        if (!token) return;
+
+        if (!isLoggedIn) {
+            localStorage.setItem('redirect_to', `/accept-invite?token=${token}`);
+            navigate('/');
+            return;
+        }
+
+        if (isLoggedIn && !hasRequested.current) {
             hasRequested.current = true;
             acceptInvite(token)
                 .unwrap()
                 .then((projectId) => {
+                    localStorage.removeItem('redirect_to');
                     dispatch(setHasProjects(true));
                     showSnackbar('Invitation accepted successfully!', 'success');
                     setTimeout(() => navigate(`/project/${projectId}`), 2000);
                 })
                 .catch((err) => {
                     console.error("Failed to accept invite:", err);
-                    showSnackbar(err.data?.message || 'Failed to accept invitation.', 'error');
+                    localStorage.removeItem('redirect_to');
+                    showSnackbar(err.data?.message || 'Invitation has expired or been revoked.', 'error');
                 });
         }
-    }, [token, acceptInvite, navigate, showSnackbar, dispatch]);
+    }, [token, isLoggedIn, isVerified, acceptInvite, navigate, showSnackbar, dispatch]);
 
     return {
         token,

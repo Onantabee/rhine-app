@@ -20,6 +20,11 @@ export const useProjectPicker = () => {
     const [updateLastProject] = useUpdateLastProjectMutation();
 
     const handleSelectProject = (project) => {
+        if (activeProject?.id === project.id) {
+            setOpen(false);
+            return;
+        }
+
         dispatch(
             setActiveProject({
                 id: project.id,

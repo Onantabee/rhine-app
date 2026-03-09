@@ -66,7 +66,7 @@ const Input = forwardRef(
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-[#bfbfbf] cursor-pointer"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-[#bfbfbf] dark:hover:text-[#595959] cursor-pointer"
                             tabIndex={-1}
                         >
                             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}

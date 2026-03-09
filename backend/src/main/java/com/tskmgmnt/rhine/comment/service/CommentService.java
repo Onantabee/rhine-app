@@ -46,6 +46,7 @@ public class CommentService {
                 comment.getId(),
                 comment.getContent(),
                 comment.getAuthor().getEmail(),
+                comment.getAuthor().getName(),
                 comment.getRecipient() != null ? comment.getRecipient().getEmail() : null,
                 comment.isReadByRecipient(),
                 comment.getCreatedAt()

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head}"></head>
+
+<body>
+    <div th:replace="~{fragments/layout :: email-wrapper(~{:: #content})}">
+        <div id="content">
+            <p class="header">Join the <span th:text="${projectName}">Project Name</span> project on Rhine</p>
+            <p class="greeting">Hello,</p>
+            <p>You have been invited to join the project <strong th:text="${projectName}">Project Name</strong> as a
+                <strong th:text="${role}">Role</strong>.
+            </p>
+            <p>Click the button below to accept your invitation and join the team.</p>
+            <div class="button-wrapper">
+                <a th:href="${inviteLink}" class="button" style="color: #ffffff;">Accept Invitation</a>
+            </div>
+            <p style="font-size: 14px; color: #64748b;">If you're having trouble clicking the button,
+                copy and paste the URL below into your web browser:</p>
+            <p class="link" th:text="${inviteLink}">https://example.com</p>
+        </div>
+    </div>
+</body>
+
+</html>

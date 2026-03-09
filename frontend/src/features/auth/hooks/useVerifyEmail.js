@@ -45,7 +45,12 @@ export const useVerifyEmail = () => {
 
             dispatch(login(userData));
 
-            navigate("/");
+            const redirectTo = localStorage.getItem('redirect_to');
+            if (redirectTo) {
+                navigate(redirectTo);
+            } else {
+                navigate("/");
+            }
         } catch (error) {
             console.error("Verification failed:", error);
             showSnackbar(error.data?.message || "Verification failed", "error");

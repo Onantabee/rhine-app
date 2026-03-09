@@ -13,6 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 
 @RestController
@@ -83,9 +85,9 @@ public class ProjectController {
 
     @Operation(summary = "Accept an invitation to join a project")
     @PostMapping("/accept-invite")
-    public org.springframework.http.ResponseEntity<Long> acceptInvite(@RequestParam String token) {
-        Long projectId = projectService.acceptInvite(token);
-        return org.springframework.http.ResponseEntity.ok(projectId);
+    public ResponseEntity<Long> acceptInvite(@RequestParam String token, Authentication auth) {
+        Long projectId = projectService.acceptInvite(token, auth.getName());
+        return ResponseEntity.ok(projectId);
     }
 
     @Operation(summary = "Get your role in a specific project")

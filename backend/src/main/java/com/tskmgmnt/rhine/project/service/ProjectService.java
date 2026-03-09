@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -73,7 +75,7 @@ public class ProjectService {
     public List<ProjectDto> getProjectsForUser(String email) {
         List<ProjectMember> memberships = projectMemberRepository.findByUserEmail(email);
         return memberships.stream()
-                .filter(m -> m.getStatus() == com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.ACTIVE)
+                .filter(m -> m.getStatus() == ProjectMemberStatus.ACTIVE)
                 .map(m -> mapToDto(m.getProject(), m.getProjectRole().name()))
                 .collect(Collectors.toList());
     }
@@ -85,7 +87,7 @@ public class ProjectService {
         ProjectMember membership = projectMemberRepository.findByUserEmailAndProjectId(email, id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
-        if (membership.getStatus() != com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.ACTIVE) {
+        if (membership.getStatus() != ProjectMemberStatus.ACTIVE) {
             throw new RuntimeException("You have not accepted the invitation to this project yet.");
         }
 
@@ -135,14 +137,18 @@ public class ProjectService {
         }
 
         User user = userRepository.findByEmail(req.getEmail())
-                .orElseThrow(() -> new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found. They must register first."));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found. They must register first."));
+
+        if (!user.isVerified()) {
+            throw new IllegalArgumentException("Cannot send invite to this user at this moment.");
+        }
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
 
         ProjectRole role = req.getProjectRole() != null ? req.getProjectRole() : ProjectRole.PROJECT_EMPLOYEE;
         String token = java.util.UUID.randomUUID().toString();
-        ProjectMember membership = new ProjectMember(user, project, role, com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.PENDING, token);
+        ProjectMember membership = new ProjectMember(user, project, role, ProjectMemberStatus.PENDING, token);
         projectMemberRepository.save(membership);
 
         mailService.sendInviteEmail(user.getEmail(), project.getName(), role, token);
@@ -152,11 +158,15 @@ public class ProjectService {
 
 
     @Transactional
-    public Long acceptInvite(String token) {
+    public Long acceptInvite(String token, String requestingUserEmail) {
         ProjectMember membership = projectMemberRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid invitation token"));
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid or revoked invitation token"));
 
-        membership.setStatus(com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.ACTIVE);
+        if (!membership.getUser().getEmail().equals(requestingUserEmail)) {
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized: You cannot accept an invite intended for another user.");
+        }
+
+        membership.setStatus(ProjectMemberStatus.ACTIVE);
         membership.setToken(null);
         projectMemberRepository.save(membership);
 
@@ -194,6 +204,11 @@ public class ProjectService {
         ProjectMember memberToRemove = projectMemberRepository.findByUserEmailAndProjectId(memberEmail, projectId)
                 .orElseThrow(() -> new RuntimeException("Member not found in this project"));
 
+        if (memberToRemove.getStatus() == ProjectMemberStatus.PENDING) {
+            projectMemberRepository.delete(memberToRemove);
+            return;
+        }
+
         List<Task> tasks = taskRepository.findByProjectIdAndAssigneeEmail(projectId, memberEmail);
         for (Task task : tasks) {
             task.setAssignee(null);
@@ -222,7 +237,7 @@ public class ProjectService {
                             com.tskmgmnt.rhine.task.enums.TaskStatus.CANCELLED
                     );
                      String name = m.getUser().getName();
-                     if (m.getStatus() == com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.PENDING) {
+                     if (m.getStatus() == ProjectMemberStatus.PENDING) {
                          name += " (Pending)";
                      }
                     return new ProjectMemberDto(
@@ -242,7 +257,7 @@ public class ProjectService {
 
     public boolean userHasProjects(String email) {
         return projectMemberRepository.findByUserEmail(email).stream()
-                .anyMatch(m -> m.getStatus() == com.tskmgmnt.rhine.project.enums.ProjectMemberStatus.ACTIVE);
+                .anyMatch(m -> m.getStatus() == ProjectMemberStatus.ACTIVE);
     }
 
     private ProjectDto mapToDto(Project project, String currentUserRole) {

@@ -14,6 +14,9 @@ public class CommentDto {
     @Schema(description = "Email of the author", example = "author@example.com")
     private String authorEmail;
 
+    @Schema(description = "Full name of the author", example = "John Doe")
+    private String authorName;
+
     @Schema(description = "Email of the recipient", example = "recipient@example.com")
     private String recipientEmail;
 
@@ -32,10 +35,11 @@ public class CommentDto {
         this.isReadByRecipient = isReadByRecipient;
     }
 
-    public CommentDto(Long id, String content, String authorEmail, String recipientEmail, boolean isReadByRecipient, Instant createdAt) {
+    public CommentDto(Long id, String content, String authorEmail, String authorName, String recipientEmail, boolean isReadByRecipient, Instant createdAt) {
         this.id = id;
         this.content = content;
         this.authorEmail = authorEmail;
+        this.authorName = authorName;
         this.recipientEmail = recipientEmail;
         this.isReadByRecipient = isReadByRecipient;
         this.createdAt = createdAt;
@@ -67,6 +71,14 @@ public class CommentDto {
 
     public void setAuthorEmail(String authorEmail) {
         this.authorEmail = authorEmail;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
     public boolean isReadByRecipient() {
