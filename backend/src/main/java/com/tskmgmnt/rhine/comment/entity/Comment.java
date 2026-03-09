@@ -6,6 +6,7 @@ import com.tskmgmnt.rhine.task.entity.Task;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,6 +19,7 @@ public class Comment {
     @Id
     @GeneratedValue(generator = "tsid-generator")
     @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @Column(nullable = false, length = 1000)
@@ -88,8 +90,8 @@ public class Comment {
         this.task = task;
     }
 
-    /** Exposes only the task ID in JSON so the frontend can filter by project without circular refs. */
     @Transient
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     public Long getTaskId() {
         return task != null ? task.getId() : null;
     }

@@ -78,10 +78,11 @@ const Header = ({ setIsSignup }) => {
                         </div>
                     )}
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 md:gap-4">
+                        {isLoggedIn && isWorkspaceView && <UpdatesDropdown />}
+                        <ThemeToggle />
+
                         <div className="hidden md:flex items-center gap-3">
-                            {isLoggedIn && isWorkspaceView && <UpdatesDropdown />}
-                            <ThemeToggle />
                             {!isLoggedIn ? (
                                 <>
                                     <Button variant="outlined" onClick={handleLoginClick}>Login</Button>
@@ -94,14 +95,11 @@ const Header = ({ setIsSignup }) => {
                             )}
                         </div>
 
-                        <div className="flex md:hidden items-center gap-3">
-                            {isLoggedIn && isWorkspaceView && <UpdatesDropdown />}
-                            <ThemeToggle />
+                        <div className="flex md:hidden items-center">
                             {isHamburgerValid && (
                                 <button onClick={handleDrawerToggle} className="p-0.5 text-gray-600 dark:text-[#bfbfbf] hover:text-gray-800 dark:hover:text-gray-300 cursor-pointer">
                                     {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                                 </button>
-
                             )}
                         </div>
                     </div>

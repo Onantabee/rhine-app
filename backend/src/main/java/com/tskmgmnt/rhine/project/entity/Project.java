@@ -5,6 +5,7 @@ import com.tskmgmnt.rhine.task.entity.Task;
 
 import com.tskmgmnt.rhine.project.entity.ProjectMember;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,6 +21,7 @@ public class Project {
     @Id
     @GeneratedValue(generator = "tsid-generator")
     @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @Column(nullable = false)

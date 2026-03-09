@@ -9,7 +9,7 @@ import { useGetTasksQuery } from '../../task/api/tasksApi';
 const UpdatesDropdown = () => {
     const activeProject = useSelector((state) => state.project.activeProject);
     const userEmail = useSelector((state) => state.auth.userEmail) ?? null;
-    const parsedProjectId = activeProject?.id ?? null;
+    const parsedProjectId = activeProject?.id ? String(activeProject.id) : null;
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 

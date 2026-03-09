@@ -14,6 +14,7 @@ import java.time.Instant;
 public class TaskDto {
 
     @Schema(description = "Unique identifier of the task", example = "1")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @NotBlank(message = "Title is required")
@@ -51,6 +52,7 @@ public class TaskDto {
     private Instant lastAssignedAt;
 
     @Schema(description = "ID of the project this task belongs to", example = "1")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long projectId;
 
     public TaskDto(Long id, String title, String description, Instant dueDate, String priority, TaskStatus taskStatus, String createdById, String assigneeId, Instant createdAt, Instant lastAssignedAt) {

@@ -2,6 +2,7 @@ package com.tskmgmnt.rhine.auth.entity;
 
 import com.tskmgmnt.rhine.core.config.TsidGenerator;
 import com.tskmgmnt.rhine.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -14,6 +15,7 @@ public class UserResetToken {
     @Id
     @GeneratedValue(generator = "tsid-generator")
     @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @Column(nullable = false, unique = true)

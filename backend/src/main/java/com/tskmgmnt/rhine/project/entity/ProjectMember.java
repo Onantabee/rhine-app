@@ -6,6 +6,7 @@ import com.tskmgmnt.rhine.user.entity.User;
 import com.tskmgmnt.rhine.project.enums.ProjectRole;
 import com.tskmgmnt.rhine.project.enums.ProjectMemberStatus;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,6 +21,7 @@ public class ProjectMember {
     @Id
     @GeneratedValue(generator = "tsid-generator")
     @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

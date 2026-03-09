@@ -85,7 +85,7 @@ export default function Task() {
                 ]}
                 activeTab={activeTab}
                 onChange={setActiveTab}
-                className="flex md:hidden bg-gray-200 dark:bg-[#1a1a1a] px-4 pt-2"
+                className="flex md:hidden bg-white dark:bg-[#1a1a1a] px-4 pt-2"
             />
 
             <div className="w-full max-w-full flex flex-col md:flex-row gap-6 flex-1 min-h-0 p-4 md:p-6">

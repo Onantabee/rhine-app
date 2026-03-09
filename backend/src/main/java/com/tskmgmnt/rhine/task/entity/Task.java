@@ -21,6 +21,7 @@ public class Task {
     @Id
     @GeneratedValue(generator = "tsid-generator")
     @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     private String title;

@@ -1,6 +1,7 @@
 package com.tskmgmnt.rhine.user.entity;
 import com.tskmgmnt.rhine.task.entity.Task;
 import com.tskmgmnt.rhine.project.entity.ProjectMember;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,6 +30,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean isVerified = false;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long lastProjectId;
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

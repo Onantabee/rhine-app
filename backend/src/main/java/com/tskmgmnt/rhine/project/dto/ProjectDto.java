@@ -1,8 +1,10 @@
 package com.tskmgmnt.rhine.project.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
 
 public class ProjectDto {
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
     private String name;
     private String ownerEmail;

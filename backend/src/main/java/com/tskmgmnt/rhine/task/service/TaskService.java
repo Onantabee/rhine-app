@@ -126,11 +126,20 @@ public class TaskService {
         Task task = taskRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Task not found"));
 
         if (task.getProject() != null) {
-            boolean isMember = projectMemberRepository.existsByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId());
-            if (!isMember) {
-                 throw new ResourceNotFoundException("Task not found");
+            // 1. Check if user is at least a member
+            var member = projectMemberRepository.findByUserEmailAndProjectId(requestingUserEmail, task.getProject().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+            // 2. If not ADMIN, check if they are Creator or Assignee
+            if (member.getProjectRole() != ProjectRole.PROJECT_ADMIN) {
+                boolean isCreator = task.getCreatedBy().getEmail().equals(requestingUserEmail);
+                boolean isAssignee = task.getAssignee() != null && task.getAssignee().getEmail().equals(requestingUserEmail);
+                if (!isCreator && !isAssignee) {
+                    throw new ResourceNotFoundException("Task not found");
+                }
             }
         } else {
+            // Task without project (personal/legacy)
             boolean isCreator = task.getCreatedBy().getEmail().equals(requestingUserEmail);
             boolean isAssignee = task.getAssignee() != null && task.getAssignee().getEmail().equals(requestingUserEmail);
             if (!isCreator && !isAssignee) {
@@ -186,6 +195,7 @@ public class TaskService {
                 if (formerAssignee != null && !formerAssignee.getEmail().equals(modifierEmail)) {
                     String unassignedMsg = String.format("You were unassigned from %s", existingTask.getTitle());
                     updateService.createAndSendUpdate(projectId, formerAssignee.getEmail(), unassignedMsg);
+                    updateService.sendTaskEvictionNotice(existingTask.getId(), formerAssignee.getEmail());
                 }
             }
         } else {
@@ -193,6 +203,7 @@ public class TaskService {
             if (formerAssignee != null && !formerAssignee.getEmail().equals(modifierEmail)) {
                 String unassignedMsg = String.format("You were unassigned from %s", existingTask.getTitle());
                 updateService.createAndSendUpdate(projectId, formerAssignee.getEmail(), unassignedMsg);
+                updateService.sendTaskEvictionNotice(existingTask.getId(), formerAssignee.getEmail());
             }
         }
         Task updatedTask = taskRepository.save(existingTask);

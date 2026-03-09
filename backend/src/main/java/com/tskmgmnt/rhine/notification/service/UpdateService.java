@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 
 import java.time.Instant;
@@ -15,6 +16,9 @@ public class UpdateService {
 
     private final ProjectUpdateRepository projectUpdateRepository;
     private final SimpMessagingTemplate messagingTemplate;
+
+    private final ConcurrentHashMap<String, Instant> recentUpdates = new ConcurrentHashMap<>();
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UpdateService.class);
 
     public UpdateService(ProjectUpdateRepository projectUpdateRepository, SimpMessagingTemplate messagingTemplate) {
         this.projectUpdateRepository = projectUpdateRepository;
@@ -33,20 +37,38 @@ public class UpdateService {
     }
 
     public void createAndSendUpdate(Long projectId, String recipientEmail, String message) {
+        if (recipientEmail == null || message == null) return;
+        
+        String normalizedEmail = recipientEmail.toLowerCase();
+        String cacheKey = String.format("%d|%s|%s", projectId, normalizedEmail, message);
+        Instant now = Instant.now();
+        Instant cutoff = now.minusSeconds(30);
+
+        Instant lastSent = recentUpdates.get(cacheKey);
+        if (lastSent != null && lastSent.isAfter(cutoff)) {
+            logger.info("Skipping duplicate update (cached): {} for {}", message, normalizedEmail);
+            return;
+        }
+
         synchronized (this) {
-            Instant cutoff = Instant.now().minusSeconds(30);
-            List<ProjectUpdate> recent = projectUpdateRepository.findByProjectIdAndUserEmailOrderByCreatedAtDesc(projectId, recipientEmail);
+            List<ProjectUpdate> recent = projectUpdateRepository.findByProjectIdAndUserEmailOrderByCreatedAtDesc(projectId, normalizedEmail);
             boolean exists = recent.stream()
-                .anyMatch(u -> !u.getIsRead() && u.getMessage().equals(message) && u.getCreatedAt().isAfter(cutoff));
+                .anyMatch(u -> u.getMessage().equals(message) && u.getCreatedAt().isAfter(cutoff));
             
             if (exists) {
+                logger.info("Skipping duplicate update (db): {} for {}", message, normalizedEmail);
+                recentUpdates.put(cacheKey, now);
                 return;
             }
 
-            ProjectUpdate update = new ProjectUpdate(projectId, recipientEmail, message);
-            ProjectUpdate savedUpdate = projectUpdateRepository.save(update);
+            logger.info("Creating update: {} for {}", message, normalizedEmail);
+            ProjectUpdate update = new ProjectUpdate(projectId, normalizedEmail, message);
+            ProjectUpdate savedUpdate = projectUpdateRepository.saveAndFlush(update);
+            recentUpdates.put(cacheKey, now);
 
-            String destination = String.format("/topic/project/%d/updates/%s", projectId, recipientEmail);
+            recentUpdates.entrySet().removeIf(entry -> entry.getValue().isBefore(now.minusSeconds(60)));
+
+            String destination = String.format("/topic/project/%d/updates/%s", projectId, normalizedEmail);
             messagingTemplate.convertAndSend(destination, savedUpdate);
         }
     }
@@ -59,6 +81,11 @@ public class UpdateService {
     public void sendEvictionNotice(Long projectId, String userEmail) {
         String destination = String.format("/topic/user/%s/eviction", userEmail);
         messagingTemplate.convertAndSend(destination, projectId);
+    }
+
+    public void sendTaskEvictionNotice(Long taskId, String userEmail) {
+        String destination = String.format("/topic/user/%s/task-eviction", userEmail);
+        messagingTemplate.convertAndSend(destination, taskId);
     }
 
     @Transactional

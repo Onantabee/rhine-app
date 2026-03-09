@@ -1,5 +1,6 @@
 package com.tskmgmnt.rhine.otp.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tskmgmnt.rhine.core.config.TsidGenerator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,6 +14,7 @@ public class Otp {
     @Id
     @GeneratedValue(generator = "tsid-generator")
     @GenericGenerator(name = "tsid-generator", type = TsidGenerator.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @Column(nullable = false)

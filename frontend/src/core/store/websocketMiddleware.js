@@ -2,6 +2,8 @@ import { Client } from '@stomp/stompjs';
 import { tasksApi } from '../../features/task/api/tasksApi';
 import { commentsApi } from '../../features/task/api/commentsApi';
 import { updateApi } from '../../features/update/api/updateApi';
+import projectsApi from '../../features/project/api/projectsApi';
+import { clearActiveProject } from '../../features/project/store/projectSlice';
 import { getApiBaseUrl } from '../config/env';
 
 let stompClient = null;
@@ -26,25 +28,40 @@ export const websocketMiddleware = (store) => (next) => (action) => {
 function handleDynamicSubscriptions(store) {
     const state = store.getState();
     const userEmail = state.auth?.userEmail;
-    const projectId = state.project?.activeProject?.id;
+    const activeProject = state.project?.activeProject;
+    const projectId = activeProject?.id;
 
     if (userEmail && projectId) {
-
-        if (lastProjectId !== projectId || lastUserEmail !== userEmail) {
-
+        const strProjectId = String(projectId);
+        
+        if (lastProjectId !== strProjectId || lastUserEmail !== userEmail) {
             Object.values(currentSubscriptions).forEach(sub => sub.unsubscribe());
             currentSubscriptions = {};
             
-            console.log(`[WebSocket] Subscribing to dynamic topics for project ${projectId}`);
+            console.log(`[WebSocket] Subscribing to dynamic topics for project ${strProjectId}`);
 
-            const updateTopic = `/topic/project/${projectId}/updates/${userEmail}`;
+            const updateTopic = `/topic/project/${strProjectId}/updates/${userEmail}`;
             currentSubscriptions[updateTopic] = stompClient.subscribe(updateTopic, (message) => {
-                logStompMessage(`project-update-${projectId}`, message.body, '🔔');
+                logStompMessage(`project-update-${strProjectId}`, message.body, '🔔');
                 try {
                     const newUpdate = JSON.parse(message.body);
+                    const newUpdateId = String(newUpdate.id);
+                    
                     store.dispatch(
-                        updateApi.util.updateQueryData('getProjectUpdates', projectId, (draft) => {
-                            draft.unshift(newUpdate);
+                        updateApi.util.updateQueryData('getProjectUpdates', strProjectId, (draft) => {
+                            const exists = draft.some(u => 
+                                String(u.id) === newUpdateId || 
+                                (u.message === newUpdate.message && 
+                                 Math.abs(new Date(u.createdAt) - new Date(newUpdate.createdAt)) < 2000)
+                            );
+                            
+                            if (!exists) {
+                                draft.unshift({
+                                    ...newUpdate,
+                                    id: newUpdateId,
+                                    projectId: String(newUpdate.projectId)
+                                });
+                            }
                         })
                     );
                 } catch (error) {
@@ -52,15 +69,19 @@ function handleDynamicSubscriptions(store) {
                 }
             });
 
-            const membersTopic = `/topic/project/${projectId}/members`;
+            const membersTopic = `/topic/project/${strProjectId}/members`;
             currentSubscriptions[membersTopic] = stompClient.subscribe(membersTopic, (message) => {
-                logStompMessage(`project-members-${projectId}`, message.body, '👥');
+                logStompMessage(`project-members-${strProjectId}`, message.body, '👥');
                 store.dispatch(
-                    tasksApi.util.invalidateTags([{ type: 'ProjectMember', id: projectId }])
+                    projectsApi.util.invalidateTags([{ type: 'ProjectMember', id: strProjectId }])
                 );
+                
+                if (message.body && String(message.body).includes("MEMBER_REMOVED")) {
+                    store.dispatch(tasksApi.util.invalidateTags([{ type: 'Task' }]));
+                }
             });
 
-            lastProjectId = projectId;
+            lastProjectId = strProjectId;
             lastUserEmail = userEmail;
         }
     } else {
@@ -74,11 +95,11 @@ function handleDynamicSubscriptions(store) {
     }
 }
 
-function logStompMessage(topic, body) {
+function logStompMessage(topic, body, emoji = '📩') {
     try {
         const parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
         console.groupCollapsed(
-            `%c[WebSocket] ${topic}`,
+            `%c${emoji} [WebSocket] ${topic}`,
             'color: #14B8A6; font-weight: bold;'
         );
         console.log('Topic:', topic);
@@ -91,7 +112,6 @@ function logStompMessage(topic, body) {
 
 function initializeWebSocket(store) {
     const apiBaseUrl = getApiBaseUrl();
-
     const protocol = apiBaseUrl.startsWith('https') ? 'wss' : 'ws';
     const brokerURL = `${protocol}://${apiBaseUrl.replace(/^https?:\/\//, '')}/ws`;
 
@@ -110,6 +130,42 @@ function initializeWebSocket(store) {
             
             handleDynamicSubscriptions(store);
 
+            const userEmail = store.getState().auth?.userEmail;
+            if (userEmail) {
+                const evictionTopic = `/topic/user/${userEmail}/eviction`;
+                stompClient.subscribe(evictionTopic, (message) => {
+                    logStompMessage(`eviction-${userEmail}`, message.body, '🚫');
+                    try {
+                        const evictedProjectId = String(message.body);
+                        const currentProjectId = String(store.getState().project?.activeProject?.id);
+                        
+                        store.dispatch(projectsApi.util.invalidateTags([{ type: 'Project' }]));
+                        
+                        if (evictedProjectId === currentProjectId) {
+                            console.log("[WebSocket] Active project evicted. Clearing state.");
+                            store.dispatch(clearActiveProject());
+                            store.dispatch(updateApi.util.invalidateTags([{ type: 'Update', id: `PROJECT_${evictedProjectId}` }]));
+                            store.dispatch(tasksApi.util.invalidateTags([{ type: 'Task' }]));
+                            store.dispatch(projectsApi.util.invalidateTags([{ type: 'Project', id: evictedProjectId }]));
+                        }
+                    } catch (error) {
+                        console.error('[WebSocket] Error handling eviction:', error);
+                    }
+                });
+
+                const taskEvictionTopic = `/topic/user/${userEmail}/task-eviction`;
+                stompClient.subscribe(taskEvictionTopic, (message) => {
+                    logStompMessage(`task-eviction-${userEmail}`, message.body, '🚫');
+                    try {
+                        const evictedTaskId = String(message.body);
+                        console.log("[WebSocket] Task evicted. Invalidating tags for taskId:", evictedTaskId);
+                        store.dispatch(tasksApi.util.invalidateTags([{ type: 'Task', id: evictedTaskId }]));
+                    } catch (error) {
+                        console.error('[WebSocket] Error handling task eviction:', error);
+                    }
+                });
+            }
+
             stompClient.subscribe('/topic/unread-updates', (message) => {
                 logStompMessage('/topic/unread-updates', message.body);
                 try {
@@ -126,7 +182,7 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/comments', (message) => {
-                logStompMessage('/topic/comments', message.body);
+                logStompMessage('/topic/comments', message.body, '💬');
                 try {
                     const newComment = JSON.parse(message.body);
                     store.dispatch(
@@ -150,7 +206,7 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/comment-deletion', (message) => {
-                logStompMessage('/topic/comment-deletion', message.body, '🔴');
+                logStompMessage('/topic/comment-deletion', message.body, '🗑️');
                 try {
                     const data = JSON.parse(message.body);
                     store.dispatch(
@@ -173,7 +229,7 @@ function initializeWebSocket(store) {
             });
 
             stompClient.subscribe('/topic/task-deleted', (message) => {
-                logStompMessage('/topic/task-deleted', message.body, '🗑️');
+                logStompMessage('/topic/task-deleted', message.body, '❌');
                 try {
                     store.dispatch(
                         tasksApi.util.invalidateTags([{ type: 'Task', id: 'LIST' }])
@@ -191,7 +247,7 @@ function initializeWebSocket(store) {
                     if (taskId) {
                         store.dispatch(
                             tasksApi.util.invalidateTags([
-                                { type: 'Task', id: taskId },
+                                { type: 'Task', id: String(taskId) },
                                 { type: 'Task', id: 'LIST' },
                             ])
                         );
@@ -208,7 +264,7 @@ function initializeWebSocket(store) {
                     const taskId = data.payload?.id;
                     if (taskId) {
                         store.dispatch(
-                            tasksApi.util.invalidateTags([{ type: 'Task', id: taskId }])
+                            tasksApi.util.invalidateTags([{ type: 'Task', id: String(taskId) }])
                         );
                     }
                 } catch (error) {

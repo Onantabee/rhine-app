@@ -1,11 +1,13 @@
 package com.tskmgmnt.rhine.comment.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 
 
 public class CommentDto {
     @Schema(description = "Unique identifier of the comment", example = "10")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
 
     @Schema(description = "Content of the comment", example = "Please review the attached document.")
@@ -21,6 +23,7 @@ public class CommentDto {
     private String recipientEmail;
 
     @Schema(description = "ID of the associated task", example = "1")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long taskId;
 
     @Schema(description = "Flag indicating if the comment has been read by the recipient", example = "false")
