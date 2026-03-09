@@ -84,7 +84,7 @@ const Select = forwardRef(
                                 setIsOpen(false);
                             }}
                         />
-                        <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] overflow-hidden z-50 max-h-[100px] md:max-h-[200px] overflow-y-auto">
+                        <div className="absolute top-[calc(100%+4px)] left-0 w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#404040] overflow-hidden z-50 max-h-[125px] md:max-h-[225px] overflow-y-auto">
                             {options.map((option) => (
                                 <div
                                     key={option.value}

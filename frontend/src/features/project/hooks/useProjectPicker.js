@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
     useGetProjectsQuery,
+    useGetProjectByIdQuery,
 } from '../api/projectsApi';
 import { useUpdateLastProjectMutation } from '../../user/api/usersApi';
 import { setActiveProject } from '../store/projectSlice';
@@ -17,6 +18,9 @@ export const useProjectPicker = () => {
     const activeProject = useSelector((state) => state.project.activeProject);
     const projectError = useSelector((state) => state.project.projectError);
     const { data: projects = [], isLoading: isLoadingProjects } = useGetProjectsQuery();
+    
+    const { projectId: urlProjectId } = useParams();
+    const { isFetching } = useGetProjectByIdQuery(urlProjectId, { skip: !urlProjectId });
     const [updateLastProject] = useUpdateLastProjectMutation();
 
     const handleSelectProject = (project) => {
@@ -54,6 +58,7 @@ export const useProjectPicker = () => {
         projectError,
         projects,
         isLoadingProjects,
+        isFetching,
         handleSelectProject,
         handleCreateNew,
         toggleOpen

@@ -4,9 +4,10 @@ import { useEffect } from "react";
 import SidePane from './SidePane';
 import { closeMobileMenu } from '../store/uiSlice';
 import { useGetProjectByIdQuery } from '../../features/project/api/projectsApi';
-import { setActiveProject } from '../../features/project/store/projectSlice';
+import { setActiveProject, clearActiveProject, setProjectError } from '../../features/project/store/projectSlice';
 import NotFound from '../pages/NotFound';
 import { LoadingSpinner } from "../ui";
+import useWebSocket from '../hooks/useWebSocket';
 
 const WorkspaceLayout = () => {
     const dispatch = useDispatch();
@@ -15,12 +16,14 @@ const WorkspaceLayout = () => {
     const { hasProjects, sessionChecked, userEmail } = useSelector((state) => state.auth);
     const activeProject = useSelector((state) => state.project.activeProject);
     const { projectId } = useParams();
-    const { data: project, error, isLoading } = useGetProjectByIdQuery(projectId, {
+    const { data: project, error, isLoading, isFetching } = useGetProjectByIdQuery(projectId, {
         skip: !projectId,
     });
 
+    useWebSocket(projectId, userEmail);
+
     useEffect(() => {
-        if (project && (!activeProject || activeProject.id !== project.id)) {
+        if (project && !error && !isLoading && !isFetching && (!activeProject || activeProject.id !== project.id)) {
             dispatch(
                 setActiveProject({
                     id: project.id,
@@ -29,12 +32,10 @@ const WorkspaceLayout = () => {
                 })
             );
         } else if (error) {
-            import('../../features/project/store/projectSlice').then(({ clearActiveProject, setProjectError }) => {
-                dispatch(clearActiveProject());
-                dispatch(setProjectError(true));
-            });
+            dispatch(clearActiveProject());
+            dispatch(setProjectError(true));
         }
-    }, [project, activeProject, dispatch, error]);
+    }, [project, activeProject, dispatch, error, isLoading, isFetching]);
 
     if (sessionChecked && !hasProjects) {
         return <Navigate to="/create-project" replace />;

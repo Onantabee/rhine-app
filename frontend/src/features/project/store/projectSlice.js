@@ -30,7 +30,6 @@ const projectSlice = createSlice({
         },
         clearActiveProject: (state) => {
             state.activeProject = null;
-            state.projectError = false;
             localStorage.removeItem("activeProject");
         },
         setProjects: (state, action) => {

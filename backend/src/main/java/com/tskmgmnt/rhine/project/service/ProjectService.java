@@ -224,8 +224,9 @@ public class ProjectService {
         
         try {
             updateService.sendProjectBroadcast(projectId, "MEMBER_REMOVED");
+            updateService.sendEvictionNotice(projectId, memberEmail);
         } catch (Exception e) {
-            logger.warn("Failed to send member removed broadcast: {}", e.getMessage());
+            logger.warn("Failed to send member removed broadcast or eviction notice: {}", e.getMessage());
         }
     }
 

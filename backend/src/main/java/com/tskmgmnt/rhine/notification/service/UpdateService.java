@@ -43,4 +43,9 @@ public class UpdateService {
         String destination = String.format("/topic/project/%d/members", projectId);
         messagingTemplate.convertAndSend(destination, payload);
     }
+
+    public void sendEvictionNotice(Long projectId, String userEmail) {
+        String destination = String.format("/topic/user/%s/eviction", userEmail);
+        messagingTemplate.convertAndSend(destination, projectId);
+    }
 }

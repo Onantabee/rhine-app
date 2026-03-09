@@ -15,6 +15,7 @@ const ProjectPicker = () => {
         projectError,
         projects,
         isLoadingProjects,
+        isFetching,
         handleSelectProject,
         handleCreateNew,
         toggleOpen
@@ -22,7 +23,7 @@ const ProjectPicker = () => {
 
     const { pathname } = useLocation();
     const isProjectContext = pathname.startsWith('/project/');
-    const showLoading = isLoadingProjects || (isProjectContext && !activeProject && !projectError);
+    const showLoading = isLoadingProjects || (isProjectContext && isFetching && !activeProject && !projectError);
 
     const [searchTerm, setSearchTerm] = useState("");
 
