@@ -147,12 +147,10 @@ public class AuthController {
         
         try {
             authService.forgotPassword(email);
-            return ResponseEntity.ok(Map.of("message", "A password reset link has been sent."));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("message", "An error occurred while processing your request."));
+            logger.error("Error during forgotPassword process for email: {}", email, e);
         }
+        return ResponseEntity.ok(Map.of("message", "If an account exists for this email, a reset link has been sent."));
     }
 
     @Operation(summary = "Validate password reset token", tags = {"Authentication"})

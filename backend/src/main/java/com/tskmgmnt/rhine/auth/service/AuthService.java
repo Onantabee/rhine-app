@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -82,10 +83,11 @@ public class AuthService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
+    @Transactional
     public void forgotPassword(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
-            throw new ResourceNotFoundException("No account found with that email address.");
+            return;
         }
 
         userResetTokenRepository.findByUser(user).ifPresent(userResetTokenRepository::delete);
@@ -108,6 +110,7 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public void resetPassword(String token, String newRawPassword) {
         UserResetToken resetToken = userResetTokenRepository.findByToken(token)
                 .orElseThrow(() -> new ResourceNotFoundException("Invalid token"));

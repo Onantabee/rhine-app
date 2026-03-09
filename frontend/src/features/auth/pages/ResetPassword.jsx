@@ -16,6 +16,7 @@ const ResetPassword = () => {
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
 
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const [forgotPassword, { isLoading: isRequesting }] = useForgotPasswordMutation();
     const [resetPassword, { isLoading: isResetting }] = useResetPasswordMutation();
 
@@ -40,9 +41,8 @@ const ResetPassword = () => {
         }
 
         try {
-            const res = await forgotPassword({ email }).unwrap();
-            showSnackbar(res.message || "Reset link sent.", "success");
-            setEmail("");
+            await forgotPassword({ email }).unwrap();
+            setIsSubmitted(true);
         } catch (err) {
             showSnackbar(err.data?.message || "Failed to send reset link.", "error");
         }
@@ -91,6 +91,28 @@ const ResetPassword = () => {
                                 <Button variant="outlined" className="w-full" onClick={() => navigate("/")}>
                                     Back to Login
                                 </Button>
+                            </div>
+                        </div>
+                    ) : isSubmitted ? (
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-6">
+                                <Check size={40} className="text-green-500" />
+                            </div>
+                            <h2 className="text-3xl font-semibold text-center text-gray-700 dark:text-[#cccccc] mb-2">Check your email</h2>
+                            <p className="text-gray-400 font-light text-md mt-2 text-center mb-8 max-w-[400px]">
+                                If an account exists for <span className="font-medium text-gray-600 dark:text-[#eeeeee]">{email}</span>,
+                                we've sent a link to reset your password.
+                            </p>
+                            <div className="flex flex-col w-full space-y-4">
+                                <Button variant="primary" className="w-full" onClick={() => navigate("/")}>
+                                    Back to Login
+                                </Button>
+                                <button
+                                    onClick={() => setIsSubmitted(false)}
+                                    className="text-sm text-gray-500 hover:text-primary transition-colors cursor-pointer"
+                                >
+                                    Didn't get the email? Try another address
+                                </button>
                             </div>
                         </div>
                     ) : (
