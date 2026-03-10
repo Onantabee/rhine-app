@@ -25,7 +25,7 @@ import Dashboard from './features/project/pages/Dashboard';
 
 function App() {
   const [isSignup, setIsSignup] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
   const { sessionChecked, isLoggedIn, hasProjects, lastProjectId, isVerified } = useSelector(
     (state) => state.auth
   );
