@@ -1,13 +1,13 @@
 services:
   backend:
     build:
-      context: ../backend
+      context: ./backend
       dockerfile: Dockerfile.dev
     ports:
       - "8080:8080"
       - "5005:5005"
     volumes:
-      - ../backend:/workspace
+      - ./backend:/workspace
       - /workspace/target
     environment:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
@@ -27,20 +27,20 @@ services:
     develop:
       watch:
         - action: sync
-          path: ../backend/src
+          path: ./backend/src
           target: /workspace/src
         - action: rebuild
-          path: ../backend/pom.xml
+          path: ./backend/pom.xml
           target: /workspace/pom.xml
 
   frontend:
     build:
-      context: ../frontend
+      context: ./frontend
       dockerfile: Dockerfile.dev
     ports:
       - "5173:5173"
     volumes:
-      - ../frontend:/app
+      - ./frontend:/app
       - /app/node_modules
     depends_on:
       - backend
@@ -49,12 +49,12 @@ services:
     develop:
       watch:
         - action: sync
-          path: ../frontend/src
+          path: ./frontend/src
           target: /app/src
           ignore:
             - node_modules/
         - action: rebuild
-          path: ../frontend/package.json
+          path: ./frontend/package.json
           target: /app/package.json
 
   db:
